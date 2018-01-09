@@ -1,0 +1,1 @@
+The layout for base_bottom and base_top are designed for the Hitec HS-5625MG servo.
