@@ -109,7 +109,7 @@ void software_Reset() // Restarts program from beginning but does not reset the 
 void setupTouchscreen() {
 #ifdef ENABLE_TOUCHSCREEN
   Serial.println("Touchscreen ENABLED.");
-  //TODO: Do some stuff.
+  
 #else
   Serial.println("Touchscreen DISABLED.");
 #endif
@@ -221,4 +221,3 @@ void loop() {
 
   updateServos();
 }
-

@@ -43,7 +43,7 @@ Direction dir = CW;
 
 bool zDown, cDown;
 
-void processCommands();
+void processNunchuck();
 
 void onCButtonDown();
 void onCButtonUp();

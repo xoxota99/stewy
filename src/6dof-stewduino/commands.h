@@ -18,18 +18,16 @@ int handleDemo(int argc, char** argv);
 int handleMoveTo(int argc, char** argv);
 
 //===
-//
-//CommandLine commandLine(Serial, "> ");
-//
+
 Command commands[] = {
-  {handleSet, "set"},
-  {handleSetAll, "setall"},
-  {handleDump, "dump"},
-  {handleReset, "reset"},
-  {handleMoveTo, "moveTo"},
-  {handleDemo, "demo"},
-  {handleHelp, "help"},
-  {handleHelp, "?"}
+  {handleSet,     "set"},
+  {handleSetAll,  "setall"},
+  {handleDump,    "dump"},
+  {handleReset,   "reset"},
+  {handleMoveTo,  "moveTo"},
+  {handleDemo,    "demo"},
+  {handleHelp,    "help"},
+  {handleHelp,    "?"}
 };
 
 #endif //ENABLE_SERIAL_COMMANDS

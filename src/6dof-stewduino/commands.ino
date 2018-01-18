@@ -226,20 +226,55 @@ int handleSetAll(int argc, char** argv)
 
 int handleDump(int argc, char** argv) {
 
+  shell_println("===== Platform =====");
   shell_printf("platform.sway = %d\n", stu.getSway());
   shell_printf("platform.surge = %d\n", stu.getSurge());
   shell_printf("platform.heave = %d\n", stu.getHeave());
   shell_printf("platform.roll = %d\n", stu.getRoll());
   shell_printf("platform.pitch = %d\n", stu.getPitch());
-  shell_printf("platform.yaw = %d\n\n", stu.getYaw());
+  shell_printf("platform.yaw = %d\n", stu.getYaw());
 
+  shell_println("\n===== Servos =====");
   for (int i = 0; i < 6; i++) {
     shell_printf("s%d (physical, setpoint) = (%.2f, %.2f)\n", i, servos[i].read(), sp_servo[i]);
   }
+
+#ifdef ENABLE_NUNCHUCK
+  shell_println("\n===== Nunchuck =====");
+  shell_printf("nunchuck.ok = %d\n",nc.isOk()));
+  if(nc.isOk()){
+    shell_printf("nunchuck.buttons.c = %d\n",nc.getButtonC());
+    shell_printf("nunchuck.buttons.z = %d\n",nc.getButtonC());
+    shell_printf("nunchuck.joystick.x = %.2f\n",nc.getJoyX());
+    shell_printf("nunchuck.joystick.y = %.2f\n",nc.getJoyY());
+    shell_printf("nunchuck.tilt.x = %.2f\n",nc.getTiltX());
+    shell_printf("nunchuck.tilt.y = %.2f\n",nc.getTiltY());
+    shell_printf("nunchuck.tilt.z = %.2f\n",nc.getTiltZ());
+    shell_printf("nunchuck.accel.x = %.2f\n",nc.getAccelX());
+    shell_printf("nunchuck.accel.y = %.2f\n",nc.getAccelY());
+    shell_printf("nunchuck.accel.z = %.2f\n",nc.getAccelZ());
+  }
+#endif
+
+#ifdef ENABLE_TOUCHSCREEN
+  shell_println("\n===== Touch screen =====");
+
+  TSPoint p = ts.getPoint();
+  if (p.z > ts.pressureThreshhold) {
+    shell_printf("touchscreen.x = %d\n",p.x);
+    shell_printf("touchscreen.y = %d\n",p.y);
+    shell_printf("touchscreen.z = %d\n",p.z);
+  } else {
+    shell_println("touchscreen.x = 0\n");
+    shell_println("touchscreen.y = 0\n");
+    shell_println("touchscreen.z = 0\n");
+  }
+#endif
+
   return SHELL_RET_SUCCESS;
 }
 
-int handleReset(int argc, char** argv) 
+int handleReset(int argc, char** argv)
 {
   software_Reset();
   return SHELL_RET_SUCCESS; //unreachable?
