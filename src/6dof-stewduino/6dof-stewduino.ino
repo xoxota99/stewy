@@ -101,15 +101,9 @@ void setServo(int i, int angle) {
 
 }
 
-void software_Reset() // Restarts program from beginning but does not reset the peripherals and registers
-{
-  CPU_RESTART;
-}
-
 void setupTouchscreen() {
 #ifdef ENABLE_TOUCHSCREEN
   Serial.println("Touchscreen ENABLED.");
-  
 #else
   Serial.println("Touchscreen DISABLED.");
 #endif

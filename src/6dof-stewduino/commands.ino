@@ -241,7 +241,7 @@ int handleDump(int argc, char** argv) {
 
 #ifdef ENABLE_NUNCHUCK
   shell_println("\n===== Nunchuck =====");
-  shell_printf("nunchuck.ok = %d\n",nc.isOk()));
+  shell_printf("nunchuck.ok = %d\n",nc.isOk());
   if(nc.isOk()){
     shell_printf("nunchuck.buttons.c = %d\n",nc.getButtonC());
     shell_printf("nunchuck.buttons.z = %d\n",nc.getButtonC());
@@ -276,7 +276,7 @@ int handleDump(int argc, char** argv) {
 
 int handleReset(int argc, char** argv)
 {
-  software_Reset();
+  CPU_RESTART;
   return SHELL_RET_SUCCESS; //unreachable?
 }
 

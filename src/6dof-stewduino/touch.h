@@ -1,5 +1,8 @@
+#ifndef __TOUCH_H__
+#define __TOUCH_H__
 #ifdef ENABLE_TOUCHSCREEN
 #include <TouchScreen.h> //from https://github.com/adafruit/Touch-Screen-Library
+
 
 #define XP A0   // can be a digital pin
 #define XM A1  // must be an analog pin, use "An" notation!
@@ -11,10 +14,10 @@
 
 void processTouchscreen();
 
-
 // For better pressure precision, we need to know the resistance
 // between X+ and X- Use any multimeter to read it
 // For the one we're using, its 300 ohms across the X plate
 TouchScreen ts = TouchScreen(XP, YP, XM, YM, TS_OHMS);
 
-#endif
+#endif  //ENABLE_TOUCHSCREEN
+#endif  //__TOUCH_H__
