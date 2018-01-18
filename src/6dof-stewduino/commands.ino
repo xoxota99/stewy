@@ -8,9 +8,9 @@ void processCommands()
 }
 
 /**
-   Function to read data from serial port
-   Functions to read from physical media should use this prototype:
-   int my_reader_function(char * data)
+Function to read data from serial port
+Functions to read from physical media should use this prototype:
+int my_reader_function(char * data)
 */
 int shell_reader(char * data)
 {
@@ -23,9 +23,9 @@ int shell_reader(char * data)
 }
 
 /**
-   Function to write data to serial port
-   Functions to write to physical media should use this prototype
-   void my_writer_function(char data)
+Function to write data to serial port
+Functions to write to physical media should use this prototype
+void my_writer_function(char data)
 */
 void shell_writer(char data)
 {
@@ -33,94 +33,48 @@ void shell_writer(char data)
 }
 
 int handleDemo(int argc, char** argv) {
-  int d = 300;
+  const int d = 300;
+  const int dval[][6]= {
+    //sway
+    {50, 0, 0, 0, 0, 0},
+    {-50, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0},
+    //surge
+    {0, 55, 0, 0, 0, 0},
+    {0, -55, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0},
+    //heave
+    {0, 0, 25, 0, 0, 0},
+    {0, 0, -22, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0},
+    //pitch
+    {0, 0, 0, 32, 0, 0},
+    {0, 0, 0, -29, 0, 0},
+    {0, 0, 0, 0, 0, 0},
+    //roll
+    {0, 0, 0, 0, 30, 0},
+    {0, 0, 0, 0, -30, 0},
+    {0, 0, 0, 0, 0, 0},
+    //yaw
+    {0, 0, 0, 0, 0, 69},
+    {0, 0, 0, 0, 0, -69},
+    {0, 0, 0, 0, 0, 0}
+  };
 
-  //sway
-  stu.moveTo(sp_servo, 50, 0, 0, 0, 0, 0);
-  updateServos();
-  delay(d);
-
-  stu.moveTo(sp_servo, -50, 0, 0, 0, 0, 0);
-  updateServos();
-  delay(d);
-
-  stu.home(sp_servo);
-  updateServos();
-  delay(d);
-
-  //surge
-  stu.moveTo(sp_servo, 0, 55, 0, 0, 0, 0);
-  updateServos();
-  delay(d);
-
-  stu.moveTo(sp_servo, 0, -55, 0, 0, 0, 0);
-  updateServos();
-  delay(d);
-
-  stu.home(sp_servo);
-  updateServos();
-  delay(d);
-
-  //heave
-  stu.moveTo(sp_servo, 0, 0, 25, 0, 0, 0);
-  updateServos();
-  delay(d);
-
-  stu.moveTo(sp_servo, 0, 0, -22, 0, 0, 0);
-  updateServos();
-  delay(d);
-
-  stu.home(sp_servo);
-  updateServos();
-  delay(d);
-
-  //pitch
-  stu.moveTo(sp_servo, 0, 0, 0, 32, 0, 0);
-  updateServos();
-  delay(d);
-
-  stu.moveTo(sp_servo, 0, 0, 0, -29, 0, 0);
-  updateServos();
-  delay(d);
-
-  stu.home(sp_servo);
-  updateServos();
-  delay(d);
-
-  //roll
-  stu.moveTo(sp_servo, 0, 0, 0, 0, 30, 0);
-  updateServos();
-  delay(d);
-
-  stu.moveTo(sp_servo, 0, 0, 0, 0, -30, 0);
-  updateServos();
-  delay(d);
-
-  stu.home(sp_servo);
-  updateServos();
-  delay(d);
-
-  //yaw
-  stu.moveTo(sp_servo, 0, 0, 0, 0, 0, 69);
-  updateServos();
-  delay(d);
-
-  stu.moveTo(sp_servo, 0, 0, 0, 0, 0, -69);
-  updateServos();
-  delay(d);
-
-  stu.home(sp_servo);
-  updateServos();
-  delay(d);
+  for(int i=0, j=0;i<sizeof(dval) / sizeof(dval[0]);i++){
+    stu.moveTo(sp_servo, dval[i][j++], dval[i][j++], dval[i][j++], dval[i][j++], dval[i][j++], dval[i][j++]);
+    updateServos();
+    delay(d);
+  }
 
   return SHELL_RET_SUCCESS;
 }
 
 
 /**
-   set a single servo (#1-6) to the specified uS value.
+set a single servo (#1-6) to the specified uS value.
 
-   @param tokens The rest of the input command.
+@param tokens The rest of the input command.
 */
 int handleSet(int argc, char** argv)
 {
@@ -160,9 +114,9 @@ int handleSet(int argc, char** argv)
 }
 
 /**
-   Print some help.
+Print some help.
 
-   @param tokens The rest of the input command.
+@param tokens The rest of the input command.
 */
 int handleHelp(int argc, char** argv)
 {
@@ -191,8 +145,8 @@ int handleSetAll(int argc, char** argv)
     bool special = false;
 
     if (strncmp(token, "mid", 3) != 0 &&
-        strncmp(token, "min", 3) != 0 &&
-        strncmp(token, "max", 3) != 0) {
+    strncmp(token, "min", 3) != 0 &&
+    strncmp(token, "max", 3) != 0) {
       val = atoi(token);
     } else {
       special = true;
@@ -239,7 +193,7 @@ int handleDump(int argc, char** argv) {
     shell_printf("s%d (physical, setpoint) = (%.2f, %.2f)\n", i, servos[i].read(), sp_servo[i]);
   }
 
-#ifdef ENABLE_NUNCHUCK
+  #ifdef ENABLE_NUNCHUCK
   shell_println("\n===== Nunchuck =====");
   shell_printf("nunchuck.ok = %d\n",nc.isOk());
   if(nc.isOk()){
@@ -254,9 +208,9 @@ int handleDump(int argc, char** argv) {
     shell_printf("nunchuck.accel.y = %.2f\n",nc.getAccelY());
     shell_printf("nunchuck.accel.z = %.2f\n",nc.getAccelZ());
   }
-#endif
+  #endif
 
-#ifdef ENABLE_TOUCHSCREEN
+  #ifdef ENABLE_TOUCHSCREEN
   shell_println("\n===== Touch screen =====");
 
   TSPoint p = ts.getPoint();
@@ -269,7 +223,7 @@ int handleDump(int argc, char** argv) {
     shell_println("touchscreen.y = 0\n");
     shell_println("touchscreen.z = 0\n");
   }
-#endif
+  #endif
 
   return SHELL_RET_SUCCESS;
 }
@@ -290,7 +244,7 @@ int handleMoveTo(int argc, char** argv) {
   char* token = argv[1];  //pitch
 
   if (strncmp(token, "home", 4) == 0 ||
-      strncmp(token, "zero", 4) == 0) {
+  strncmp(token, "zero", 4) == 0) {
     stu.home(sp_servo);
   } else {
     pitch = atof(token);

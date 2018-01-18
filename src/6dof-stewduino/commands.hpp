@@ -19,7 +19,7 @@ int handleMoveTo(int argc, char** argv);
 
 //===
 
-Command commands[] = {
+const Command commands[] = {
   {handleSet,     "set"},
   {handleSetAll,  "setall"},
   {handleDump,    "dump"},

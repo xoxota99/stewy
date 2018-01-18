@@ -34,12 +34,14 @@
 #endif
 
 //=== Macros
+#ifdef CORE_TEENSY
 //Software reset macros / MMap FOR TEENSY ONLY
 #define CPU_RESTART_VAL 0x5FA0004                           // write this magic number...
 #define CPU_RESTART_ADDR (uint32_t *)0xE000ED0C             // to this memory location...
-#define CPU_RESTART (*CPU_RESTART_ADDR = CPU_RESTART_VAL);  // presto!
-
-#define LED 13    //LED pin
+#define CPU_RESTART (*CPU_RESTART_ADDR = CPU_RESTART_VAL)   // presto!
+#else
+#define CPU_RESTART asm volatile ("  jmp 0")                // close enough for arduino
+#endif
 
 //=== Actual code
 
@@ -185,8 +187,8 @@ void setupNunchuck() {
 
 
 void setup() {
-  pinMode(LED, OUTPUT);   //power indicator
-  digitalWrite(LED, HIGH);
+  pinMode(LED_BUILTIN, OUTPUT);   //power indicator
+  digitalWrite(LED_BUILTIN, HIGH);
 
   setupCommandLine();
 
