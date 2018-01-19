@@ -20,7 +20,7 @@
 #include <Arduino.h>
 #include <Servo.h>
 #include "config.h"
-#include "stewart.h"
+#include "Platform.h"
 
 #ifdef ENABLE_NUNCHUCK
 #include "nunchuck.h"
@@ -46,7 +46,7 @@
 
 //=== Actual code
 
-Stewart stu;            // Stewart platform object.
+Platform stu;            // Stewart platform object.
 Servo servos[6];        // servo objects.
 float sp_servo[6];      // servo setpoints in degrees, between SERVO_MIN_ANGLE and SERVO_MAX_ANGLE.
 //

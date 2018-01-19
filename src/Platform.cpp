@@ -20,9 +20,9 @@
    Derived from the work of Daniel Waters, https://www.youtube.com/watch?v=1jrP3_1ML9M
 */
 
-#include "Stewart.h"
+#include "Platform.h"
 
-bool Stewart::home(float *servoValues) {
+bool Platform::home(float *servoValues) {
   return moveTo (servoValues, 0, 0, 0, 0, 0, 0); //HOME position. No rotation, no translation.
 }
 
@@ -30,7 +30,7 @@ bool Stewart::home(float *servoValues) {
  * Move to a given sway, surge, heave, pitch, roll and yaw values.
  * We expect pitch, roll and yaw in degrees.
  */
-bool Stewart::moveTo(float *servoValues, int sway, int surge, int heave, float pitch, float roll, float yaw) {
+bool Platform::moveTo(float *servoValues, int sway, int surge, int heave, float pitch, float roll, float yaw) {
 
   /*
      TODO:
@@ -119,26 +119,26 @@ bool Stewart::moveTo(float *servoValues, int sway, int surge, int heave, float p
 /*
  * Move to a given pitch / roll angle (in degrees)
  */
-bool Stewart::moveTo(float *servoValues, float pitch, float roll) {
+bool Platform::moveTo(float *servoValues, float pitch, float roll) {
   return moveTo(servoValues, _sp_sway, _sp_surge, _sp_heave, pitch, roll, _sp_yaw);
 }
 
-int Stewart::getSway() {
+int Platform::getSway() {
   return _sp_sway;
 }
-int Stewart::getSurge() {
+int Platform::getSurge() {
   return _sp_surge;
 }
-int Stewart::getHeave() {
+int Platform::getHeave() {
   return _sp_heave;
 }
 
-float Stewart::getPitch() {
+float Platform::getPitch() {
   return _sp_pitch;
 }
-float Stewart::getRoll() {
+float Platform::getRoll() {
   return _sp_roll;
 }
-float Stewart::getYaw() {
+float Platform::getYaw() {
   return _sp_yaw;
 }

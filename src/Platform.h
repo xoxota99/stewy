@@ -110,7 +110,7 @@ const double B_COORDS[6][2] = {
 
 //==============================================================================
 
-class Stewart {
+class Platform {
 
   private:
     //Setpoints (internal state)
