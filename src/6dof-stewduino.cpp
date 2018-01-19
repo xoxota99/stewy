@@ -22,12 +22,12 @@
 #include "config.h"
 #include "stewart.h"
 
-#ifdef ENABLE_SERIAL_COMMANDS
-#include "commands.h"
-#endif
-
 #ifdef ENABLE_NUNCHUCK
 #include "nunchuck.h"
+#endif
+
+#ifdef ENABLE_SERIAL_COMMANDS
+#include "commands.h"
 #endif
 
 #ifdef ENABLE_TOUCHSCREEN
