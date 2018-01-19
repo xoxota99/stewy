@@ -158,6 +158,10 @@ void setupCommandLine(int bps = 9600)
 {
   Serial.begin(bps);
 
+  Serial.println("Welcome to Studuino, v1");
+  Serial.printf("Built %s, %s\n",__DATE__, __TIME__);
+  Serial.println("=======================");
+
 #ifdef ENABLE_SERIAL_COMMANDS
   Serial.println("Command-line is ENABLED.");
 
