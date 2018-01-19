@@ -19,7 +19,6 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifdef ENABLE_TOUCHSCREEN
 #include <TouchScreen.h> //from https://github.com/adafruit/Touch-Screen-Library
 

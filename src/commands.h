@@ -20,7 +20,7 @@
 */
 
 #ifdef ENABLE_SERIAL_COMMANDS
-#include <Shell.h>
+#include <Shell.h>  //https://github.com/geekfactory/Shell
 
 typedef struct shell_command_entry Command;
 
