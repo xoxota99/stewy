@@ -25,7 +25,7 @@ void processNunchuck()
 
   Serial.printf("Buttons (C/Z): %s/%s\t", (nc.getButtonC() ? "true" : "false"), (nc.getButtonZ() ? "true" : "false"));
   Serial.printf("Joystick (X/Y): %.2f/%.2f\t", nc.getJoyX(), nc.getJoyY());
-  Serial.printf("Tilt (X/Y): %.2f/%.2f/%.2f\t", nc.getRollAngle(), nc.getPitchAngle());
+  Serial.printf("Tilt (X/Y/X): %.2f/%.2f/%.2f\t", nc.getTiltX(), nc.getTiltY(), nc.getTiltZ());
   Serial.printf("Accel (X/Y/X): %.2f/%.2f/%.2f\n", nc.getAccelX(), nc.getAccelY(), nc.getAccelZ());
 
   if (nc.isOk()) {
