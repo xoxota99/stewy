@@ -9,6 +9,8 @@ typedef struct shell_command_entry Command;
 //void setupCommandLine(int bps = 9600);
 void processCommands();
 int shell_reader(char * data);
+
+#pragma message ("shell_writer.h")
 void shell_writer(char data);
 
 int handleSet(int argc, char** argv);

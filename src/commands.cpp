@@ -12,7 +12,6 @@ Function to read data from serial port
 Functions to read from physical media should use this prototype:
 int my_reader_function(char * data)
 */
-#pragma message ("shell_reader")
 int shell_reader(char * data)
 {
   // Wrapper for Serial.read() method
@@ -28,6 +27,7 @@ Function to write data to serial port
 Functions to write to physical media should use this prototype
 void my_writer_function(char data)
 */
+#pragma message ("shell_writer.cpp")
 void shell_writer(char data)
 {
   Serial.write(data);
