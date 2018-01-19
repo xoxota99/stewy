@@ -18,9 +18,9 @@
 
 //=== Includes
 #include <Arduino.h>
+#include <Servo.h>
 #include "config.h"
 #include "stewart.h"
-#include <Servo.h>
 
 #ifdef ENABLE_SERIAL_COMMANDS
 #include "commands.h"
