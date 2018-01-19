@@ -17,6 +17,7 @@
 */
 
 //=== Includes
+#include <Arduino.h>
 #include "config.h"
 #include "stewart.h"
 #include <Servo.h>
@@ -48,10 +49,10 @@
 Stewart stu;            // Stewart platform object.
 Servo servos[6];        // servo objects.
 float sp_servo[6];      // servo setpoints in degrees, between SERVO_MIN_ANGLE and SERVO_MAX_ANGLE.
-
-float lerp(float t, int a, int b) {
-  return (int)(a + (t * (b - a)));
-}
+//
+// float lerp(float t, int a, int b) {
+//   return (int)(a + (t * (b - a)));
+// }
 
 float _toUs(int value) {
   return SERVO_MIN_US + value * (float)(SERVO_MAX_US - SERVO_MIN_US) / (SERVO_MAX_ANGLE - SERVO_MIN_ANGLE); //Number of uS in one degree of angle. Roughly.

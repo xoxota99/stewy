@@ -12,6 +12,7 @@ Function to read data from serial port
 Functions to read from physical media should use this prototype:
 int my_reader_function(char * data)
 */
+#pragma message ("shell_reader")
 int shell_reader(char * data)
 {
   // Wrapper for Serial.read() method

@@ -33,3 +33,10 @@
 *.hex
 *.eep
 *.elf
+
+.pioenvs
+.piolibdeps
+.clang_complete
+.gcc-flags.json
+.pioenvs
+.piolibdeps
