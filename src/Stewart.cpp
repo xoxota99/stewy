@@ -17,7 +17,7 @@
 */
 
 /*
-   Shamelessly stolen from the work of Daniel Waters, https://www.youtube.com/watch?v=1jrP3_1ML9M
+   Derived from the work of Daniel Waters, https://www.youtube.com/watch?v=1jrP3_1ML9M
 */
 
 #include "Stewart.h"
@@ -45,9 +45,9 @@ bool Stewart::moveTo(float *servoValues, int sway, int surge, int heave, float p
          servo_deg;           //Angle (in degrees) to turn each servo.
 
   float oldValues[6];
-  
+
   // intermediate values, to avoid recalculating SIN / COS
-  
+
   double cr = cos(radians(roll)),
          cp = cos(radians(pitch)),
          cy = cos(radians(yaw)),
@@ -84,7 +84,7 @@ bool Stewart::moveTo(float *servoValues, int sway, int surge, int heave, float p
 
       Serial.print("abs(k/(sqrt(l*l+m*m))) = ");
       Serial.println(abs(k / (sqrt(l * l + m * m))));
-  
+
       Serial.print("sqrt(d2)>(ARM_LENGTH+ROD_LENGTH) = ");
       Serial.println(sqrt(d2) > (ARM_LENGTH + ROD_LENGTH));
 
@@ -115,6 +115,7 @@ bool Stewart::moveTo(float *servoValues, int sway, int surge, int heave, float p
 
   return bOk;
 }
+
 /*
  * Move to a given pitch / roll angle (in degrees)
  */

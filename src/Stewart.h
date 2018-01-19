@@ -1,3 +1,6 @@
+#pragma once
+#ifndef __STU_PLATFORM_H__
+#define __STU_PLATFORM_H__
 /*
    6dof-stewduino
    Copyright (C) 2018  Philippe Desrosiers
@@ -17,15 +20,12 @@
 */
 
 /*
-   Shamelessly stolen from the work of Daniel Waters, https://www.youtube.com/watch?v=1jrP3_1ML9M
+   Derived from the work of Daniel Waters, https://www.youtube.com/watch?v=1jrP3_1ML9M
 */
 
 #include "config.h"
 #include <math.h>
 #include "Arduino.h"
-
-#ifndef STEWART_H
-#define STEWART_H
 
 /*
    TODO: We make an assumption of mirror symmetry for AXIS3 along the Y axis.
@@ -102,4 +102,4 @@ class Stewart {
     float getRoll();
     float getYaw();
 };
-#endif
+#endif    //__STU_PLATFORM_H__

@@ -16,15 +16,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/*
-  Shamelessly stolen from the work of Daniel Waters, https://www.youtube.com/watch?v=1jrP3_1ML9M
-*/
+#pragma once
+#ifndef __STU_CONFIG_H__
+#define __STU_CONFIG_H__
 
 #include <math.h>
-#include "Arduino.h"
-
-#ifndef CONFIG_H
-#define CONFIG_H
 
 #define ENABLE_SERIAL_COMMANDS    //Comment out, to omit Command shell code.
 #define ENABLE_NUNCHUCK           //Comment out, to omit Nunchuck code.
@@ -84,4 +80,4 @@ const int SERVO_TRIM[] = {  //trim values, AFTER reversing
   120
 };
 
-#endif
+#endif    //__STU_CONFIG_H__
