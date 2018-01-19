@@ -27,13 +27,46 @@
 #include <math.h>
 #include "Arduino.h"
 
+//macros
+#define THETA_P_DEG     45.25     //Platform joint angle (degrees) offset from AXIS[1|2|3]. A value of zero puts these joints directly on the axes
+#define THETA_B_DEG     24.5      //Base Servo pinion angle (degrees) offset from AXIS[1|2|3]. A value of zero puts the servo pinion directly on the axes
+#define P_RAD           50        //Platform radius (mm). The distance from the center of the platform to the center of one platform / pushrod "joint". This should be the same for all six pushrods.
+#define B_RAD           80.2      //Base radius (mm). Distance from the center of the base plate to the center of one servo pinion gear. Again, this should be the same for all six servos.
+#define ARM_LENGTH      25        //Servo arm length (mm). Distance from the center of the servo pivot to the center of the pushrod pivot on the servo arm.
+#define ROD_LENGTH      155       //Push rod length (mm). Distance between pushrod ball joints (servo to platform).
+#define Z_HOME          148       //Default Z height of the platform (above the base), with servo arms horizontal. Formally, the distance from the plane described by the collection of servo pinion gear centers, to the plane described by the collection of platform / pushrod joints.
+
+//constants
+
 /*
-   TODO: We make an assumption of mirror symmetry for AXIS3 along the Y axis.
+  There are three axes of symmetry (AXIS1, AXIS2, AXIS3). Looking down on the
+  platform from above (along the Y axis), with 0 degrees being the X-positive line, and traveling
+  in a CC direction, these are at 30 degrees, 120 degrees, and 240 degrees. All
+  the polar coordinates of pivot points, servo centers, etc. are calculated based on
+  an axis, and an offset angle (positive or negative theta) from the axis.
+*/
+const double AXIS1 =      M_PI / 6;  //30 degrees.
+const double AXIS2 =      -M_PI / 2; //-90 degrees.
+/*
+   NOTE: We make an assumption of mirror symmetry for AXIS3 along the Y axis.
    That is, AXIS1 is at (e.g.) 30 degrees, and AXIS3 will be at 120 degrees
    We account for this by negating the value of x-coordinates generated based
    on this axis later on. This is potentially messy, and should maybe be refactored.
 */
 #define AXIS3             AXIS1
+
+/*
+   Absolute angle that the servo arm plane of rotation is at (degrees), from the world-X axis.
+*/
+const double THETA_S_DEG[6] = {
+  -60,
+  120,
+  180,
+  0,
+  60,
+  -120
+};
+
 
 const double THETA_S[6] = {     //Servo arm angle (radians)
   radians(THETA_S_DEG[0]),
