@@ -20,7 +20,7 @@
 */
 
 #ifdef ENABLE_NUNCHUCK
-#include <Nunchuk.h> //from https://github.com/hughpyle/machinesalem-arduino-libs/tree/master/nunchuk
+#include <WiiChuk.h>      //from https://github.com/madhephaestus/WiiChuck
 
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 
@@ -54,7 +54,6 @@ char* directionStrings[] = {
   "CW",
   "CCW"
 };
-
 
 Mode mode = MIDDLE;
 Direction dir = CW;
