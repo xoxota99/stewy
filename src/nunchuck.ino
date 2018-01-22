@@ -1,15 +1,31 @@
 #ifdef ENABLE_NUNCHUCK
-#include "nunchuck.h"
+/*
+   6dof-stewduino
+   Copyright (C) 2018  Philippe Desrosiers
+
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 void processNunchuck()
 {
   // Read the current state
   nc.read();
 
-  Serial.printf("Buttons (C/Z): %s/%s\t", (nc.getButtonC() ? "true" : "false"), (nc.getButtonZ() ? "true" : "false"));
-  Serial.printf("Joystick (X/Y): %.2f/%.2f\t", nc.getJoyX(), nc.getJoyY());
-  Serial.printf("Tilt (X/Y/X): %.2f/%.2f/%.2f\t", nc.getTiltX(), nc.getTiltY(), nc.getTiltZ());
-  Serial.printf("Accel (X/Y/X): %.2f/%.2f/%.2f\n", nc.getAccelX(), nc.getAccelY(), nc.getAccelZ());
+  // Serial.printf("Buttons (C/Z): %s/%s\t", (nc.getButtonC() ? "true" : "false"), (nc.getButtonZ() ? "true" : "false"));
+  // Serial.printf("Joystick (X/Y): %.2f/%.2f\t", nc.getJoyX(), nc.getJoyY());
+  // Serial.printf("Tilt (X/Y/X): %.2f/%.2f/%.2f\t", nc.getTiltX(), nc.getTiltY(), nc.getTiltZ());
+  // Serial.printf("Accel (X/Y/X): %.2f/%.2f/%.2f\n", nc.getAccelX(), nc.getAccelY(), nc.getAccelZ());
 
   if (nc.isOk()) {
     // de-bounce C
@@ -56,7 +72,7 @@ void processNunchuck()
   } else {
     mode = MIDDLE; //Nunchuck is on the fritz. Default back to the center setpoint.
     dir = CW;
-    Serial.println("WHOOPS, there was a problem reading the nunchuck!");
+    // Serial.println("WHOOPS, there was a problem reading the nunchuck!");
   }
 
   // Wait a short while
