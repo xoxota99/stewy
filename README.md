@@ -42,3 +42,13 @@ dump [<servo_number>] - Dump the current PWM value for the given servo. If servo
 * The project is developed using PlatformIO. This means (among other possible things):
   * The folder structure is incompatible with Arduino IDE.
   * Teensy floating-point support is not built automatically (See https://community.platformio.org/t/pio-doesnt-build-teensy-floating-point-support/3296 ). I guess that's a work in progress.
+
+## Improvements
+Some things I'd like to try:
+* Optimize the length of the control rods, as well as the size ratio of the upper platform to the lower base. There's some [heavy math involved](https://ac.els-cdn.com/S1000936107600570/1-s2.0-S1000936107600570-main.pdf?_tid=eeb5d700-ffc7-11e7-a68f-00000aacb361&acdnat=1516662163_113697b3470f5b083bb550353edd4053), that I haven't gotten around to yet.
+* Improve the IK math, to allow a greater range of movement. Right now, the algorithm attempts to rotate around the platform's "home" position. This means that there's a constraint on the maximum angle of pitch / roll. This is just because the IK solution is not specialized to this particular (Ball & Plate balancing act) application. It's a generalized [Stewart platform solution](https://www.youtube.com/watch?v=1jrP3_1ML9M). I haven't yet had the heart to "optimize" this (by, say, *removing* 4 degrees of freedom). It would be like lobotomizing a friend. We'll see how I feel after some initial testing.
+* Improve the mechanical design:
+  * Right now, the design calls for 5 laser cut acrylic pieces, in 4 different thicknesses. That's expensive to get from an online CNC place. A better / cheaper design would use only one thickness of material.
+  * The "ring" around the upper plate is large, which is expensive if you're ordering from a place (I use the very excellent [Ponoko](https://www.ponoko.com/)) that charges based on the surface area of the part. A better design would break up the upper ring into multiple smaller pieces that could be assembled later.
+  * The design requires some tooling that can't be done on a laser cutter (such as drilling holes for the upper control rod joints). This is actually the hardest part of the whole project, getting those holes properly aligned and drilled straight. The design also calls for some counter-sunk holes (such as attaching the touchscreen mounting plate to the upper platform). It would be better if that counter-sinking wasn't necessary.
+  * The design of the upper and lower base plates is very specific to the servo chosen. Other servos are not guaranteed to fit. A better design would allow for any servo to be used.
