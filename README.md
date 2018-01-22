@@ -26,7 +26,7 @@ We want to be able to control some aspects of the project from a laptop during i
     * Servo values
 
 ## Touchscreen
-We use a 4-wire resistive touchscreen (e.g. https://tinyurl.com/ybsr2pmk ) to determine the X/Y coordinates of the ball bearing. The touchscreen is likely to report a certain amount of “noise” when no pressure is applied. We will need to either debounce or else apply a filter, to prevent the noise from being interpreted as valid input. Teensy Analog inputs are only 3.3V tolerant (see https://forum.pjrc.com/threads/40830-Teensy-3-2-ADC-amp-AREF?p=127431&viewfull=1#post127431 ), so we'll power the screen from pin 
+We use a 4-wire resistive touchscreen (e.g. https://tinyurl.com/ybsr2pmk ) to determine the X/Y coordinates of the ball bearing. The touchscreen is likely to report a certain amount of “noise” when no pressure is applied. We will need to either debounce or else apply a filter, to prevent the noise from being interpreted as valid input. Teensy Analog inputs are only 3.3V tolerant (see https://forum.pjrc.com/threads/40830-Teensy-3-2-ADC-amp-AREF?p=127431&viewfull=1#post127431 ), so we'll power the screen from pin
 
 ## PID control loop
 We use a Proportional / Integral / Derivative (PID) feedback loop (similar to control loops used in Drone firmware) to determine the error position between the ball bearing’s current position, and the desired – or setpoint – position. This is used to determine the target orientation of the platform, in order to best return the ball to the setpoint position.
@@ -36,3 +36,9 @@ We use an interactive shell-like interface over Serial monitor to set / query Se
 set <servo_number> <us_value> - servo_number: The number of the servo (from 1-6). us_value: The PWM value to send to the servo, in microseconds (usually 1000-2000 us).
 setall <us_value> - set all servos to the same us_value.
 dump [<servo_number>] - Dump the current PWM value for the given servo. If servo_number is ommitted, dump values for all servos.
+
+## Caveats
+* The project is built using [Teensy 3.x](https://www.pjrc.com/store/teensy32.html). I haven't tried building against other targets, but pull requests are always welcome!
+* The project is developed using PlatformIO. This means (among other possible things):
+  * The folder structure is incompatible with Arduino IDE.
+  * Teensy floating-point support is not built automatically (See https://community.platformio.org/t/pio-doesnt-build-teensy-floating-point-support/3296 ). I guess that's a work in progress.
