@@ -16,17 +16,16 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "nunchuck.h"
 
 void processNunchuck()
 {
   // Read the current state
   nc.read();
 
-  Serial.printf("Buttons (C/Z): %s/%s\t", (nc.getButtonC() ? "true" : "false"), (nc.getButtonZ() ? "true" : "false"));
-  Serial.printf("Joystick (X/Y): %.2f/%.2f\t", nc.getJoyX(), nc.getJoyY());
-  Serial.printf("Tilt (X/Y/X): %.2f/%.2f/%.2f\t", nc.getTiltX(), nc.getTiltY(), nc.getTiltZ());
-  Serial.printf("Accel (X/Y/X): %.2f/%.2f/%.2f\n", nc.getAccelX(), nc.getAccelY(), nc.getAccelZ());
+  // Serial.printf("Buttons (C/Z): %s/%s\t", (nc.getButtonC() ? "true" : "false"), (nc.getButtonZ() ? "true" : "false"));
+  // Serial.printf("Joystick (X/Y): %.2f/%.2f\t", nc.getJoyX(), nc.getJoyY());
+  // Serial.printf("Tilt (X/Y/X): %.2f/%.2f/%.2f\t", nc.getTiltX(), nc.getTiltY(), nc.getTiltZ());
+  // Serial.printf("Accel (X/Y/X): %.2f/%.2f/%.2f\n", nc.getAccelX(), nc.getAccelY(), nc.getAccelZ());
 
   if (nc.isOk()) {
     // de-bounce C
@@ -73,7 +72,7 @@ void processNunchuck()
   } else {
     mode = MIDDLE; //Nunchuck is on the fritz. Default back to the center setpoint.
     dir = CW;
-    Serial.println("WHOOPS, there was a problem reading the nunchuck!");
+    // Serial.println("WHOOPS, there was a problem reading the nunchuck!");
   }
 
   // Wait a short while

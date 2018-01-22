@@ -17,7 +17,7 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "commands.h"
+// #include "commands.h"
 
 void processCommands()
 {
@@ -53,27 +53,34 @@ void shell_writer(char data)
 
 int handleDemo(int argc, char** argv) {
   const int d = 300;
+  const int home[6] = {0, 0, 0, 0, 0, 0};
+
   const int dval[][6]= {
     //sway
     {50, 0, 0, 0, 0, 0},
     {-50, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0},
+
     //surge
     {0, 55, 0, 0, 0, 0},
     {0, -55, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0},
+
     //heave
     {0, 0, 25, 0, 0, 0},
     {0, 0, -22, 0, 0, 0},
     {0, 0, 0, 0, 0, 0},
+
     //pitch
     {0, 0, 0, 32, 0, 0},
     {0, 0, 0, -29, 0, 0},
     {0, 0, 0, 0, 0, 0},
+
     //roll
     {0, 0, 0, 0, 30, 0},
     {0, 0, 0, 0, -30, 0},
     {0, 0, 0, 0, 0, 0},
+
     //yaw
     {0, 0, 0, 0, 0, 69},
     {0, 0, 0, 0, 0, -69},
@@ -98,7 +105,7 @@ set a single servo (#1-6) to the specified uS value.
 int handleSet(int argc, char** argv)
 {
   if (argc == 1) {
-    shell_println("Usage: set <servo> min|mid|max|<microseconds>");
+    shell_println("Usage: set <servo> min|mid|max|<angle>");
     return SHELL_RET_FAILURE;
   }
 
@@ -121,11 +128,11 @@ int handleSet(int argc, char** argv)
       setServo(srv - 1, val);
     } else {
       shell_printf("Invalid servo value for Servo #%d. Valid values are (min, mid, max), or a number between %d and %d.\n", srv, SERVO_MIN_ANGLE, SERVO_MAX_ANGLE);
-      shell_println("Usage: set <servo> min|mid|max|<microseconds>");
+      shell_println("Usage: set <servo> min|mid|max|<angle>");
     }
   } else {
     shell_println("Invalid Servo number. Servo number must be between 1 and 6.");
-    shell_println("Usage: set <servo> min|mid|max|<microseconds>");
+    shell_println("Usage: set <servo> min|mid|max|<angle>");
   }
   updateServos();
 
