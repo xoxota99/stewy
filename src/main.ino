@@ -119,17 +119,7 @@ void setupPlatform() {
 }
 
 //Initialize servo interface, sweep all six servos from MIN to MAX, to MID, to ensure they're all physically working.
-//TODO: For different MIN, MAX, and MID values, we need to interpolate so that all servos physically arrive at their setpoints at the same time.
-//Interpolation will depend on the error (distance to setpoint), and speed of the individual servo, that can be modeled as SERVO_SPEED or something...
-
 void setupServos() {
-
-  // for (int i = 0; i < 6; i++) {
-  //   servos[i].attach(i);
-  //   setServo(i, SERVO_MID_ANGLE);
-  // }
-  // updateServos();
-  // delay(500);
 
   for (int i = 0; i < 6; i++) {
     servos[i].attach(i);
@@ -204,17 +194,17 @@ void setup() {
 
   setupNunchuck();
 
-  setupServos();
-
   setupPlatform();
 
   setupTouchscreen();
+
+  setupServos();  //Servos come last, because this setup takes the most time...
 }
 
 void loop() {
 
   #ifdef ENABLE_SERIAL_COMMANDS
-  processCommands(); //process any incoming serial commands.
+  processCommands();  //process any incoming serial commands.
   #endif
 
   #ifdef ENABLE_NUNCHUCK
@@ -225,5 +215,5 @@ void loop() {
   processTouchscreen();
   #endif
 
-  updateServos();
+  updateServos();   //Servos come last, because they take the most time.
 }

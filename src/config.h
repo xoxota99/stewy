@@ -37,13 +37,13 @@ const int SERVO_MAX_US = 2250;
 //const int SERVO_MID_US=1500;
 const int SERVO_MAX_DELAY = 500;  //milliseconds to transit from min to max. for HS-5625MG, this is 0.14 sec/60deg, or probably about 420ms. 500 to be safe.
 
-const int SERVO_TRIM[] = {  //trim values, AFTER reversing
-        0,
-        20,
-        0,
-        135,
-        0,
-        120
+const int SERVO_TRIM[] = {  //trim values, in microseconds, AFTER reversing
+  0,
+  20,
+  0,
+  135,
+  0,
+  120
 };
 
 #endif    //__STU_CONFIG_H__
