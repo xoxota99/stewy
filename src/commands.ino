@@ -52,7 +52,6 @@ void shell_writer(char data)
 
 int handleDemo(int argc, char** argv) {
   const int d = 300;
-  const int home[6] = {0, 0, 0, 0, 0, 0};
 
   const int dval[][6]= {
     //sway
@@ -86,8 +85,10 @@ int handleDemo(int argc, char** argv) {
     {0, 0, 0, 0, 0, 0}
   };
 
-  for(int i=0, j=0;i<sizeof(dval) / sizeof(dval[0]);i++){
-    stu.moveTo(sp_servo, dval[i][j++], dval[i][j++], dval[i][j++], dval[i][j++], dval[i][j++], dval[i][j++]);
+  int ccount=(int)sizeof(dval) / sizeof(dval[0]);
+
+  for(int i=0;i<ccount;i++){
+    stu.moveTo(sp_servo, dval[i][0], dval[i][1], dval[i][2], dval[i][3], dval[i][4], dval[i][5]);
     updateServos();
     delay(d);
   }

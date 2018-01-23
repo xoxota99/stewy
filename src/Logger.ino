@@ -39,7 +39,6 @@ void Logger::_log_va_list(const LogLevel level, const char* fmt, va_list args){
 
 void Logger::log(const LogLevel level, const char* fmt, ...){
   if(level >= Logger::level){
-    char buffer[256];
     va_list args;
     va_start(args,fmt);
     _log_va_list(level,fmt,args);

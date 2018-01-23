@@ -41,8 +41,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define CPU_RESTART_VAL 0x5FA0004                           // write this magic number...
 #define CPU_RESTART_ADDR (uint32_t *)0xE000ED0C             // to this memory location...
 #define CPU_RESTART (*CPU_RESTART_ADDR = CPU_RESTART_VAL)   // presto!
-#else
-#define CPU_RESTART asm volatile ("  jmp 0")                // close enough for arduino
+
+// #else
+//
+// #define CPU_RESTART asm volatile ("  jmp 0")                // close enough for arduino
+
 #endif
 
 // this is the magic trick for printf to support float
