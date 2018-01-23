@@ -53,7 +53,11 @@ asm(".global _scanf_float");
 //=== Actual code
 
 Platform stu;            // Stewart platform object.
+
+#ifdef ENABLE_SERVOS
 Servo servos[6];        // servo objects.
+#endif
+
 float sp_servo[6];      // servo setpoints in degrees, between SERVO_MIN_ANGLE and SERVO_MAX_ANGLE.
 // Logger* logger = Logger::instance();
 
@@ -87,7 +91,9 @@ void updateServos() {
       //don't write to the servo if you don't have to.
       sValues[i] = val;
       Logger::trace("s%d = %.2f + %d (value + trim)", i, val, SERVO_TRIM[i]);
+#ifdef ENABLE_SERVOS
       servos[i].writeMicroseconds(min(SERVO_MAX_US, max(SERVO_MIN_US, (int)val + SERVO_TRIM[i])));
+#endif
     }
   }
 }
@@ -102,11 +108,9 @@ void setServo(int i, int angle) {
   if (val >= SERVO_MIN_ANGLE && val <= SERVO_MAX_ANGLE) {
     sp_servo[i] = val;
     Logger::trace("setServo %d - %.2f degrees", i, sp_servo[i]);
-    // Logger::trace("setServo (%d,%d) - %.2f degrees", i, angle, sp_servo[i]);
   } else {
     Logger::warn("setServo: Invalid value '%.2f' specified for servo #%d. Valid range is %d to %d degrees.", val, i, SERVO_MIN_ANGLE, SERVO_MAX_ANGLE);
   }
-
 }
 
 void setupTouchscreen() {
@@ -127,7 +131,9 @@ void setupPlatform() {
 void setupServos() {
 
   for (int i = 0; i < 6; i++) {
+#if ENABLE_SERVOS
     servos[i].attach(i);
+#endif
     setServo(i, SERVO_MIN_ANGLE);
   }
   updateServos();
@@ -144,8 +150,6 @@ void setupServos() {
   }
   updateServos();
   delay(500);
-
-
 }
 
 /**

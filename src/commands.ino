@@ -18,7 +18,6 @@
 */
 
 #include "commands.h"
-#include "servos.h"
 
 void processCommands()
 {
@@ -217,7 +216,11 @@ int handleDump(int argc, char** argv) {
 
   shell_println("\n===== Servos =====");
   for (int i = 0; i < 6; i++) {
+#ifdef ENABLE_SERVOS
     shell_printf("s%d (physical, setpoint) = (%.2f, %.2f)\n", i, servos[i].read(), sp_servo[i]);
+#else
+    shell_printf("s%d (physical, setpoint) = (N/A, %.2f)\n", i, sp_servo[i]);
+#endif
   }
 
   #ifdef ENABLE_NUNCHUCK
