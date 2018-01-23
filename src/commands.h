@@ -41,14 +41,14 @@ int handleMoveTo(int argc, char** argv);
 //===
 
 const Command commands[] = {
+  {handleHelp,    "help"},
+  {handleHelp,    "?"},
   {handleSet,     "set"},
   {handleSetAll,  "setall"},
   {handleDump,    "dump"},
   {handleReset,   "reset"},
   {handleMoveTo,  "moveto"},
-  {handleDemo,    "demo"},
-  {handleHelp,    "help"},
-  {handleHelp,    "?"}
+  {handleDemo,    "demo"}
 };
 
 #endif //ENABLE_SERIAL_COMMANDS
