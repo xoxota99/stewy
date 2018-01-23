@@ -162,13 +162,18 @@ void setupCommandLine(int bps=9600) {
   #ifdef ENABLE_SERIAL_COMMANDS
   Logger::debug("Command-line is ENABLED.");
 
-  shell_init(shell_reader, shell_writer, 0);
+  shell_init(shell_reader, shell_writer, "]}>");
 
-  const int ccount = sizeof(commands);
-  for (int i = 0; i < ccount; i++) {
-    shell_register(commands[i].shell_program, commands[i].shell_command_string);
+  const int c1 = sizeof(commands);
+  if(c1 > 0) {
+    const int c2 = sizeof(commands[0]);
+    const int ccount = c1 / c2;
+
+    for (int i = 0; i < ccount; i++) {
+      Logger::debug("Registering command: %s",commands[i].shell_command_string);
+      shell_register(commands[i].shell_program, commands[i].shell_command_string);
+    }
   }
-
   #else
 
   Logger::debug("Command-line is DISABLED.");

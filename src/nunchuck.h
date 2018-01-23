@@ -1,4 +1,3 @@
-#pragma once
 #ifndef __STU_NUNCHUCK_H__
 #define __STU_NUNCHUCK_H__
 /*

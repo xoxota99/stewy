@@ -1,4 +1,4 @@
-#pragma once
+
 #ifndef __STU_PLATFORM_H__
 #define __STU_PLATFORM_H__
 /*
@@ -24,8 +24,8 @@
  */
 
 #include "config.h"
-// #include <math.h>
-#include "Arduino.h"
+#include <math.h>
+// #include "Arduino.h"
 
 //macros
 #define THETA_P_DEG     45.25     //Platform joint angle (degrees) offset from AXIS[1|2|3]. A value of zero puts these joints directly on the axes

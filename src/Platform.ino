@@ -1,3 +1,4 @@
+
 /*
    6dof-stewduino
    Copyright (C) 2018  Philippe Desrosiers
@@ -19,6 +20,9 @@
 /*
    Derived from the work of Daniel Waters, https://www.youtube.com/watch?v=1jrP3_1ML9M
 */
+
+#include "Platform.h"
+#include "Logger.h"
 
 bool Platform::home(float *servoValues) {
   return moveTo (servoValues, 0, 0, 0, 0, 0, 0); //HOME position. No rotation, no translation.

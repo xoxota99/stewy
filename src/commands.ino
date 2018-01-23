@@ -18,6 +18,7 @@
 */
 
 #include "commands.h"
+#include "servos.h"
 
 void processCommands()
 {
@@ -199,6 +200,7 @@ int handleSetAll(int argc, char** argv)
   } else {
     shell_println("Usage: setall min|mid|max|<microseconds>");
   }
+
   updateServos();
   return SHELL_RET_SUCCESS;
 }

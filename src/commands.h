@@ -1,4 +1,4 @@
-#pragma once
+
 #ifndef __STU_COMMANDS_H__
 #define __STU_COMMANDS_H__
 /*
@@ -24,7 +24,6 @@
 
 typedef struct shell_command_entry Command;
 
-//void setupCommandLine(int bps = 9600);
 void processCommands();
 
 int shell_reader(char * data);
@@ -46,7 +45,7 @@ const Command commands[] = {
   {handleSetAll,  "setall"},
   {handleDump,    "dump"},
   {handleReset,   "reset"},
-  {handleMoveTo,  "moveTo"},
+  {handleMoveTo,  "moveto"},
   {handleDemo,    "demo"},
   {handleHelp,    "help"},
   {handleHelp,    "?"}
