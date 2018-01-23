@@ -45,6 +45,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define CPU_RESTART asm volatile ("  jmp 0")                // close enough for arduino
 #endif
 
+// this is the magic trick for printf to support float
+asm(".global _printf_float");
+// this is the magic trick for scanf to support float
+asm(".global _scanf_float");
+
 //=== Actual code
 
 Platform stu;            // Stewart platform object.
@@ -150,7 +155,7 @@ void setupCommandLine(int bps=9600) {
   Serial.begin(bps);
   delay(50);
 
-  Logger::info("Welcome to Studuino, v1");
+  Logger::info("Studuino, v1");
   Logger::info("Built %s, %s",__DATE__, __TIME__);
   Logger::info("=======================");
 
@@ -184,7 +189,7 @@ void setupNunchuck() {
 
 
 void setup() {
-  Logger::level = Logger::TRACE;
+  Logger::level = Logger::DEBUG;
   // Logger::setLogLevel(Logger::TRACE);
 
   pinMode(LED_BUILTIN, OUTPUT); //power indicator
@@ -203,17 +208,17 @@ void setup() {
 
 void loop() {
 
-  #ifdef ENABLE_SERIAL_COMMANDS
+#ifdef ENABLE_SERIAL_COMMANDS
   processCommands();  //process any incoming serial commands.
-  #endif
+#endif
 
-  #ifdef ENABLE_NUNCHUCK
+#ifdef ENABLE_NUNCHUCK
   processNunchuck();
-  #endif
+#endif
 
-  #ifdef ENABLE_TOUCHSCREEN
+#ifdef ENABLE_TOUCHSCREEN
   processTouchscreen();
-  #endif
+#endif
 
   updateServos();   //Servos come last, because they take the most time.
 }
