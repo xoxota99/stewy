@@ -34,39 +34,22 @@ public:
     FATAL
   };
 
-  char* lvlStrings[6] = {
-    "TRACE",
-    "DEBUG",
-    "INFO",
-    "WARN",
-    "ERROR",
-    "FATAL"
-  };
+  static LogLevel level;
+  static void log(const LogLevel level, const char* format, ...);
+  // static void setLogLevel(Logger::LogLevel level);
+  // static Logger::LogLevel getLogLevel();
 
-  LogLevel level = TRACE;
-  static Logger* instance();
-
-  void log(const LogLevel level, const char* format, ...);
-  // void log(const LogLevel level, const char* msg);
-
-  void trace(const char * msg);
-  void debug(const char * msg);
-  void info(const char * msg);
-  void warn(const char * msg);
-  void error(const char * msg);
-  void fatal(const char * msg);
-
-  void trace(const char * format, ...);
-  void debug(const char * format, ...);
-  void info(const char * format, ...);
-  void warn(const char * format, ...);
-  void error(const char * format, ...);
-  void fatal(const char * format, ...);
+  static void trace(const char * format, ...);
+  static void debug(const char * format, ...);
+  static void info(const char * format, ...);
+  static void warn(const char * format, ...);
+  static void error(const char * format, ...);
+  static void fatal(const char * format, ...);
 
 private:
-  void _log_va_list(const LogLevel level, const char* format, va_list args);
+  static void _log_va_list(const LogLevel level, const char* format, va_list args);
 
-  static Logger* m_pInstance;
+  // static Logger* m_pInstance;
   Logger(){};  // Private so that it can  not be called
   Logger(Logger const&){};             // copy constructor is private
   Logger& operator=(Logger const&){};  // assignment operator is private
