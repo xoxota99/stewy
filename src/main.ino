@@ -204,7 +204,7 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT); //power indicator
   digitalWrite(LED_BUILTIN, HIGH);
 
-  setupCommandLine();
+  setupCommandLine(115200);
 
   setupNunchuck();
 
