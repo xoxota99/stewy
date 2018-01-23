@@ -21,16 +21,39 @@
 
 void processTouchscreen() {
   // a point object holds x y and z coordinates
+  static int xmin=800, xmax, ymin=2000, ymax;
+  static int i;
+  static TSPoint lastPoint = ts.getPoint();
+  bool diff=false;
+
   TSPoint p = ts.getPoint();
 
   // we have some minimum pressure we consider 'valid'
   // pressure of 0 means no pressing!
-  if (p.z > ts.pressureThreshhold) {
-     Logger::debug("X = %d\tY = %d\tPressure = %d",p.x,p.y,p.z);
-     //TODO: start up the PID controller, and give it something to do.
-  }
+  // if (p.z > ts.pressureThreshhold) {
 
-  delay(100);
+  // diff = (p.x < xmin ||
+  //   p.x > xmax ||
+  //   p.y < ymin ||
+  //   p.y > ymax);
+  // if(diff){
+  //   xmin = min(xmin,p.x);
+  //   xmax = max(xmax,p.x);
+  //     ymin = min(ymin,p.y);
+  //     ymax = max(ymax,p.y);
+  //    Logger::debug("(%d, %d) - Xmin=%d\tXmax=%d\tYmin=%d\tYmax=%d\t",p.x,p.y,xmin,xmax,ymin,ymax);
+  //    // delay(50);
+  //    //TODO: start up the PID controller, and give it something to do.
+  // }
+  if(p.x > TS_MIN_X
+    && p.x < TS_MAX_X
+    && p.y > TS_MIN_Y
+    && p.y < TS_MAX_Y) {
+      int x = p.x;
+      int y = p.y-(TS_SLOPE_Y*(TS_MAX_X-p.x));
+    Serial.printf("%d\t%d\t%d\n",i++,x,y);
+  }
+  delay(10);
 }
 
 #endif
