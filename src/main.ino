@@ -50,7 +50,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Platform stu;            // Stewart platform object.
 Servo servos[6];        // servo objects.
 float sp_servo[6];      // servo setpoints in degrees, between SERVO_MIN_ANGLE and SERVO_MAX_ANGLE.
-Logger* logger = Logger::instance();
+// Logger* logger = Logger::instance();
 
 float _toUs(int value) {
   return SERVO_MIN_US + value * (float)(SERVO_MAX_US - SERVO_MIN_US) / (SERVO_MAX_ANGLE - SERVO_MIN_ANGLE); //Number of uS in one degree of angle. Roughly.
@@ -81,7 +81,7 @@ void updateServos() {
     if (val != sValues[i]) {
       //don't write to the servo if you don't have to.
       sValues[i] = val;
-      Serial.printf("s%d = %.2f + %d (value + trim)\n", i, val, SERVO_TRIM[i]);
+      Logger::trace("s%d = %.2f + %d (value + trim)", i, val, SERVO_TRIM[i]);
       servos[i].writeMicroseconds(min(SERVO_MAX_US, max(SERVO_MIN_US, (int)val + SERVO_TRIM[i])));
     }
   }
@@ -96,21 +96,19 @@ void setServo(int i, int angle) {
   int val = angle;
   if (val >= SERVO_MIN_ANGLE && val <= SERVO_MAX_ANGLE) {
     sp_servo[i] = val;
-    Serial.println(i);
-    Serial.println(sp_servo[i]);
-    Serial.printf("setServo %d - %.2f degrees\n", i, sp_servo[i]);
-    // logger->log(Logger::TRACE,"setServo (%d,%d) - %.2f degrees\n", i, angle, sp_servo[i]);
+    Logger::trace("setServo %d - %.2f degrees", i, sp_servo[i]);
+    // Logger::trace("setServo (%d,%d) - %.2f degrees", i, angle, sp_servo[i]);
   } else {
-    Serial.printf("[setServo] WARNING: Invalid value '%.2f' specified for servo #%d. Valid range is %d to %d degrees.\n", val, i, SERVO_MIN_ANGLE, SERVO_MAX_ANGLE);
+    Logger::warn("setServo: Invalid value '%.2f' specified for servo #%d. Valid range is %d to %d degrees.", val, i, SERVO_MIN_ANGLE, SERVO_MAX_ANGLE);
   }
 
 }
 
 void setupTouchscreen() {
   #ifdef ENABLE_TOUCHSCREEN
-  Serial.println("Touchscreen ENABLED.");
+  Logger::debug("Touchscreen ENABLED.");
   #else
-  Serial.println("Touchscreen DISABLED.");
+  Logger::debug("Touchscreen DISABLED.");
   #endif
 }
 
@@ -160,13 +158,14 @@ Setup serial port and add commands.
 */
 void setupCommandLine(int bps=9600) {
   Serial.begin(bps);
+  delay(50);
 
-  Serial.println("Welcome to Studuino, v1");
-  Serial.printf("Built %s, %s\n",__DATE__, __TIME__);
-  Serial.println("=======================");
+  Logger::info("Welcome to Studuino, v1");
+  Logger::info("Built %s, %s",__DATE__, __TIME__);
+  Logger::info("=======================");
 
   #ifdef ENABLE_SERIAL_COMMANDS
-  Serial.println("Command-line is ENABLED.");
+  Logger::debug("Command-line is ENABLED.");
 
   shell_init(shell_reader, shell_writer, 0);
 
@@ -177,7 +176,7 @@ void setupCommandLine(int bps=9600) {
 
   #else
 
-  Serial.println("Command-line is DISABLED.");
+  Logger::debug("Command-line is DISABLED.");
 
   #endif
   delay(100);
@@ -185,17 +184,18 @@ void setupCommandLine(int bps=9600) {
 
 void setupNunchuck() {
   #ifdef ENABLE_NUNCHUCK
-  Serial.println("Nunchuck support is ENABLED.");
+  Logger::debug("Nunchuck support is ENABLED.");
 
   nc.begin();
   #else
-  Serial.println("Nunchuck support is DISABLED.");
+  Logger::debug("Nunchuck support is DISABLED.");
   #endif
 }
 
 
 void setup() {
-  // logger = Logger.instance();
+  Logger::level = Logger::TRACE;
+  // Logger::setLogLevel(Logger::TRACE);
 
   pinMode(LED_BUILTIN, OUTPUT); //power indicator
   digitalWrite(LED_BUILTIN, HIGH);

@@ -77,14 +77,9 @@ bool Platform::moveTo(float *servoValues, int sway, int surge, int heave, float 
     if (sqrt(d2) > (ARM_LENGTH + ROD_LENGTH) //the required virtual arm length is longer than physically possible
         || abs(k / (sqrt(l * l + m * m))) >= 1) { //some other bad stuff happened.
       //bad juju.
-      Serial.print("BAD SHIT HAPPENED at i=");
-      Serial.println(i);
-
-      Serial.print("abs(k/(sqrt(l*l+m*m))) = ");
-      Serial.println(abs(k / (sqrt(l * l + m * m))));
-
-      Serial.print("sqrt(d2)>(ARM_LENGTH+ROD_LENGTH) = ");
-      Serial.println(sqrt(d2) > (ARM_LENGTH + ROD_LENGTH));
+      Logger::error("Model asymptotic at i=%d",i);
+      Logger::info("abs(k/(sqrt(l*l+m*m))) = %.2f",abs(k / (sqrt(l * l + m * m))));
+      Logger::info("sqrt(d2)>(ARM_LENGTH+ROD_LENGTH) = %s",(sqrt(d2) > (ARM_LENGTH + ROD_LENGTH)) ? "true" : "false");
 
       bOk = false;
       break;

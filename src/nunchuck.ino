@@ -22,10 +22,17 @@ void processNunchuck()
   // Read the current state
   nc.read();
 
-  // Serial.printf("Buttons (C/Z): %s/%s\t", (nc.getButtonC() ? "true" : "false"), (nc.getButtonZ() ? "true" : "false"));
-  // Serial.printf("Joystick (X/Y): %.2f/%.2f\t", nc.getJoyX(), nc.getJoyY());
-  // Serial.printf("Tilt (X/Y/X): %.2f/%.2f/%.2f\t", nc.getTiltX(), nc.getTiltY(), nc.getTiltZ());
-  // Serial.printf("Accel (X/Y/X): %.2f/%.2f/%.2f\n", nc.getAccelX(), nc.getAccelY(), nc.getAccelZ());
+  Logger::trace("Buttons (C/Z): %s/%s\tJoystick (X/Y): %.2f/%.2f\tTilt (X/Y/X): %.2f/%.2f/%.2f\tAccel (X/Y/X): %.2f/%.2f/%.2f",
+              (nc.getButtonC() ? "true" : "false"),
+              (nc.getButtonZ() ? "true" : "false"),
+              nc.getJoyX(),
+              nc.getJoyY(),
+              nc.getTiltX(),
+              nc.getTiltY(),
+              nc.getTiltZ(),
+              nc.getAccelX(),
+              nc.getAccelY(),
+              nc.getAccelZ());
 
   if (nc.isOk()) {
     // de-bounce C
@@ -70,9 +77,9 @@ void processNunchuck()
         break;
     }
   } else {
-    mode = MIDDLE; //Nunchuck is on the fritz. Default back to the center setpoint.
+    mode = MIDDLE; //Nunchuck is on the fritz / disconnected. Default back to the center setpoint.
     dir = CW;
-    // Serial.println("WHOOPS, there was a problem reading the nunchuck!");
+    Logger::trace("WHOOPS, there was a problem reading the nunchuck!");
   }
 
   // Wait a short while
@@ -81,6 +88,7 @@ void processNunchuck()
 
 //C Button changes direction.
 void onCButtonDown() {
+  Logger::trace("CButtonDown");
   switch (dir) {
     case CW:
       dir = CCW;
@@ -89,16 +97,16 @@ void onCButtonDown() {
       dir = CW;
       break;
   }
-
-  Serial.printf("dir=%s", directionStrings[dir]);
 }
 
 void onCButtonUp() {
+  Logger::trace("CButtonUp");
 
 }
 
 //Z Button changes modes.
 void onZButtonDown() {
+  Logger::trace("ZButtonDown");
   switch (mode) {
     case ANGLE:
       mode = CIRCLE;
@@ -121,11 +129,10 @@ void onZButtonDown() {
 
       break;
   }
-
-  Serial.printf("Mode=%s", modeStrings[mode]);
 }
 
 void onZButtonUp() {
+  Logger::trace("ZButtonUp");
 
 }
 

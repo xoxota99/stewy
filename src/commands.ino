@@ -17,7 +17,7 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// #include "commands.h"
+#include "commands.h"
 
 void processCommands()
 {
@@ -30,7 +30,6 @@ Function to read data from serial port
 Functions to read from physical media should use this prototype:
 int my_reader_function(char * data)
 */
-#pragma message ("shell_reader cpp")
 int shell_reader(char * data)
 {
   // Wrapper for Serial.read() method
