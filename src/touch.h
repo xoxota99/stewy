@@ -1,4 +1,4 @@
-#pragma once
+
 #ifndef __STU_TOUCH_H__
 #define __STU_TOUCH_H__
 /*
@@ -23,11 +23,11 @@
 #include <TouchScreen.h> //from https://github.com/adafruit/Touch-Screen-Library
 
 
-#define XP A0   // can be a digital pin
-#define XM A1  // must be an analog pin, use "An" notation!
+#define XP A6  // can be a digital pin. Used as source
+#define XM A7  // must be an analog pin, use "An" notation! Used as sink
 
-#define YM A2   // can be a digital pin
-#define YP A3  // must be an analog pin, use "An" notation!
+#define YM A8  // can be a digital pin. Used as sink
+#define YP A9  // must be an analog pin, use "An" notation! Used as sink
 
 #define TS_OHMS 300 //resistance between X+ and X-
 
