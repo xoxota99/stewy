@@ -39,6 +39,7 @@ int handleDump(int argc, char** argv);
 int handleReset(int argc, char** argv);
 int handleDemo(int argc, char** argv);
 int handleMoveTo(int argc, char** argv);
+int handleLog(int argc, char** argv);
 
 //===
 
@@ -46,13 +47,14 @@ const Command commands[] = {
   {handleHelp,    "help"},
   {handleHelp,    "?"},
   {handleSet,     "set"},
-  {handleMSet,     "mset"},
+  {handleMSet,    "mset"},
   {handleSetAll,  "setall"},
-  {handleMSetAll,  "msetall"},
+  {handleMSetAll, "msetall"},
   {handleDump,    "dump"},
   {handleReset,   "reset"},
   {handleMoveTo,  "moveto"},
-  {handleDemo,    "demo"}
+  {handleDemo,    "demo"},
+  {handleLog,     "log"}
 };
 
 #endif //ENABLE_SERIAL_COMMANDS
