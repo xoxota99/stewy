@@ -24,19 +24,20 @@ void processNunchuck()
   // Read the current state
   nc.read();
 
-  Logger::trace("Buttons (C/Z): %s/%s\tJoystick (X/Y): %.2f/%.2f\tTilt (X/Y/X): %.2f/%.2f/%.2f\tAccel (X/Y/X): %.2f/%.2f/%.2f",
-              (nc.getButtonC() ? "true" : "false"),
-              (nc.getButtonZ() ? "true" : "false"),
-              nc.getJoyX(),
-              nc.getJoyY(),
-              nc.getTiltX(),
-              nc.getTiltY(),
-              nc.getTiltZ(),
-              nc.getAccelX(),
-              nc.getAccelY(),
-              nc.getAccelZ());
-
   if (nc.isOk()) {
+
+    Logger::trace("Buttons (C/Z): %s/%s\tJoystick (X/Y): %d/%d\tTilt (X/Y/X): %.2f/%.2f/%.2f\tAccel (X/Y/X): %d/%d/%d",
+                  (nc.getButtonC() ? "true" : "false"),
+                  (nc.getButtonZ() ? "true" : "false"),
+                  nc.getJoyX(),
+                  nc.getJoyY(),
+                  nc.getTiltX(),
+                  nc.getTiltY(),
+                  nc.getTiltZ(),
+                  nc.getAccelX(),
+                  nc.getAccelY(),
+                  nc.getAccelZ());
+
     // de-bounce C
     if (nc.getButtonC()) {
       if (!cDown) {

@@ -116,6 +116,16 @@ void setServo(int i, int angle) {
   }
 }
 
+void setServoMicros(int i, int micros) {
+  int val = micros;
+  if (val >= SERVO_MIN_US && val <= SERVO_MAX_US) {
+    sp_servo[i] = _toAngle(val);
+    Logger::trace("setServoMicros %d - %.2f µs", i, val);
+  } else {
+    Logger::warn("setServoMicros: Invalid value '%.2f' specified for servo #%d. Valid range is %d to %d µs.", val, i, SERVO_MIN_US, SERVO_MAX_US);
+  }
+}
+
 void setupTouchscreen() {
   #ifdef ENABLE_TOUCHSCREEN
   Logger::debug("Touchscreen ENABLED.");
@@ -134,8 +144,8 @@ void setupPlatform() {
 void setupServos() {
 
   for (int i = 0; i < 6; i++) {
-#if ENABLE_SERVOS
-    servos[i].attach(i);
+#ifdef ENABLE_SERVOS
+    servos[i].attach(SERVO_PINS[i]);
 #endif
     setServo(i, SERVO_MIN_ANGLE);
   }
@@ -201,7 +211,7 @@ void setupNunchuck() {
 
 
 void setup() {
-  Logger::level = Logger::DEBUG;
+  Logger::level = Logger::TRACE;
   // Logger::setLogLevel(Logger::TRACE);
 
   pinMode(LED_BUILTIN, OUTPUT); //power indicator

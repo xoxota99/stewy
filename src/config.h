@@ -35,6 +35,7 @@ const int SERVO_MAX_ANGLE = 360;
 const int SERVO_MID_ANGLE = SERVO_MIN_ANGLE + (SERVO_MAX_ANGLE - SERVO_MIN_ANGLE) / 2;
 const int SERVO_MIN_US = 755;
 const int SERVO_MAX_US = 2250;
+const int SERVO_MID_US = SERVO_MIN_US + (SERVO_MAX_US - SERVO_MIN_US) / 2;
 //const int SERVO_MID_US=1500;
 const int SERVO_MAX_DELAY = 500;  //milliseconds to transit from min to max. for HS-5625MG, this is 0.14 sec/60deg, or probably about 420ms. 500 to be safe.
 
@@ -45,6 +46,15 @@ const int SERVO_TRIM[] = {  //trim values, in microseconds, AFTER reversing
   135,
   0,
   120
+};
+
+const int SERVO_PINS[] = {  //pin numbers for each servo signal.
+  0,
+  1,
+  2,
+  3,
+  4,
+  5
 };
 
 #endif    //__STU_CONFIG_H__

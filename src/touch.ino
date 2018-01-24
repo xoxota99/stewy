@@ -29,11 +29,13 @@ void processTouchscreen() {
     && p.x < TS_MAX_X
     && p.y > TS_MIN_Y
     && p.y < TS_MAX_Y) {
+
       int x = p.x;
       int y = p.y-(TS_SLOPE_Y*(TS_MAX_X-p.x));
-    Serial.printf("%d\t%d\t%d\n",i++,x,y);
+
+      //do something.
   }
-  delay(10);
+  // delay(10);
 }
 
 #endif
