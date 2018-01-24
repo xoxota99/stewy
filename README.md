@@ -47,8 +47,15 @@ dump [<servo_number>] - Dump the current PWM value for the given servo. If servo
 Some things I'd like to try:
 * Optimize the length of the control rods, as well as the size ratio of the upper platform to the lower base. There's some [heavy math involved](https://ac.els-cdn.com/S1000936107600570/1-s2.0-S1000936107600570-main.pdf?_tid=eeb5d700-ffc7-11e7-a68f-00000aacb361&acdnat=1516662163_113697b3470f5b083bb550353edd4053), that I haven't gotten around to yet.
 * Improve the IK math, to allow a greater range of movement. Right now, the algorithm attempts to rotate around the platform's "home" position. This means that there's a constraint on the maximum angle of pitch / roll. This is just because the IK solution is not specialized to this particular (Ball & Plate balancing act) application. It's a generalized [Stewart platform solution](https://www.youtube.com/watch?v=1jrP3_1ML9M). I haven't yet had the heart to "optimize" this (by, say, *removing* 4 degrees of freedom). It would be like lobotomizing a friend. We'll see how I feel after some initial testing.
+* Improve the electrical design:
+  * All servos, and the MCU, are powered off a single bus from the BEC. If one or more servos enter a high-current state (such as binding, or obstruction, etc.), this can cause the MCU to brown out and reset.
 * Improve the mechanical design:
+  * The plastic control rod ends can bind on the servo arms, causing a high-current state in the servos. I solved this temporarily by adding standoffs between the servo arm and the control rod end. Of course, this throws off the geometry of the platform, and you'll have to update the value of B_RAD in Platform.h.
   * Right now, the design calls for 5 laser cut acrylic pieces, in 4 different thicknesses. That's expensive to get from an online CNC place. A better / cheaper design would use only one thickness of material.
   * The "ring" around the upper plate is large, which is expensive if you're ordering from a place (I use the very excellent [Ponoko](https://www.ponoko.com/)) that charges based on the surface area of the part. A better design would break up the upper ring into multiple smaller pieces that could be assembled later.
   * The design requires some tooling that can't be done on a laser cutter (such as drilling holes for the upper control rod joints). This is actually the hardest part of the whole project, getting those holes properly aligned and drilled straight. The design also calls for some counter-sunk holes (such as attaching the touchscreen mounting plate to the upper platform). It would be better if that counter-sinking wasn't necessary.
   * The design of the upper and lower base plates is very specific to the servo chosen. Other servos are not guaranteed to fit. A better design would allow for any servo to be used.
+* Improve code quality:
+  * Add doxygen-style documentation
+  * Add unit tests
+  * Refactor code to be more portable across Arduino IDEs and board targets. (e.g. Serial.printf);
