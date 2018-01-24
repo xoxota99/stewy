@@ -31,8 +31,10 @@ int shell_reader(char * data);
 void shell_writer(char data);
 
 int handleSet(int argc, char** argv);
+int handleMSet(int argc, char** argv);
 int handleHelp(int argc, char** argv);
 int handleSetAll(int argc, char** argv);
+int handleMSetAll(int argc, char** argv);
 int handleDump(int argc, char** argv);
 int handleReset(int argc, char** argv);
 int handleDemo(int argc, char** argv);
@@ -44,7 +46,9 @@ const Command commands[] = {
   {handleHelp,    "help"},
   {handleHelp,    "?"},
   {handleSet,     "set"},
+  {handleMSet,     "mset"},
   {handleSetAll,  "setall"},
+  {handleMSetAll,  "msetall"},
   {handleDump,    "dump"},
   {handleReset,   "reset"},
   {handleMoveTo,  "moveto"},
