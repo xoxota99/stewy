@@ -94,6 +94,7 @@ void updateServos() {
       //don't write to the servo if you don't have to.
       sValues[i] = val;
       Logger::trace("s%d = %.2f + %d (value + trim)", i, val, SERVO_TRIM[i]);
+      
 #ifdef ENABLE_SERVOS
       servos[i].writeMicroseconds(min(SERVO_MAX_US, max(SERVO_MIN_US, (int)val + SERVO_TRIM[i])));
 #endif
@@ -211,8 +212,7 @@ void setupNunchuck() {
 
 
 void setup() {
-  Logger::level = Logger::TRACE;
-  // Logger::setLogLevel(Logger::TRACE);
+  Logger::level = LOG_LEVEL;    //config.h
 
   pinMode(LED_BUILTIN, OUTPUT); //power indicator
   digitalWrite(LED_BUILTIN, HIGH);
