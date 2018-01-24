@@ -19,55 +19,61 @@
 #include "nunchuck.h"
 #include "Logger.h"
 
+#define EPSILON 0.001
+
 void processNunchuck()
 {
   // Read the current state
   nc.read();
 
   if (nc.isOk()) {
+    if(chuckData.buttonC != nc.getButtonC() ||
+    chuckData.buttonZ != nc.getButtonZ() ||
+    chuckData.joyX != nc.getJoyX() + chuckTrim.joyX ||
+    chuckData.joyY != nc.getJoyY() + chuckTrim.joyY ||
+    abs(chuckData.tiltX - nc.getTiltX() + chuckTrim.tiltX) <= EPSILON ||
+    abs(chuckData.tiltY - nc.getTiltY() + chuckTrim.tiltY) <= EPSILON ||
+    abs(chuckData.tiltZ - nc.getTiltZ() + chuckTrim.tiltZ) <= EPSILON ||
+    chuckData.accelX != nc.getAccelX() + chuckTrim.accelX ||
+    chuckData.accelY != nc.getAccelY() + chuckTrim.accelY ||
+    chuckData.accelZ != nc.getAccelZ() + chuckTrim.accelZ) {
 
-    Logger::trace("Buttons (C/Z): %s/%s\tJoystick (X/Y): %d/%d\tTilt (X/Y/X): %.2f/%.2f/%.2f\tAccel (X/Y/X): %d/%d/%d",
-                  (nc.getButtonC() ? "true" : "false"),
-                  (nc.getButtonZ() ? "true" : "false"),
-                  nc.getJoyX(),
-                  nc.getJoyY(),
-                  nc.getTiltX(),
-                  nc.getTiltY(),
-                  nc.getTiltZ(),
-                  nc.getAccelX(),
-                  nc.getAccelY(),
-                  nc.getAccelZ());
+      // de-bounce C
+      if (nc.getButtonC()) {
+        if (!chuckData.buttonC) { //the button was up.
+          onCButtonDown();        //and now it's down.
+        }
+      } else {
+        if (chuckData.buttonC) {  //the button was down
+          onCButtonUp();          //and now it's up.
+        }
+      }
 
-    // de-bounce C
-    if (nc.getButtonC()) {
-      if (!cDown) {
-        onCButtonDown();
+      // de-bounce Z
+      if (nc.getButtonZ()) {
+        if (!chuckData.buttonZ) {
+          onZButtonDown();
+        }
+      } else {
+        if (chuckData.buttonZ) {
+          onZButtonUp();
+        }
       }
-      cDown = true;
-    } else {
-      if (cDown) {
-        onCButtonUp();
-      }
-      cDown = false;
-    }
 
-    // de-bounce Z
-    if (nc.getButtonZ()) {
-      if (!zDown) {
-        onZButtonDown();
-      }
-      zDown = true;
-    } else {
-      if (zDown) {
-        onZButtonUp();
-      }
-      zDown = false;
-    }
 
-    switch (mode) {
-      case ANGLE:
-        break;
-      case CIRCLE:
+      switch (mode) {
+        case ANGLE:
+          {
+            //move the platform to the angle represented by the nunchuck joystick angle.
+            double pitch = -((((float)nc.getJoyY() + 100)/200 * 43) - 23);    //a number between -20 and 23
+            double roll = (((float)nc.getJoyX() + 100)/200 * 43) - 23;    //a number between -23 and 20
+
+            Logger::trace("Moving to %.2f , %.2f",pitch,roll);
+            stu.moveTo(sp_servo, pitch, roll);
+
+            break;
+          }
+        case CIRCLE:
         break;
       case EIGHT:
         break;
@@ -78,7 +84,35 @@ void processNunchuck()
       case MIDDLE:
       default:
         break;
+      }
+
+      chuckData.buttonC = nc.getButtonC() ;
+      chuckData.buttonZ = nc.getButtonZ() ;
+      chuckData.joyX = nc.getJoyX() ;
+      chuckData.joyY = nc.getJoyY() ;
+      chuckData.tiltX = nc.getTiltX();
+      chuckData.tiltY = nc.getTiltY();
+      chuckData.tiltZ = nc.getTiltZ();
+      chuckData.accelX = nc.getAccelX() ;
+      chuckData.accelY = nc.getAccelY() ;
+      chuckData.accelZ = nc.getAccelZ() ;
+
+      Logger::trace("Buttons (C/Z): %s/%s\tJoystick (X/Y): %d/%d\tTilt (X/Y/Z): %.2f/%.2f/%.2f\tAccel (X/Y/Z): %d/%d/%d",
+      (chuckData.buttonC ? "true" : "false"),
+      (chuckData.buttonZ ? "true" : "false"),
+      chuckData.joyX,
+      chuckData.joyY,
+      chuckData.tiltX,
+      chuckData.tiltY,
+      chuckData.tiltZ,
+      chuckData.accelX,
+      chuckData.accelY,
+      chuckData.accelZ);
+
+    } else {
+      Logger::trace("No change in chuckData.");
     }
+
   } else {
     mode = MIDDLE; //Nunchuck is on the fritz / disconnected. Default back to the center setpoint.
     dir = CW;
@@ -132,6 +166,7 @@ void onZButtonDown() {
 
       break;
   }
+  Logger::debug("Mode = %s",modeStrings[mode]);
 }
 
 void onZButtonUp() {
