@@ -132,7 +132,7 @@ int handleSet(int argc, char** argv)
     Logger::info("Invalid Servo number. Servo number must be between 1 and 6.");
     Logger::info("Usage: set <servo> min|mid|max|<angle>");
   }
-  updateServos();
+  // updateServos();
 
   return SHELL_RET_SUCCESS;
 }
@@ -192,7 +192,10 @@ int handleHelp(int argc, char** argv)
   Logger::info("moveTo    Move the platform to the specified pitch / roll (in degrees).");
   Logger::info("reset     Restart the system.");
   Logger::info("set       Set a specific servo to a specific angle (in degrees).");
+  Logger::info("mset      Set a specific servo to a specific angle (in microseconds).");
   Logger::info("setall    Set all servos to a specific angle (in degrees).");
+  Logger::info("msetall   Set all servos to a specific angle (in microseconds).");
+  Logger::info("log       Set the log level.");
   Logger::info("help | ?  This message.");
 
   return SHELL_RET_SUCCESS;
@@ -297,7 +300,7 @@ int handleMSetAll(int argc, char** argv)
     Logger::info("Usage: msetall min|mid|max|<microseconds>");
   }
 
-  updateServos();
+  // updateServos();
   return SHELL_RET_SUCCESS;
 }
 
@@ -307,9 +310,9 @@ int handleDump(int argc, char** argv) {
   Logger::info("platform.sway = %d", stu.getSway());
   Logger::info("platform.surge = %d", stu.getSurge());
   Logger::info("platform.heave = %d", stu.getHeave());
-  Logger::info("platform.roll = %d", stu.getRoll());
-  Logger::info("platform.pitch = %d", stu.getPitch());
-  Logger::info("platform.yaw = %d", stu.getYaw());
+  Logger::info("platform.roll = %.2f", stu.getRoll());
+  Logger::info("platform.pitch = %.2f", stu.getPitch());
+  Logger::info("platform.yaw = %.2f", stu.getYaw());
 
   Logger::info("\n===== Servos =====");
   for (int i = 0; i < 6; i++) {
@@ -356,6 +359,35 @@ int handleReset(int argc, char** argv)
   return SHELL_RET_SUCCESS; //unreachable?
 }
 
+int handleLog(int argc, char** argv)
+{
+  if (argc != 2) {
+    Logger::info("Usage: log [TRACE | DEBUG | INFO | WARN | ERROR | FATAL]");
+    return SHELL_RET_FAILURE;
+  }
+
+  char* token = argv[1];
+
+  if (strncmp(token, "TRACE", 5) == 0) {
+    Logger::level = Logger::TRACE;
+  } else if (strncmp(token, "DEBUG", 5) == 0) {
+    Logger::level = Logger::DEBUG;
+  } else if (strncmp(token, "INFO", 4) == 0) {
+    Logger::level = Logger::INFO;
+  } else if (strncmp(token, "WARN", 4) == 0) {
+    Logger::level = Logger::WARN;
+  } else if (strncmp(token, "ERROR", 5) == 0) {
+    Logger::level = Logger::ERROR;
+  } else if (strncmp(token, "FATAL", 5) == 0) {
+    Logger::level = Logger::FATAL;
+  } else {
+    Logger::info("Usage: log [TRACE | DEBUG | INFO | WARN | ERROR | FATAL]");
+    return SHELL_RET_FAILURE;
+  }
+
+  return SHELL_RET_SUCCESS;
+}
+
 int handleMoveTo(int argc, char** argv) {
   if (argc == 1) {
     Logger::info("Usage: moveto home | <pitch angle> <roll angle>");
@@ -379,7 +411,7 @@ int handleMoveTo(int argc, char** argv) {
     stu.moveTo(sp_servo, pitch, roll);
   }
 
-  updateServos();
+  // updateServos();
   return SHELL_RET_SUCCESS;
 }
 
