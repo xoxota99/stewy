@@ -23,9 +23,15 @@
 #define ENABLE_SERIAL_COMMANDS    //Comment out, to omit Command shell code.
 #define ENABLE_NUNCHUCK           //Comment out, to omit Nunchuck code.
 #define ENABLE_TOUCHSCREEN        //Comment out, to omit Touchscreen code.
-// #define ENABLE_SERVOS             //Comment out, to omit Servo control code.  (for testing)
 
-#define LOG_LEVEL       LogLevel.DEBUG
+/*
+  Comment out, to disable Servos. Servos can get hot if you don't set
+  them to a "safe" value. Commenting this line out allows to test things that
+  are not servo-related, without killing the battery, or overheating the servos.
+*/
+#define ENABLE_SERVOS
+
+#define LOG_LEVEL       Logger::DEBUG
 
 //Which servos are reversed. 1 = reversed, 0 = normal.
 const int SERVO_REVERSE[6] = {0, 1, 0, 1, 0, 1};
