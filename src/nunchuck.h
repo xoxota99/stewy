@@ -1,4 +1,3 @@
-#pragma once
 #ifndef __STU_NUNCHUCK_H__
 #define __STU_NUNCHUCK_H__
 /*
@@ -25,6 +24,38 @@
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 
 Nunchuk nc;
+
+struct _chuck_data_entry {
+  bool buttonC;
+  bool buttonZ;
+  int joyX;
+  int joyY;
+  int accelX;
+  int accelY;
+  int accelZ;
+  float tiltX;
+  float tiltY;
+  float tiltZ;
+};
+
+typedef struct _chuck_data_entry ChuckData;
+
+ChuckData chuckData;
+
+
+//calibration / trim data.
+ChuckData chuckTrim = {
+  false,    //Not used.
+  false,    //Not used.
+  1,
+  -2,
+  29,
+  48,
+  -210,
+  0.0F,    //Not used.
+  0.0F,    //Not used.
+  0.0F    //Not used.
+};
 
 //Different "modes" for the platform.
 enum Mode {
@@ -59,7 +90,7 @@ char* directionStrings[] = {
 Mode mode = MIDDLE;
 Direction dir = CW;
 
-bool zDown, cDown;
+// bool zDown, cDown;
 
 void processNunchuck();
 

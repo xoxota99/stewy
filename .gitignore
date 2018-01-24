@@ -40,3 +40,5 @@
 .gcc-flags.json
 .pioenvs
 .piolibdeps
+
+doc/notes.txt

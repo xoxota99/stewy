@@ -1,4 +1,4 @@
-#pragma once
+
 #ifndef __STU_LOGGER_H__
 #define __STU_LOGGER_H__
 /*
@@ -21,7 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "config.h"
 // #include <math.h>
-#include "Arduino.h"
+// #include "Arduino.h"
+#include <cstdarg>
 
 class Logger {
 public:

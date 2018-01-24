@@ -1,4 +1,4 @@
-#pragma once
+
 #ifndef __STU_COMMANDS_H__
 #define __STU_COMMANDS_H__
 /*
@@ -24,7 +24,6 @@
 
 typedef struct shell_command_entry Command;
 
-//void setupCommandLine(int bps = 9600);
 void processCommands();
 
 int shell_reader(char * data);
@@ -32,24 +31,30 @@ int shell_reader(char * data);
 void shell_writer(char data);
 
 int handleSet(int argc, char** argv);
+int handleMSet(int argc, char** argv);
 int handleHelp(int argc, char** argv);
 int handleSetAll(int argc, char** argv);
+int handleMSetAll(int argc, char** argv);
 int handleDump(int argc, char** argv);
 int handleReset(int argc, char** argv);
 int handleDemo(int argc, char** argv);
 int handleMoveTo(int argc, char** argv);
+int handleLog(int argc, char** argv);
 
 //===
 
 const Command commands[] = {
+  {handleHelp,    "help"},
+  {handleHelp,    "?"},
   {handleSet,     "set"},
+  {handleMSet,    "mset"},
   {handleSetAll,  "setall"},
+  {handleMSetAll, "msetall"},
   {handleDump,    "dump"},
   {handleReset,   "reset"},
-  {handleMoveTo,  "moveTo"},
+  {handleMoveTo,  "moveto"},
   {handleDemo,    "demo"},
-  {handleHelp,    "help"},
-  {handleHelp,    "?"}
+  {handleLog,     "log"}
 };
 
 #endif //ENABLE_SERIAL_COMMANDS

@@ -41,8 +41,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define CPU_RESTART_VAL 0x5FA0004                           // write this magic number...
 #define CPU_RESTART_ADDR (uint32_t *)0xE000ED0C             // to this memory location...
 #define CPU_RESTART (*CPU_RESTART_ADDR = CPU_RESTART_VAL)   // presto!
-#else
-#define CPU_RESTART asm volatile ("  jmp 0")                // close enough for arduino
+
+// #else
+//
+// #define CPU_RESTART asm volatile ("  jmp 0")                // close enough for arduino
+
 #endif
 
 // this is the magic trick for printf to support float
@@ -53,7 +56,11 @@ asm(".global _scanf_float");
 //=== Actual code
 
 Platform stu;            // Stewart platform object.
+
+#ifdef ENABLE_SERVOS
 Servo servos[6];        // servo objects.
+#endif
+
 float sp_servo[6];      // servo setpoints in degrees, between SERVO_MIN_ANGLE and SERVO_MAX_ANGLE.
 // Logger* logger = Logger::instance();
 
@@ -87,7 +94,10 @@ void updateServos() {
       //don't write to the servo if you don't have to.
       sValues[i] = val;
       Logger::trace("s%d = %.2f + %d (value + trim)", i, val, SERVO_TRIM[i]);
+      
+#ifdef ENABLE_SERVOS
       servos[i].writeMicroseconds(min(SERVO_MAX_US, max(SERVO_MIN_US, (int)val + SERVO_TRIM[i])));
+#endif
     }
   }
 }
@@ -102,11 +112,19 @@ void setServo(int i, int angle) {
   if (val >= SERVO_MIN_ANGLE && val <= SERVO_MAX_ANGLE) {
     sp_servo[i] = val;
     Logger::trace("setServo %d - %.2f degrees", i, sp_servo[i]);
-    // Logger::trace("setServo (%d,%d) - %.2f degrees", i, angle, sp_servo[i]);
   } else {
     Logger::warn("setServo: Invalid value '%.2f' specified for servo #%d. Valid range is %d to %d degrees.", val, i, SERVO_MIN_ANGLE, SERVO_MAX_ANGLE);
   }
+}
 
+void setServoMicros(int i, int micros) {
+  int val = micros;
+  if (val >= SERVO_MIN_US && val <= SERVO_MAX_US) {
+    sp_servo[i] = _toAngle(val);
+    Logger::trace("setServoMicros %d - %.2f µs", i, val);
+  } else {
+    Logger::warn("setServoMicros: Invalid value '%.2f' specified for servo #%d. Valid range is %d to %d µs.", val, i, SERVO_MIN_US, SERVO_MAX_US);
+  }
 }
 
 void setupTouchscreen() {
@@ -127,7 +145,9 @@ void setupPlatform() {
 void setupServos() {
 
   for (int i = 0; i < 6; i++) {
-    servos[i].attach(i);
+#ifdef ENABLE_SERVOS
+    servos[i].attach(SERVO_PINS[i]);
+#endif
     setServo(i, SERVO_MIN_ANGLE);
   }
   updateServos();
@@ -144,8 +164,6 @@ void setupServos() {
   }
   updateServos();
   delay(500);
-
-
 }
 
 /**
@@ -162,13 +180,18 @@ void setupCommandLine(int bps=9600) {
   #ifdef ENABLE_SERIAL_COMMANDS
   Logger::debug("Command-line is ENABLED.");
 
-  shell_init(shell_reader, shell_writer, 0);
+  shell_init(shell_reader, shell_writer, "]}>");
 
-  const int ccount = sizeof(commands);
-  for (int i = 0; i < ccount; i++) {
-    shell_register(commands[i].shell_program, commands[i].shell_command_string);
+  const int c1 = sizeof(commands);
+  if(c1 > 0) {
+    const int c2 = sizeof(commands[0]);
+    const int ccount = c1 / c2;
+
+    for (int i = 0; i < ccount; i++) {
+      Logger::debug("Registering command: %s",commands[i].shell_command_string);
+      shell_register(commands[i].shell_program, commands[i].shell_command_string);
+    }
   }
-
   #else
 
   Logger::debug("Command-line is DISABLED.");
@@ -189,13 +212,12 @@ void setupNunchuck() {
 
 
 void setup() {
-  Logger::level = Logger::DEBUG;
-  // Logger::setLogLevel(Logger::TRACE);
+  Logger::level = LOG_LEVEL;    //config.h
 
   pinMode(LED_BUILTIN, OUTPUT); //power indicator
   digitalWrite(LED_BUILTIN, HIGH);
 
-  setupCommandLine();
+  setupCommandLine(115200);
 
   setupNunchuck();
 

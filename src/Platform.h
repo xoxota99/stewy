@@ -1,4 +1,4 @@
-#pragma once
+
 #ifndef __STU_PLATFORM_H__
 #define __STU_PLATFORM_H__
 /*
@@ -24,8 +24,8 @@
  */
 
 #include "config.h"
-// #include <math.h>
-#include "Arduino.h"
+#include <math.h>
+// #include "Arduino.h"
 
 //macros
 #define THETA_P_DEG     45.25     //Platform joint angle (degrees) offset from AXIS[1|2|3]. A value of zero puts these joints directly on the axes
@@ -36,6 +36,24 @@
 #define ROD_LENGTH      155       //Push rod length (mm). Distance between pushrod ball joints (servo to platform).
 #define Z_HOME          148       //Default Z height of the platform (above the base), with servo arms horizontal. Formally, the distance from the plane described by the collection of servo pinion gear centers, to the plane described by the collection of platform / pushrod joints.
 
+/*
+  If defined, the IK algorithm will "slam" values to min or max when it encounters
+  an asymptotic condition. That is, if the solution requires that the servo (e.g.) extend
+  beyond its physical limits, it will set the servo angle to MAX.
+
+  If NOT defined, the IK algorithm will simply refuse to modify ANY servo endpoints
+  when it encounters an asymptotic condition.
+*/
+#define SLAM
+
+/*
+  Multiplier to apply to the output of the IK solution for each servo.
+  NOTE: Even with aggro, the solution will never fall outside the range of
+  [SERVO_ANGLE_MIN .. SERVO_ANGLE_MAX]
+*/
+#define AGGRO       1.5F
+
+
 //constants
 
 /*
@@ -45,8 +63,10 @@
    the polar coordinates of pivot points, servo centers, etc. are calculated based on
    an axis, and an offset angle (positive or negative theta) from the axis.
  */
+
 const double AXIS1 =      M_PI / 6;  //30 degrees.
 const double AXIS2 =      -M_PI / 2; //-90 degrees.
+
 /*
    NOTE: We make an assumption of mirror symmetry for AXIS3 along the Y axis.
    That is, AXIS1 is at (e.g.) 30 degrees, and AXIS3 will be at 120 degrees
