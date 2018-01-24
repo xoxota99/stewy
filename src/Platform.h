@@ -36,6 +36,24 @@
 #define ROD_LENGTH      155       //Push rod length (mm). Distance between pushrod ball joints (servo to platform).
 #define Z_HOME          148       //Default Z height of the platform (above the base), with servo arms horizontal. Formally, the distance from the plane described by the collection of servo pinion gear centers, to the plane described by the collection of platform / pushrod joints.
 
+/*
+  If defined, the IK algorithm will "slam" values to min or max when it encounters
+  an asymptotic condition. That is, if the solution requires that the servo (e.g.) extend
+  beyond its physical limits, it will set the servo angle to MAX.
+
+  If NOT defined, the IK algorithm will simply refuse to modify ANY servo endpoints
+  when it encounters an asymptotic condition.
+*/
+#define SLAM
+
+/*
+  Multiplier to apply to the output of the IK solution for each servo.
+  NOTE: Even with aggro, the solution will never fall outside the range of
+  [SERVO_ANGLE_MIN .. SERVO_ANGLE_MAX]
+*/
+#define AGGRO       1.5F
+
+
 //constants
 
 /*

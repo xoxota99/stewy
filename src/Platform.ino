@@ -81,11 +81,15 @@ bool Platform::moveTo(float *servoValues, int sway, int surge, int heave, float 
     if (sqrt(d2) > (ARM_LENGTH + ROD_LENGTH) //the required virtual arm length is longer than physically possible
         || abs(k / (sqrt(l * l + m * m))) >= 1) { //some other bad stuff happened.
       //bad juju.
-      Logger::error("Model asymptotic at i=%d",i);
+      Logger::error("Asymptotic condition at i=%d",i);
       Logger::info("abs(k/(sqrt(l*l+m*m))) = %.2f",abs(k / (sqrt(l * l + m * m))));
       Logger::info("sqrt(d2)>(ARM_LENGTH+ROD_LENGTH) = %s",(sqrt(d2) > (ARM_LENGTH + ROD_LENGTH)) ? "true" : "false");
 
+#ifdef SLAM
+      servo_deg = SERVO_MAX_ANGLE;
+#else
       bOk = false;
+#endif
       break;
     } else if (servo_deg > SERVO_MAX_ANGLE) {
       servo_deg = SERVO_MAX_ANGLE;
@@ -103,6 +107,14 @@ bool Platform::moveTo(float *servoValues, int sway, int surge, int heave, float 
     _sp_pitch = pitch;
     _sp_roll = roll;
     _sp_yaw = yaw;
+
+    //scale values by aggro.
+    for (int i = 0; i < 6; i++) {
+      int diff = servoValues[i]-SERVO_MID_ANGLE;
+
+      servoValues[i] = SERVO_MID_ANGLE + (diff * AGGRO);
+      servoValues[i] = fmax(fmin(servoValues[i],SERVO_MAX_ANGLE),SERVO_MIN_ANGLE);
+    }
   } else {
     //reset back to old values.
     for (int i = 0; i < 6; i++) {
