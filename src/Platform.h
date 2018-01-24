@@ -45,8 +45,10 @@
    the polar coordinates of pivot points, servo centers, etc. are calculated based on
    an axis, and an offset angle (positive or negative theta) from the axis.
  */
+
 const double AXIS1 =      M_PI / 6;  //30 degrees.
 const double AXIS2 =      -M_PI / 2; //-90 degrees.
+
 /*
    NOTE: We make an assumption of mirror symmetry for AXIS3 along the Y axis.
    That is, AXIS1 is at (e.g.) 30 degrees, and AXIS3 will be at 120 degrees

@@ -163,13 +163,13 @@ int handleMSet(int argc, char** argv)
 
 
     if (val >= SERVO_MIN_US && val <= SERVO_MAX_US) {
-      setServoMicros(srv,val);
+      setServoMicros(srv-1,val);
 #ifdef ENABLE_SERVOS
-        if (SERVO_REVERSE[srv-1]) {
-          val = SERVO_MIN_US + (SERVO_MAX_US - val);
-        }
-        servos[srv-1].writeMicroseconds(min(SERVO_MAX_US, max(SERVO_MIN_US, (int)val + SERVO_TRIM[srv-1])));
-      #endif
+      if (SERVO_REVERSE[srv-1]) {
+        val = SERVO_MIN_US + (SERVO_MAX_US - val);
+      }
+      servos[srv-1].writeMicroseconds(min(SERVO_MAX_US, max(SERVO_MIN_US, (int)val + SERVO_TRIM[srv-1])));
+#endif
     } else {
       Logger::info("Invalid servo value for Servo #%d. Valid values are (min, mid, max), or a number between %d and %d.", srv, SERVO_MIN_US, SERVO_MAX_US);
       Logger::info("Usage: set <servo> min|mid|max|<angle>");
@@ -242,7 +242,7 @@ int handleSetAll(int argc, char** argv)
     Logger::info("Usage: setall min|mid|max|<angle>");
   }
 
-  updateServos();
+  // updateServos();
   return SHELL_RET_SUCCESS;
 }
 
@@ -283,10 +283,10 @@ int handleMSetAll(int argc, char** argv)
       if (val >= SERVO_MIN_US && val <= SERVO_MAX_US) {
         setServoMicros(i,val);
 #ifdef ENABLE_SERVOS
-          if (SERVO_REVERSE[i]) {
-            val = SERVO_MIN_US + (SERVO_MAX_US - val);
-          }
-          servos[i].writeMicroseconds(min(SERVO_MAX_US, max(SERVO_MIN_US, (int)val + SERVO_TRIM[i])));
+        if (SERVO_REVERSE[i]) {
+          val = SERVO_MIN_US + (SERVO_MAX_US - val);
+        }
+        servos[i].writeMicroseconds(min(SERVO_MAX_US, max(SERVO_MIN_US, (int)val + SERVO_TRIM[i])));
 #endif
       } else {
         Logger::info("Invalid servo value for Servo #%d. Valid values are min|mid|max, or a number between %d and %d.", i + 1, SERVO_MIN_US, SERVO_MAX_US);
@@ -314,9 +314,9 @@ int handleDump(int argc, char** argv) {
   Logger::info("\n===== Servos =====");
   for (int i = 0; i < 6; i++) {
 #ifdef ENABLE_SERVOS
-    Logger::info("s%d (physical, setpoint) = (%d, %.2f)", i, servos[i].read(), sp_servo[i]);
+    Logger::info("s%d (physical, setpoint, us) = (%d, %.2f, %.2f)", i, servos[i].read(), sp_servo[i], _toUs(servos[i].read()));
 #else
-    Logger::info("s%d (physical, setpoint) = (N/A, %.2f)", i, sp_servo[i]);
+    Logger::info("s%d (physical, setpoint, us) = (N/A, %.2f, %.2f)", i, sp_servo[i], _toUs(servos[i].read()));
 #endif
   }
 
