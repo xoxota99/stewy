@@ -28,7 +28,7 @@
 #define NUNCHUK_TWI_CMD_INIT       0x40
 #define NUNCHUK_TWI_CMD_ZERO       0x00
 #define NUNCHUK_TWI_BUFFER_SIZE    6
-#define NUNCHUK_TWI_DELAY_MICROSEC 10
+#define NUNCHUK_TWI_DELAY_MICROSEC 20 //YMMV. Play with this until it works, basically.
 
 
 class Nunchuk
