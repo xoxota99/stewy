@@ -102,7 +102,7 @@ char* directionStrings[] = {
 };
 
 
-Mode mode = MIDDLE;
+Mode mode = SETPOINT;
 Direction dir = CW;
 #endif    //ENABLE_NUNCHUCK
 

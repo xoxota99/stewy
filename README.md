@@ -40,7 +40,7 @@ We use a wiimote [nunchuck] (https://en.wikipedia.org/wiki/Wii_Remote#Nunchuk) t
     * Double-clicking the Z button (or resetting the Teensy) resets the setpoint to the middle of the plate.
   * 2 blinks: **CONTROL** - Direct control of the platform using the joystick. Input from the resistive sensor is ignored completely. In this mode:
     * Clicking the C button cycles between two sub-modes:
-      * **PITCH_ROLL** - The joystick controls the pitch / roll of the platform.
+      * **PITCH_ROLL** - (default) The joystick controls the pitch / roll of the platform.
       * **HEAVE_YAW** - The joystick controls the up/down and rotation of the platform.
   * 3 blinks: **CIRCLE** - *(coming soon)* The setpoint will move in a circular pattern, around the center of the platform. In this mode:
     * The joystick Y-axis controls the speed of the movement.

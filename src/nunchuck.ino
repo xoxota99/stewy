@@ -62,7 +62,7 @@ void processNunchuck()
 
 
       switch (mode) {
-        case ANGLE:
+        case CONTROL:
           {
             //move the platform to the angle represented by the nunchuck joystick angle.
             double pitch = -((((float)nc.getJoyY() + 100)/200 * 43) - 23);    //a number between -20 and 23
@@ -73,15 +73,13 @@ void processNunchuck()
 
             break;
           }
-        case CIRCLE:
+      case CIRCLE:
         break;
       case EIGHT:
         break;
       case SQUARE:
         break;
-      case SPIRAL:
-        break;
-      case MIDDLE:
+      case SETPOINT:
       default:
         break;
       }
@@ -114,7 +112,7 @@ void processNunchuck()
     }
 
   } else {
-    mode = MIDDLE; //Nunchuck is on the fritz / disconnected. Default back to the center setpoint.
+    mode = SETPOINT; //Nunchuck is on the fritz / disconnected. Default back to the center setpoint.
     dir = CW;
     Logger::trace("WHOOPS, there was a problem reading the nunchuck!");
   }
@@ -163,7 +161,7 @@ void onZButtonDown() {
     Logger::trace("ZButtonDown");
     chuckData.lastZButtonDown = millis();
     mode = Mode(mode+1);
-    
+
     Logger::debug("Mode = %s",modeStrings[mode]);
   }
 }
