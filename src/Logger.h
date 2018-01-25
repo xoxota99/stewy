@@ -53,7 +53,7 @@ private:
   // static Logger* m_pInstance;
   Logger(){};  // Private so that it can  not be called
   Logger(Logger const&){};             // copy constructor is private
-  Logger& operator=(Logger const&){};  // assignment operator is private
+  Logger& operator=(Logger const&){return *this;};  // assignment operator is private
 
 };
 

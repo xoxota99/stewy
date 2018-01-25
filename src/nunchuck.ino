@@ -19,8 +19,6 @@
 #include "nunchuck.h"
 #include "Logger.h"
 
-#define EPSILON 0.001
-
 void processNunchuck()
 {
   // Read the current state
@@ -31,9 +29,9 @@ void processNunchuck()
     chuckData.buttonZ != nc.getButtonZ() ||
     chuckData.joyX != nc.getJoyX() + chuckTrim.joyX ||
     chuckData.joyY != nc.getJoyY() + chuckTrim.joyY ||
-    abs(chuckData.tiltX - nc.getTiltX() + chuckTrim.tiltX) <= EPSILON ||
-    abs(chuckData.tiltY - nc.getTiltY() + chuckTrim.tiltY) <= EPSILON ||
-    abs(chuckData.tiltZ - nc.getTiltZ() + chuckTrim.tiltZ) <= EPSILON ||
+    abs(chuckData.tiltX - nc.getTiltX() + chuckTrim.tiltX) <= TILT_EPSILON ||
+    abs(chuckData.tiltY - nc.getTiltY() + chuckTrim.tiltY) <= TILT_EPSILON ||
+    abs(chuckData.tiltZ - nc.getTiltZ() + chuckTrim.tiltZ) <= TILT_EPSILON ||
     chuckData.accelX != nc.getAccelX() + chuckTrim.accelX ||
     chuckData.accelY != nc.getAccelY() + chuckTrim.accelY ||
     chuckData.accelZ != nc.getAccelZ() + chuckTrim.accelZ) {
@@ -62,7 +60,7 @@ void processNunchuck()
 
 
       switch (mode) {
-        case ANGLE:
+        case CONTROL:
           {
             //move the platform to the angle represented by the nunchuck joystick angle.
             double pitch = -((((float)nc.getJoyY() + 100)/200 * 43) - 23);    //a number between -20 and 23
@@ -73,15 +71,13 @@ void processNunchuck()
 
             break;
           }
-        case CIRCLE:
+      case CIRCLE:
         break;
       case EIGHT:
         break;
       case SQUARE:
         break;
-      case SPIRAL:
-        break;
-      case MIDDLE:
+      case SETPOINT:
       default:
         break;
       }
@@ -114,7 +110,7 @@ void processNunchuck()
     }
 
   } else {
-    mode = MIDDLE; //Nunchuck is on the fritz / disconnected. Default back to the center setpoint.
+    mode = SETPOINT; //Nunchuck is on the fritz / disconnected. Default back to the center setpoint.
     dir = CW;
     Logger::trace("WHOOPS, there was a problem reading the nunchuck!");
   }
@@ -125,53 +121,70 @@ void processNunchuck()
 
 //C Button changes direction.
 void onCButtonDown() {
-  Logger::trace("CButtonDown");
-  switch (dir) {
-    case CW:
-      dir = CCW;
-      break;
-    case CCW:
-      dir = CW;
-      break;
+  if(millis()-chuckData.lastCButtonDown < NUNCHUCK_DBLCLICK_THRESHOLD_MS) {
+    chuckData.lastCButtonDown=millis(); //NOTE: This could get dicey, if stewduino is left running for more than 49 days, according to https://www.arduino.cc/reference/en/language/functions/time/millis/
+
+    //Treat this as a double-click, instead of a single-click.
+    return onCButtonDblClick();
+  } else {
+    Logger::trace("CButtonDown");
+    chuckData.lastCButtonDown = millis();
+    setMode(Mode((mode+1) % 5));
+
+    Logger::debug("Mode = %s",modeStrings[mode]);
+
   }
+}
+
+void setMode(mode_e _mode){
+  mode = _mode;
+  blink(int(mode)+1);
 }
 
 void onCButtonUp() {
   Logger::trace("CButtonUp");
+}
 
+void onCButtonDblClick(){
+  Logger::trace("CButtonDblClick");
 }
 
 //Z Button changes modes.
 void onZButtonDown() {
-  Logger::trace("ZButtonDown");
-  switch (mode) {
-    case ANGLE:
-      mode = CIRCLE;
-      break;
-    case CIRCLE:
-      mode = EIGHT;
-      break;
-    case EIGHT:
-      mode = SQUARE;
-      break;
-    case SQUARE:
-      mode = SPIRAL;
-      break;
-    case SPIRAL:
-      mode = MIDDLE;
-      break;
-    case MIDDLE:
-      mode = ANGLE;
-    default:
+  if(millis()-chuckData.lastZButtonDown < NUNCHUCK_DBLCLICK_THRESHOLD_MS) {
+    chuckData.lastZButtonDown=millis(); //NOTE: This could get dicey, if stewduino is left running for more than 49 days, according to https://www.arduino.cc/reference/en/language/functions/time/millis/
 
-      break;
+    //Treat this as a double-click, instead of a single-click.
+    return onZButtonDblClick();
+  } else {
+    Logger::trace("ZButtonDown");
+    switch(mode)
+    {
+      case CIRCLE:
+      case EIGHT:
+      case SQUARE:
+        //We are in a mode that supports the concept of "direction"
+
+        chuckData.lastZButtonDown = millis();
+        dir = Direction((dir+1) % 2 );
+
+        Logger::debug("Direction = %s",directionStrings[dir]);
+        break;
+      case CONTROL:
+        controlSubMode = ControlSubMode((controlSubMode+1) % 2);
+
+        Logger::debug("ControlSubMode = %s",subModeStrings[controlSubMode]);
+      default:
+        break;
+    }
   }
-  Logger::debug("Mode = %s",modeStrings[mode]);
 }
 
 void onZButtonUp() {
   Logger::trace("ZButtonUp");
-
 }
 
+void onZButtonDblClick(){
+  Logger::trace("ZButtonDblClick");
+}
 #endif

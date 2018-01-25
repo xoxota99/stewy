@@ -21,7 +21,6 @@
 
 void processTouchscreen() {
   // a point object holds x y and z coordinates
-  static int i;
 
   TSPoint p = ts.getPoint();
 
@@ -34,6 +33,7 @@ void processTouchscreen() {
       int y = p.y-(TS_SLOPE_Y*(TS_MAX_X-p.x));
 
       //do something.
+      Logger::trace("%d\t%d",x,y);
   }
   // delay(10);
 }

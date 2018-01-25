@@ -94,7 +94,7 @@ void updateServos() {
       //don't write to the servo if you don't have to.
       sValues[i] = val;
       Logger::trace("s%d = %.2f + %d (value + trim)", i, val, SERVO_TRIM[i]);
-      
+
 #ifdef ENABLE_SERVOS
       servos[i].writeMicroseconds(min(SERVO_MAX_US, max(SERVO_MIN_US, (int)val + SERVO_TRIM[i])));
 #endif
@@ -180,7 +180,7 @@ void setupCommandLine(int bps=9600) {
   #ifdef ENABLE_SERIAL_COMMANDS
   Logger::debug("Command-line is ENABLED.");
 
-  shell_init(shell_reader, shell_writer, "]}>");
+  shell_init(shell_reader, shell_writer, 0);
 
   const int c1 = sizeof(commands);
   if(c1 > 0) {
@@ -210,6 +210,16 @@ void setupNunchuck() {
   #endif
 }
 
+// TODO: This is blocking, because I'm too lazy to write a blink manager,
+// and manage blinking state across main loop iterations.
+void blink(int times, int millisecond=400) {
+  for(int i=0;i<times;i++) {
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(millisecond/2);
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(millisecond/2);
+  }
+}
 
 void setup() {
   Logger::level = LOG_LEVEL;    //config.h
