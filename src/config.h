@@ -63,4 +63,37 @@ const int SERVO_PINS[] = {  //pin numbers for each servo signal.
   5
 };
 
+#ifdef ENABLE_NUNCHUCK
+//Different "modes" for the platform.
+enum Mode {
+  SETPOINT,   // setpoint position is in the middle of the platform.
+  CONTROL,    // X/Y position of the wiichuck directly controls the position of the platform.
+  CIRCLE,     // setpoint position moves in a circle. Direction (CW / CCW) is controlled by the "direction" field.
+  EIGHT,      // setpoint position moves in a figure eight. Direction (CW / CCW) is controlled by the "direction" field
+  SQUARE      // setpoint cycles through corners of a square (manually controlled by the Z button).
+};
+
+char* modeStrings[] = {
+  "SETPOINT",
+  "CONTROL",
+  "CIRCLE",
+  "EIGHT",
+  "SQUARE"
+};
+
+enum Direction {
+  CW,
+  CCW
+};
+
+char* directionStrings[] = {
+  "CW",
+  "CCW"
+};
+
+
+Mode mode = MIDDLE;
+Direction dir = CW;
+#endif    //ENABLE_NUNCHUCK
+
 #endif    //__STU_CONFIG_H__
