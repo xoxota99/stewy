@@ -19,8 +19,6 @@
 #include "nunchuck.h"
 #include "Logger.h"
 
-#define EPSILON 0.001
-
 void processNunchuck()
 {
   // Read the current state
@@ -31,9 +29,9 @@ void processNunchuck()
     chuckData.buttonZ != nc.getButtonZ() ||
     chuckData.joyX != nc.getJoyX() + chuckTrim.joyX ||
     chuckData.joyY != nc.getJoyY() + chuckTrim.joyY ||
-    abs(chuckData.tiltX - nc.getTiltX() + chuckTrim.tiltX) <= EPSILON ||
-    abs(chuckData.tiltY - nc.getTiltY() + chuckTrim.tiltY) <= EPSILON ||
-    abs(chuckData.tiltZ - nc.getTiltZ() + chuckTrim.tiltZ) <= EPSILON ||
+    abs(chuckData.tiltX - nc.getTiltX() + chuckTrim.tiltX) <= TILT_EPSILON ||
+    abs(chuckData.tiltY - nc.getTiltY() + chuckTrim.tiltY) <= TILT_EPSILON ||
+    abs(chuckData.tiltZ - nc.getTiltZ() + chuckTrim.tiltZ) <= TILT_EPSILON ||
     chuckData.accelX != nc.getAccelX() + chuckTrim.accelX ||
     chuckData.accelY != nc.getAccelY() + chuckTrim.accelY ||
     chuckData.accelZ != nc.getAccelZ() + chuckTrim.accelZ) {
@@ -123,7 +121,7 @@ void processNunchuck()
 
 //C Button changes direction.
 void onCButtonDown() {
-  if(millis()-chuckData.lastCButtonDown < DBLCLICK_THRESHOLD_MS) {
+  if(millis()-chuckData.lastCButtonDown < NUNCHUCK_DBLCLICK_THRESHOLD_MS) {
     chuckData.lastCButtonDown=millis(); //NOTE: This could get dicey, if stewduino is left running for more than 49 days, according to https://www.arduino.cc/reference/en/language/functions/time/millis/
 
     //Treat this as a double-click, instead of a single-click.
@@ -152,7 +150,7 @@ void onCButtonDblClick(){
 
 //Z Button changes modes.
 void onZButtonDown() {
-  if(millis()-chuckData.lastZButtonDown < DBLCLICK_THRESHOLD_MS) {
+  if(millis()-chuckData.lastZButtonDown < NUNCHUCK_DBLCLICK_THRESHOLD_MS) {
     chuckData.lastZButtonDown=millis(); //NOTE: This could get dicey, if stewduino is left running for more than 49 days, according to https://www.arduino.cc/reference/en/language/functions/time/millis/
 
     //Treat this as a double-click, instead of a single-click.

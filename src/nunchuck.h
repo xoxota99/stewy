@@ -22,18 +22,7 @@
 #include <Nunchuk.h> //from https://github.com/hughpyle/machinesalem-arduino-libs/tree/master/nunchuk
 #include "config.h"
 
-#pragma GCC diagnostic ignored "-Wwrite-strings"
-
-/*
-  Specifies the maximum time between button clicks that are interpreted as a
-  double-click. If the time between clicks exceeds this value, the clicks are
-  interpreted as single clicks.
-*/
-#define DBLCLICK_THRESHOLD_MS  500
-
-Nunchuk nc;
-
-struct _chuck_data_entry {
+typedef struct _chuck_data_entry {
   bool buttonC;
   bool buttonZ;
   int joyX;
@@ -46,24 +35,17 @@ struct _chuck_data_entry {
   float tiltZ;
   long lastCButtonDown;         //to help with "double-clicking"
   long lastZButtonDown;
-};
+} ChuckData;
 
-typedef struct _chuck_data_entry ChuckData;
 
+Nunchuk nc;
 ChuckData chuckData;
-
 //calibration / trim data.
 ChuckData chuckTrim = {
   false,    //Not used.
   false,    //Not used.
   1,
-  -2,
-  29,
-  48,
-  -210,
-  0.0F,    //Not used.
-  0.0F,    //Not used.
-  0.0F    //Not used.
+  -2
 };
 
 // bool zDown, cDown;
