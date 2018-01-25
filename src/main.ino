@@ -210,6 +210,16 @@ void setupNunchuck() {
   #endif
 }
 
+// TODO: This is blocking, because I'm too lazy to write a blink manager,
+// and manage blinking state across main loop iterations.
+void blink(int times, int millisecond=400) {
+  for(int i=0;i<times;i++) {
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(millisecond/2);
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(millisecond/2);
+  }
+}
 
 void setup() {
   Logger::level = LOG_LEVEL;    //config.h

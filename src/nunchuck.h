@@ -51,6 +51,7 @@ ChuckData chuckTrim = {
 // bool zDown, cDown;
 
 void processNunchuck();
+void setMode(Mode _mode);
 
 void onCButtonDown();
 void onCButtonUp();

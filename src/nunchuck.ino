@@ -129,11 +129,16 @@ void onCButtonDown() {
   } else {
     Logger::trace("CButtonDown");
     chuckData.lastCButtonDown = millis();
-    mode = Mode((mode+1) % 5);
+    setMode(Mode((mode+1) % 5));
 
     Logger::debug("Mode = %s",modeStrings[mode]);
 
   }
+}
+
+void setMode(mode_e _mode){
+  mode = _mode;
+  blink(int(mode)+1);
 }
 
 void onCButtonUp() {
