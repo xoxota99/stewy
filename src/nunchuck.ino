@@ -129,14 +129,10 @@ void onCButtonDown() {
   } else {
     Logger::trace("CButtonDown");
     chuckData.lastCButtonDown = millis();
-    switch (dir) {
-      case CW:
-        dir = CCW;
-        break;
-      case CCW:
-        dir = CW;
-        break;
-    }
+    mode = Mode((mode+1) % 5);
+
+    Logger::debug("Mode = %s",modeStrings[mode]);
+
   }
 }
 
@@ -157,10 +153,25 @@ void onZButtonDown() {
     return onZButtonDblClick();
   } else {
     Logger::trace("ZButtonDown");
-    chuckData.lastZButtonDown = millis();
-    mode = Mode(mode+1);
+    switch(mode)
+    {
+      case CIRCLE:
+      case EIGHT:
+      case SQUARE:
+        //We are in a mode that supports the concept of "direction"
 
-    Logger::debug("Mode = %s",modeStrings[mode]);
+        chuckData.lastZButtonDown = millis();
+        dir = Direction((dir+1) % 2 );
+
+        Logger::debug("Direction = %s",directionStrings[dir]);
+        break;
+      case CONTROL:
+        controlSubMode = ControlSubMode((controlSubMode+1) % 2);
+
+        Logger::debug("ControlSubMode = %s",subModeStrings[controlSubMode]);
+      default:
+        break;
+    }
   }
 }
 
@@ -168,8 +179,7 @@ void onZButtonUp() {
   Logger::trace("ZButtonUp");
 }
 
-
 void onZButtonDblClick(){
-  Logger::trace("CButtonZblClick");
+  Logger::trace("ZButtonDblClick");
 }
 #endif

@@ -121,6 +121,7 @@ char const * directionStrings[] = {
 
 Mode mode = SETPOINT;
 Direction dir = CW;
+ControlSubMode controlSubMode = PITCH_ROLL;
 
 #endif    //ENABLE_NUNCHUCK
 
