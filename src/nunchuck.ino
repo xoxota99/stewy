@@ -136,7 +136,7 @@ void onCButtonDown() {
   }
 }
 
-void setMode(mode_e _mode){
+void setMode(Mode _mode){
   mode = _mode;
   blink(int(mode)+1);
 }
