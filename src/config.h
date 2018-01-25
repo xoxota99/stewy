@@ -81,6 +81,16 @@ char* modeStrings[] = {
   "SQUARE"
 };
 
+enum ControlSubMode {
+  PITCH_ROLL, // Joystick controls the angle of the platform.
+  HEAVE_YAW,  // Joystick Y axis controls the up-down movement of the platform, X axis controls the rotation of the platform.
+};
+
+char* subModeStrings[] = {
+  "PITCH_ROLL",
+  "HEAVE_YAW"
+};
+
 enum Direction {
   CW,
   CCW
