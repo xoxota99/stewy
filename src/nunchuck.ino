@@ -125,53 +125,55 @@ void processNunchuck()
 
 //C Button changes direction.
 void onCButtonDown() {
-  Logger::trace("CButtonDown");
-  switch (dir) {
-    case CW:
-      dir = CCW;
-      break;
-    case CCW:
-      dir = CW;
-      break;
+  if(millis()-chuckData.lastCButtonDown < DBLCLICK_THRESHOLD_MS) {
+    chuckData.lastCButtonDown=millis(); //NOTE: This could get dicey, if stewduino is left running for more than 49 days, according to https://www.arduino.cc/reference/en/language/functions/time/millis/
+
+    //Treat this as a double-click, instead of a single-click.
+    return onCButtonDblClick();
+  } else {
+    Logger::trace("CButtonDown");
+    chuckData.lastCButtonDown = millis();
+    switch (dir) {
+      case CW:
+        dir = CCW;
+        break;
+      case CCW:
+        dir = CW;
+        break;
+    }
   }
 }
 
 void onCButtonUp() {
   Logger::trace("CButtonUp");
+}
 
+void onCButtonDblClick(){
+  Logger::trace("CButtonDblClick");
 }
 
 //Z Button changes modes.
 void onZButtonDown() {
-  Logger::trace("ZButtonDown");
-  switch (mode) {
-    case ANGLE:
-      mode = CIRCLE;
-      break;
-    case CIRCLE:
-      mode = EIGHT;
-      break;
-    case EIGHT:
-      mode = SQUARE;
-      break;
-    case SQUARE:
-      mode = SPIRAL;
-      break;
-    case SPIRAL:
-      mode = MIDDLE;
-      break;
-    case MIDDLE:
-      mode = ANGLE;
-    default:
+  if(millis()-chuckData.lastZButtonDown < DBLCLICK_THRESHOLD_MS) {
+    chuckData.lastZButtonDown=millis(); //NOTE: This could get dicey, if stewduino is left running for more than 49 days, according to https://www.arduino.cc/reference/en/language/functions/time/millis/
 
-      break;
+    //Treat this as a double-click, instead of a single-click.
+    return onZButtonDblClick();
+  } else {
+    Logger::trace("ZButtonDown");
+    chuckData.lastZButtonDown = millis();
+    mode = Mode(mode+1);
+    
+    Logger::debug("Mode = %s",modeStrings[mode]);
   }
-  Logger::debug("Mode = %s",modeStrings[mode]);
 }
 
 void onZButtonUp() {
   Logger::trace("ZButtonUp");
-
 }
 
+
+void onZButtonDblClick(){
+  Logger::trace("CButtonZblClick");
+}
 #endif

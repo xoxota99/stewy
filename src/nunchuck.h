@@ -23,6 +23,13 @@
 
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 
+/*
+  Specifies the maximum time between button clicks that are interpreted as a
+  double-click. If the time between clicks exceeds this value, the clicks are
+  interpreted as single clicks.
+*/
+#define DBLCLICK_THRESHOLD_MS  500
+
 Nunchuk nc;
 
 struct _chuck_data_entry {
@@ -36,12 +43,13 @@ struct _chuck_data_entry {
   float tiltX;
   float tiltY;
   float tiltZ;
+  long lastCButtonDown;         //to help with "double-clicking"
+  long lastZButtonDown;
 };
 
 typedef struct _chuck_data_entry ChuckData;
 
 ChuckData chuckData;
-
 
 //calibration / trim data.
 ChuckData chuckTrim = {
@@ -99,6 +107,9 @@ void onCButtonUp();
 
 void onZButtonDown();
 void onZButtonUp();
+
+void onZButtonDblClick();
+void onCButtonDblClick();
 
 #endif
 #endif    //__STU_NUNCHUCK_H__
