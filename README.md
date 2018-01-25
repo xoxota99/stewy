@@ -19,11 +19,13 @@ We want to be able to control some aspects of the project from a laptop during i
     * Change current X/Y SetPoint
     * Change touchscreen LPF / deadband
     * Direct individual servo control
+    * etc.
   * Out: Receive logger data
     * WiiMote inputs
     * Touchscreen data
     * Error messages
     * Servo values
+    * etc.
 
 ## Touchscreen
 We use a 4-wire resistive touchscreen (e.g. https://tinyurl.com/ybsr2pmk ) to determine the X/Y coordinates of the ball bearing. The touchscreen is likely to report a certain amount of “noise” when no pressure is applied. We will need to either debounce or else apply a filter, to prevent the noise from being interpreted as valid input. Teensy Analog inputs are only 3.3V tolerant (see https://forum.pjrc.com/threads/40830-Teensy-3-2-ADC-amp-AREF?p=127431&viewfull=1#post127431 ), so we'll power the screen from pin
@@ -31,11 +33,28 @@ We use a 4-wire resistive touchscreen (e.g. https://tinyurl.com/ybsr2pmk ) to de
 ## PID control loop
 We use a Proportional / Integral / Derivative (PID) feedback loop (similar to control loops used in Drone firmware) to determine the error position between the ball bearing’s current position, and the desired – or setpoint – position. This is used to determine the target orientation of the platform, in order to best return the ball to the setpoint position.
 
-## Servos
-We use an interactive shell-like interface over Serial monitor to set / query Servo values. Commands are:
-set <servo_number> <us_value> - servo_number: The number of the servo (from 1-6). us_value: The PWM value to send to the servo, in microseconds (usually 1000-2000 us).
-setall <us_value> - set all servos to the same us_value.
-dump [<servo_number>] - Dump the current PWM value for the given servo. If servo_number is ommitted, dump values for all servos.
+## Wiimote Nunchuck
+We use a wiimote [nunchuck] (https://en.wikipedia.org/wiki/Wii_Remote#Nunchuk) to change "modes" and control various aspects of the platform in real time. Mode changes are indicated by the LED blinking. The various modes can be cycled through in order by holding down the C and Z buttons simultaneously for 1 second:
+  * 1 blink: **SETPOINT** - The platform will attempt to keep the ball at a given X/Y setpoint. By default, this is in the middle of the plate. **This is the default mode at startup.** In this mode:
+    * The joystick can be used to move the setpoint, with the platform correcting the position of the ball in real time.
+    * Double-clicking the Z button (or resetting the Teensy) resets the setpoint to the middle of the plate.
+  * 2 blinks: **CONTROL** - Direct control of the platform using the joystick. Input from the resistive sensor is ignored completely. In this mode:
+    * Clicking the C button cycles between two sub-modes:
+      * **PITCH_ROLL** - The joystick controls the pitch / roll of the platform.
+      * **HEAVE_YAW** - The joystick controls the up/down and rotation of the platform.
+  * 3 blinks: **CIRCLE** - The setpoint will move in a circular pattern, around the center of the platform. In this mode:
+    * The joystick Y-axis controls the speed of the movement.
+    * Double-clicking the Z button stops the setpoint in place. Clicking the Z button again resumes the circular movement.
+    * Clicking the C button reverses the direction of the movement.
+  * 4 blinks: **EIGHT** - Similar to *CIRCLE*, the setpoint will move in a figure-eight pattern, centered on the center of the platform. In this mode:
+    * The joystick Y-axis controls the speed of the movement.
+    * Double-clicking the Z button stops the setpoint in place. Clicking the Z button again resumes the figure-eight movement.
+    * Clicking the C button reverses the direction of the movement.
+  * 5 blinks: **SQUARE** - The setpoint will be set to the current location of the ball on the plate. The setpoint does not move independently in this mode. In this mode:
+    * Clicking the Z button reflects the setpoint across the X or Y axis in a clockwise direction. The effect is to move the ball in a seeming rectangular pattern around the plate.
+    * Clicking the C button reflects the setpoint across the X or Y axis in a *counter* clockwise direction.
+    * The joystick moves the setpoint within the ball's current quadrant of the plate.
+
 
 ## Caveats
 * The project is built using [Teensy 3.x](https://www.pjrc.com/store/teensy32.html). I haven't tried building against other targets, but pull requests are always welcome!
