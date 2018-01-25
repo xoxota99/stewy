@@ -35,22 +35,22 @@ We use a Proportional / Integral / Derivative (PID) feedback loop (similar to co
 
 ## Wiimote Nunchuck
 We use a wiimote [nunchuck] (https://en.wikipedia.org/wiki/Wii_Remote#Nunchuk) to change "modes" and control various aspects of the platform in real time. Mode changes are indicated by the LED blinking. The various modes can be cycled through in order by holding down the C and Z buttons simultaneously for 1 second:
-  * 1 blink: **SETPOINT** - The platform will attempt to keep the ball at a given X/Y setpoint. By default, this is in the middle of the plate. **This is the default mode at startup.** In this mode:
+  * 1 blink: **SETPOINT** - *(coming soon)* The platform will attempt to keep the ball at a given X/Y setpoint. By default, this is in the middle of the plate. **This is the default mode at startup.** In this mode:
     * The joystick can be used to move the setpoint, with the platform correcting the position of the ball in real time.
     * Double-clicking the Z button (or resetting the Teensy) resets the setpoint to the middle of the plate.
   * 2 blinks: **CONTROL** - Direct control of the platform using the joystick. Input from the resistive sensor is ignored completely. In this mode:
     * Clicking the C button cycles between two sub-modes:
       * **PITCH_ROLL** - The joystick controls the pitch / roll of the platform.
       * **HEAVE_YAW** - The joystick controls the up/down and rotation of the platform.
-  * 3 blinks: **CIRCLE** - The setpoint will move in a circular pattern, around the center of the platform. In this mode:
+  * 3 blinks: **CIRCLE** - *(coming soon)* The setpoint will move in a circular pattern, around the center of the platform. In this mode:
     * The joystick Y-axis controls the speed of the movement.
     * Double-clicking the Z button stops the setpoint in place. Clicking the Z button again resumes the circular movement.
     * Clicking the C button reverses the direction of the movement.
-  * 4 blinks: **EIGHT** - Similar to *CIRCLE*, the setpoint will move in a figure-eight pattern, centered on the center of the platform. In this mode:
+  * 4 blinks: **EIGHT** - *(coming soon)* Similar to *CIRCLE*, the setpoint will move in a figure-eight pattern, centered on the center of the platform. In this mode:
     * The joystick Y-axis controls the speed of the movement.
     * Double-clicking the Z button stops the setpoint in place. Clicking the Z button again resumes the figure-eight movement.
     * Clicking the C button reverses the direction of the movement.
-  * 5 blinks: **SQUARE** - The setpoint will be set to the current location of the ball on the plate. The setpoint does not move independently in this mode. In this mode:
+  * 5 blinks: **SQUARE** - *(coming soon)* The setpoint will be set to the current location of the ball on the plate. The setpoint does not move independently in this mode. In this mode:
     * Clicking the Z button reflects the setpoint across the X or Y axis in a clockwise direction. The effect is to move the ball in a seeming rectangular pattern around the plate.
     * Clicking the C button reflects the setpoint across the X or Y axis in a *counter* clockwise direction.
     * The joystick moves the setpoint within the ball's current quadrant of the plate.
