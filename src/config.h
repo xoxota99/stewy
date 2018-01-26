@@ -170,14 +170,14 @@ float sp_radius;                 //radius, for modes that need a radius. For CIR
   If NOT defined, the IK algorithm will simply refuse to modify ANY servo endpoints
   when it encounters an asymptotic condition.
 */
-#define SLAM
+// #define SLAM
 
 /*
   Multiplier to apply to the output of the IK solution for each servo.
   NOTE: Even with aggro, the solution will never fall outside the range of
   [SERVO_ANGLE_MIN .. SERVO_ANGLE_MAX]
 */
-#define AGGRO       1.5F
+#define AGGRO       1.0F
 
 /*
    There are three axes of symmetry (AXIS1, AXIS2, AXIS3). Looking down on the
