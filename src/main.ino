@@ -55,6 +55,8 @@ asm(".global _scanf_float");
 
 //=== Actual code
 
+xy_coordf setpoint = DEFAULT_SETPOINT;
+
 Platform stu;            // Stewart platform object.
 
 #ifdef ENABLE_SERVOS
@@ -213,6 +215,7 @@ void setupNunchuck() {
 // TODO: This is blocking, because I'm too lazy to write a blink manager,
 // and manage blinking state across main loop iterations.
 void blink(int times, int millisecond=400) {
+  Logger::trace("blink (%d, %d)",times, millisecond);
   for(int i=0;i<times;i++) {
     digitalWrite(LED_BUILTIN, LOW);
     delay(millisecond/2);
