@@ -123,9 +123,9 @@ void setServoMicros(int i, int micros) {
   int val = micros;
   if (val >= SERVO_MIN_US && val <= SERVO_MAX_US) {
     sp_servo[i] = _toAngle(val);
-    Logger::trace("setServoMicros %d - %.2f µs", i, val);
+    Logger::trace("setServoMicros %d - %.2f us", i, val);
   } else {
-    Logger::warn("setServoMicros: Invalid value '%.2f' specified for servo #%d. Valid range is %d to %d µs.", val, i, SERVO_MIN_US, SERVO_MAX_US);
+    Logger::warn("setServoMicros: Invalid value '%.2f' specified for servo #%d. Valid range is %d to %d us.", val, i, SERVO_MIN_US, SERVO_MAX_US);
   }
 }
 
