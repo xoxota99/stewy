@@ -22,7 +22,7 @@
 #include <Nunchuk.h> //from https://github.com/hughpyle/machinesalem-arduino-libs/tree/master/nunchuk
 #include "config.h"
 
-typedef struct _chuck_data_entry {
+typedef struct ChuckData {
   bool buttonC;
   bool buttonZ;
   int joyX;

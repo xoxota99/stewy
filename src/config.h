@@ -64,11 +64,24 @@ const int SERVO_PINS[] = {  //pin numbers for each servo signal.
   5
 };
 
+
+typedef struct xy_coordf {
+  float x;  //-1.0 to 1.0
+  float y;   //-1.0 to 1.0
+} xy_coordf;
+
+const xy_coordf DEFAULT_SETPOINT = {0,0};
+
 /*
 * ======== Nunchuck Settings ==========
 */
 
 #ifdef ENABLE_NUNCHUCK
+
+/*
+  Define a deadband for the nunchuck joystick. If we're in the deadband during CONTROL mode, the platform will move to the HOME position.
+*/
+xy_coordf deadBand = {2,2};     //sort of using xy_coordf for the wrong thing here...
 
 /*
   Specifies the maximum time between button clicks that are interpreted as a
@@ -80,7 +93,7 @@ const int SERVO_PINS[] = {  //pin numbers for each servo signal.
 /*
   Epsilon values for floating point comparison of Nunchuck tilt values.
 */
-#define TILT_EPSILON 0.001
+// #define TILT_EPSILON 0.001
 
 //Different "modes" for the platform.
 enum Mode {
@@ -102,11 +115,13 @@ char const * modeStrings[] = {
 enum ControlSubMode {
   PITCH_ROLL, // Joystick controls the angle of the platform.
   HEAVE_YAW,  // Joystick Y axis controls the up-down movement of the platform, X axis controls the rotation of the platform.
+  SWAY_SURGE  // Joystick X axis controls sway, Y axis contrls surge.
 };
 
 char const * subModeStrings[] = {
   "PITCH_ROLL",
-  "HEAVE_YAW"
+  "HEAVE_YAW",
+  "SWAY_SURGE"
 };
 
 enum Direction {
@@ -119,10 +134,18 @@ char const * directionStrings[] = {
   "CCW"
 };
 
-Mode mode = SETPOINT;
-Direction dir = CW;
-ControlSubMode controlSubMode = PITCH_ROLL;
+#define DEFAULT_MODE        SETPOINT
+#define DEFAULT_SUB_MODE    PITCH_ROLL
+#define SETPOINT_MOVE_RATE  0.001F
 
+Mode mode = DEFAULT_MODE;
+Direction dir = CW;
+ControlSubMode controlSubMode = DEFAULT_SUB_MODE;
+
+#define DEFAULT_SPEED 0.2F;
+
+float sp_speed = DEFAULT_SPEED;  //speed (between 0.0 and 1.0) of the movement of the setpoint, for modes that support automatic setpoint movement.
+float sp_radius;                 //radius, for modes that need a radius. For CIRCLE, this is the plain old radius. For EIGHT, this is the farthest distance from the center of the plate.
 #endif    //ENABLE_NUNCHUCK
 
 
@@ -150,14 +173,14 @@ ControlSubMode controlSubMode = PITCH_ROLL;
   If NOT defined, the IK algorithm will simply refuse to modify ANY servo endpoints
   when it encounters an asymptotic condition.
 */
-#define SLAM
+// #define SLAM
 
 /*
   Multiplier to apply to the output of the IK solution for each servo.
   NOTE: Even with aggro, the solution will never fall outside the range of
   [SERVO_ANGLE_MIN .. SERVO_ANGLE_MAX]
 */
-#define AGGRO       1.5F
+#define AGGRO       1.0F
 
 /*
    There are three axes of symmetry (AXIS1, AXIS2, AXIS3). Looking down on the
@@ -226,11 +249,10 @@ const double B_COORDS[6][2] = {
   { -B_RAD * cos(AXIS3 + THETA_B), B_RAD * sin(AXIS3 + THETA_B)}
 };
 
-#ifdef ENABLE_TOUCHSCREEN
-
 /*
 * ============ Touchscreen config ============
 */
+#ifdef ENABLE_TOUCHSCREEN
 
 #define XP A7  // YELLOW / XRT. can be a digital pin.
 #define XM A6  // WHITE / XLE. must be an analog pin, use "An" notation!

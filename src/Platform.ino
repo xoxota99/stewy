@@ -88,7 +88,9 @@ bool Platform::moveTo(float *servoValues, int sway, int surge, int heave, float 
 #ifdef SLAM
       servo_deg = SERVO_MAX_ANGLE;
 #else
-      bOk = false;
+      // bOk = false;
+      //do nothing with this servo. We assume that it's current position is "close enough" (Not sure this is safe, but so far it works).
+      servo_deg=servoValues[i];
 #endif
       break;
     } else if (servo_deg > SERVO_MAX_ANGLE) {

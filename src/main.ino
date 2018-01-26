@@ -55,6 +55,8 @@ asm(".global _scanf_float");
 
 //=== Actual code
 
+xy_coordf setpoint = DEFAULT_SETPOINT;
+
 Platform stu;            // Stewart platform object.
 
 #ifdef ENABLE_SERVOS
@@ -143,6 +145,11 @@ void setupPlatform() {
 
 //Initialize servo interface, sweep all six servos from MIN to MAX, to MID, to ensure they're all physically working.
 void setupServos() {
+#ifdef ENABLE_SERVOS
+  int d=500;
+#else
+  int d=0;
+#endif
 
   for (int i = 0; i < 6; i++) {
 #ifdef ENABLE_SERVOS
@@ -151,19 +158,19 @@ void setupServos() {
     setServo(i, SERVO_MIN_ANGLE);
   }
   updateServos();
-  delay(500);
+  delay(d);
 
   for (int i = 0; i < 6; i++) {
     setServo(i, SERVO_MAX_ANGLE);
   }
   updateServos();
-  delay(500);
+  delay(d);
 
   for (int i = 0; i < 6; i++) {
     setServo(i, SERVO_MID_ANGLE);
   }
   updateServos();
-  delay(500);
+  delay(d);
 }
 
 /**
@@ -212,7 +219,8 @@ void setupNunchuck() {
 
 // TODO: This is blocking, because I'm too lazy to write a blink manager,
 // and manage blinking state across main loop iterations.
-void blink(int times, int millisecond=400) {
+void blink(int times, int millisecond=200) {
+  Logger::trace("blink (%d, %d)",times, millisecond);
   for(int i=0;i<times;i++) {
     digitalWrite(LED_BUILTIN, LOW);
     delay(millisecond/2);

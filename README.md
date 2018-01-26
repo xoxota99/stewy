@@ -42,6 +42,7 @@ We use a wiimote [nunchuck] (https://en.wikipedia.org/wiki/Wii_Remote#Nunchuk) t
     * Clicking the Z button cycles between two sub-modes:
       * **PITCH_ROLL** - (default) The joystick controls the pitch / roll of the platform.
       * **HEAVE_YAW** - The joystick controls the up/down and rotation of the platform.
+      * **SWAY_SURGE** - The joystick controls the forward/rear and left/right translation of the platform.
   * 3 blinks: **CIRCLE** - *(coming soon)* The setpoint will move in a circular pattern, around the center of the platform. In this mode:
     * The joystick Y-axis controls the speed of the movement.
     * Clicking the Z button stops the setpoint in place. While the setpoint is stopped, the Joystick can be used to change the radius of the circular movement. Clicking the Z button again resumes the circular movement.
