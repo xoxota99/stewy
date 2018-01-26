@@ -145,6 +145,11 @@ void setupPlatform() {
 
 //Initialize servo interface, sweep all six servos from MIN to MAX, to MID, to ensure they're all physically working.
 void setupServos() {
+#ifdef ENABLE_SERVOS
+  int d=500;
+#else
+  int d=0;
+#endif
 
   for (int i = 0; i < 6; i++) {
 #ifdef ENABLE_SERVOS
@@ -153,19 +158,19 @@ void setupServos() {
     setServo(i, SERVO_MIN_ANGLE);
   }
   updateServos();
-  delay(500);
+  delay(d);
 
   for (int i = 0; i < 6; i++) {
     setServo(i, SERVO_MAX_ANGLE);
   }
   updateServos();
-  delay(500);
+  delay(d);
 
   for (int i = 0; i < 6; i++) {
     setServo(i, SERVO_MID_ANGLE);
   }
   updateServos();
-  delay(500);
+  delay(d);
 }
 
 /**
