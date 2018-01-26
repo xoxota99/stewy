@@ -83,7 +83,6 @@ const xy_coordf DEFAULT_SETPOINT = {0,0};
 */
 xy_coordf deadBand = {2,2};     //sort of using xy_coordf for the wrong thing here...
 
-
 /*
   Specifies the maximum time between button clicks that are interpreted as a
   double-click. If the time between clicks exceeds this value, the clicks are
@@ -135,9 +134,13 @@ char const * directionStrings[] = {
   "CCW"
 };
 
-Mode mode = SETPOINT;
+#define DEFAULT_MODE        SETPOINT
+#define DEFAULT_SUB_MODE    PITCH_ROLL
+#define SETPOINT_MOVE_RATE  0.001F
+
+Mode mode = DEFAULT_MODE;
 Direction dir = CW;
-ControlSubMode controlSubMode = PITCH_ROLL;
+ControlSubMode controlSubMode = DEFAULT_SUB_MODE;
 
 #define DEFAULT_SPEED 0.2F;
 
