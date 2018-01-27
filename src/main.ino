@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #ifdef ENABLE_NUNCHUCK
 #include "nunchuck.h"
+
 #endif
 
 #ifdef ENABLE_SERIAL_COMMANDS
@@ -123,9 +124,9 @@ void setServoMicros(int i, int micros) {
   int val = micros;
   if (val >= SERVO_MIN_US && val <= SERVO_MAX_US) {
     sp_servo[i] = _toAngle(val);
-    Logger::trace("setServoMicros %d - %.2f µs", i, val);
+    Logger::trace("setServoMicros %d - %.2f us", i, val);
   } else {
-    Logger::warn("setServoMicros: Invalid value '%.2f' specified for servo #%d. Valid range is %d to %d µs.", val, i, SERVO_MIN_US, SERVO_MAX_US);
+    Logger::warn("setServoMicros: Invalid value '%.2f' specified for servo #%d. Valid range is %d to %d us.", val, i, SERVO_MIN_US, SERVO_MAX_US);
   }
 }
 
@@ -217,18 +218,6 @@ void setupNunchuck() {
   #endif
 }
 
-// TODO: This is blocking, because I'm too lazy to write a blink manager,
-// and manage blinking state across main loop iterations.
-void blink(int times, int millisecond=200) {
-  Logger::trace("blink (%d, %d)",times, millisecond);
-  for(int i=0;i<times;i++) {
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(millisecond/2);
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(millisecond/2);
-  }
-}
-
 void setup() {
   Logger::level = LOG_LEVEL;    //config.h
 
@@ -254,6 +243,7 @@ void loop() {
 
 #ifdef ENABLE_NUNCHUCK
   processNunchuck();
+  blinker.loop();
 #endif
 
 #ifdef ENABLE_TOUCHSCREEN

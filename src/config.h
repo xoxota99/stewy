@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <Blinker.h>
 
 /*
    6dof-stewduino
@@ -77,6 +78,8 @@ const xy_coordf DEFAULT_SETPOINT = {0,0};
 */
 
 #ifdef ENABLE_NUNCHUCK
+
+Blinker blinker = Blinker::attach(LED_BUILTIN, false, 150, 150);
 
 /*
   Define a deadband for the nunchuck joystick. If we're in the deadband during CONTROL mode, the platform will move to the HOME position.
