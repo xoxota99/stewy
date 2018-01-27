@@ -32,7 +32,7 @@
   them to a "safe" value. Commenting this line out allows to test things that
   are not servo-related, without killing the battery, or overheating the servos.
 */
-#define ENABLE_SERVOS
+// #define ENABLE_SERVOS
 
 #define LOG_LEVEL       Logger::DEBUG
 
@@ -92,6 +92,11 @@ xy_coordf deadBand = {2,2};     //sort of using xy_coordf for the wrong thing he
   interpreted as single clicks.
 */
 #define NUNCHUCK_DBLCLICK_THRESHOLD_MS  500
+
+/*
+  Delay between movements of the Setpoint, in SQUARE mode.
+*/
+#define SQUARE_DELAY_MS 1000
 
 /*
   Epsilon values for floating point comparison of Nunchuck tilt values.
