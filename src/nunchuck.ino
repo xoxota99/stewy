@@ -92,17 +92,17 @@ void processNunchuck()
 
         double inc = (float)nc.getJoyY()/1000;    //a number between -0.1 and 0.1
         if(abs(nc.getJoyY()) > deadBand.y){
-          sp_speed+=inc;
-          sp_speed = fmin(fmax(sp_speed,0),1);
+          sp_speed += inc;
+          sp_speed = fmin(fmax(sp_speed,0.001),1);
         }
 
-        //max speed is, say, 1 degree. So we want to move 1 degree around a circle of radius sp_radius.
+        //max speed is, say, 1 degree. So at max speed, we want to move 1 degree around a circle of radius sp_radius.
         float step = radians(1) * sp_speed;
         float x = cos(step) * setpoint.x - sin(step) * setpoint.y;
         float y = sin(step) * setpoint.x + cos(step) * setpoint.y;
         setpoint = {x,y};
 
-        Logger::trace("%d\t%d",(int)(x*100),(int)(y*100));
+        Logger::debug("%d\t%d",(int)(x*100),(int)(y*100));
         break;
       }
     case EIGHT: {
@@ -183,13 +183,15 @@ void onCButtonDown() {
 }
 
 void setMode(Mode _mode){
+
   mode = _mode;
   Logger::debug("Mode = %s",modeStrings[mode]);
   blinker.blink(int(mode)+1);
 
   //initialize the mode
-  sp_speed = DEFAULT_SPEED;   //reset to default speed.
-  controlSubMode = DEFAULT_SUB_MODE;
+  sp_speed = DEFAULT_SPEED;           //reset to default speed.
+  controlSubMode = DEFAULT_SUB_MODE;  //reset to default subMode.
+  stu.home(sp_servo);                 //reset the platform.
 
   //TODO: Make sure that the radius never goes outside the actual plate.
   sp_radius = sqrt(pow(setpoint.x - DEFAULT_SETPOINT.x,2) + pow(setpoint.y - DEFAULT_SETPOINT.y,2));  //radius is based on wherever the setpoint is right now.
