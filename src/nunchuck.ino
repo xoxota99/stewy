@@ -48,7 +48,30 @@ void processNunchuck()
       }
     }
 
+    //TODO: Quite a few magic numbers that should be refactored out.
     switch (mode) {
+      case SETPOINT: {
+          // Joystick moves the setpoint.
+          // joystick is on a scale of -100 to 100
+          // setpoint is on  ascale of -1 to 1.
+          // at max stick, the setpoint should move at a rate of SETPOINT_MOVE_RATE.
+          if(abs(nc.getJoyX())>deadBand.x ||
+            abs(nc.getJoyY())>deadBand.y) {
+            float x=setpoint.x, y=setpoint.y;
+            x+=(SETPOINT_MOVE_RATE * nc.getJoyX()/100.0);
+            y+=(SETPOINT_MOVE_RATE * nc.getJoyY()/100.0);
+
+            x=fmin(fmax(x,-1),1);
+            y=fmin(fmax(y,-1),1);
+
+            setpoint = {x,y};
+            Logger::trace("SP: %.2f\t%.2f",setpoint.x,setpoint.y);
+          }
+
+          //NOTE: Actual platform behavior in this mode is handled in touch.ino
+
+          break;
+        }
       case CONTROL:
         if(abs(nc.getJoyX()) > deadBand.x ||
            abs(nc.getJoyY()) > deadBand.y) {
@@ -102,7 +125,7 @@ void processNunchuck()
         float y = sin(step) * setpoint.x + cos(step) * setpoint.y;
         setpoint = {x,y};
 
-        Logger::debug("%d\t%d",(int)(x*100),(int)(y*100));
+        Logger::trace("SP: %.2f\t%.2f",setpoint.x,setpoint.y);
         break;
       }
     case EIGHT: {
@@ -113,30 +136,22 @@ void processNunchuck()
         float y = scale * sin(2*t) / 2;
         setpoint = {x,y};
 
-        Logger::trace("%d\t%d",(int)(x*100),(int)(y*100));
+        Logger::trace("SP: %.2f\t%.2f",setpoint.x,setpoint.y);
         break;
       }
     case SQUARE:
-      break;
-    case SETPOINT: {
-        // Joystick moves the setpoint.
-        // joystick is on a scale of -100 to 100
-        // setpoint is on  ascale of -1 to 1.
-        // at max stick, the setpoint should move at a rate of SETPOINT_MOVE_RATE.
-        if(abs(nc.getJoyX())>deadBand.x ||
-          abs(nc.getJoyY())>deadBand.y) {
-          float x=setpoint.x, y=setpoint.y;
-          x+=(SETPOINT_MOVE_RATE * nc.getJoyX()/100.0);
-          y+=(SETPOINT_MOVE_RATE * nc.getJoyY()/100.0);
-
-          x=fmin(fmax(x,-1),1);
-          y=fmin(fmax(y,-1),1);
-
-          setpoint = {x,y};
-          Logger::debug("%.3f\t%.3f",x,y);
+      if(millis() - lastSquareShiftTime > SQUARE_DELAY_MS) {
+        if((setpoint.x>0 && setpoint.y > 0 && dir==CCW) ||
+          (setpoint.x>0 && setpoint.y < 0 && dir==CW) ||
+          (setpoint.x<0 && setpoint.y > 0 && dir==CW) ||
+          (setpoint.x<0 && setpoint.y < 0 && dir==CCW)){
+          setpoint.x = -setpoint.x;
+        } else {
+          setpoint.y = -setpoint.y;
         }
-        break;
+        Logger::trace("SP: %.2f\t%.2f",setpoint.x,setpoint.y);
       }
+      break;
     default:
       break;
     }
