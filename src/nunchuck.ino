@@ -185,7 +185,7 @@ void onCButtonDown() {
 void setMode(Mode _mode){
   mode = _mode;
   Logger::debug("Mode = %s",modeStrings[mode]);
-  // blink(int(mode)+1);
+  blinker.blink(int(mode)+1);
 
   //initialize the mode
   sp_speed = DEFAULT_SPEED;   //reset to default speed.
