@@ -296,27 +296,29 @@ const double B_COORDS[6][2] = {
 #define XP A7  // YELLOW / XRT. can be a digital pin.
 #define XM A6  // WHITE / XLE. must be an analog pin, use "An" notation!
 
-#define YP A9  // BLACK / YUP. must be an analog pin, use "An" notation!
-#define YM A8  // RED / YLO. can be a digital pin.
+#define YP A8  // RED / YLO. must be an analog pin, use "An" notation!
+#define YM A9  // BLACK / YUP. can be a digital pin.
 
 // For better pressure precision, we need to know the resistance
 // between X+ and X- Use any multimeter to read it
 // For the one we're using, its 711 ohms across the X plate
 #define TS_OHMS 711 //resistance between X+ and X-
 
-
 //The Adafruit touchscreen library returns raw values from the ADC (between 0-1024).
 //Here, we adjust for our specific touchscreen part. (In this case, https://www.digikey.com/product-detail/en/nkk-switches/FTAS00-12.1AN-4/360-3520-ND/6823699)
 
-//X and Y values are not completely independent. This defines the linear
-//fall-off rate of the Y value, in terms of a slope constant.
-#define TS_SLOPE_Y            -0.325
-
 //Min / max values of X and Y.
-#define TS_MIN_X              5         //this is just to protect against the "no-touch" X value of zero.
-#define TS_MAX_X              800
+#define TS_MIN_X              1
+#define TS_MAX_X              950       //1023
+const int TS_WIDTH = TS_MAX_X-TS_MIN_X;
+
 #define TS_MIN_Y              100
-#define TS_MAX_Y              800
+#define TS_MAX_Y              930       //1023
+const int TS_HEIGHT = TS_MAX_Y-TS_MIN_Y;
+
+double setpointX=512, inputX, outputX;
+double setpointY=512, inputY, outputY;
+
 
 #endif    //ENABLE_TOUCHSCREEN
 
