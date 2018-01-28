@@ -74,6 +74,37 @@ typedef struct xy_coordf {
 const xy_coordf DEFAULT_SETPOINT = {0,0};
 
 /*
+  NOTE: The actual "min" and "max" for each DOF are interdependent. eg:
+  If the platform is pitched by some amount, the roll min/max will be physically
+  different than what's defined here. These are just the absolute maximums under
+  ideal conditions (eg: max for roll when pitch is zero).
+*/
+
+#define MIN_PITCH  -20
+#define MAX_PITCH  23
+const int PITCH_BAND = MAX_PITCH - MIN_PITCH;
+
+#define MIN_ROLL   -23
+#define MAX_ROLL   20
+const int ROLL_BAND = MAX_ROLL - MIN_ROLL;
+
+#define MIN_YAW   -69
+#define MAX_YAW   69
+const int YAW_BAND = MAX_YAW - MIN_YAW;
+
+#define MIN_SWAY   -55
+#define MAX_SWAY   55
+const int SWAY_BAND = MAX_SWAY - MIN_SWAY;
+
+#define MIN_SURGE   -70
+#define MAX_SURGE   55
+const int SURGE_BAND = MAX_SURGE - MIN_SURGE;
+
+#define MIN_HEAVE   -22
+#define MAX_HEAVE   25
+const int HEAVE_BAND = MAX_HEAVE - MIN_HEAVE;
+
+/*
 * ======== Nunchuck Settings ==========
 */
 
