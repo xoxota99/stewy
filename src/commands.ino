@@ -319,7 +319,7 @@ int handleDump(int argc, char** argv) {
 #ifdef ENABLE_SERVOS
     Logger::info("s%d (physical, setpoint, us) = (%d, %.2f, %.2f)", i, servos[i].read(), sp_servo[i], _toUs(servos[i].read()));
 #else
-    Logger::info("s%d (physical, setpoint, us) = (N/A, %.2f, %.2f)", i, sp_servo[i], _toUs(servos[i].read()));
+    Logger::info("s%d (physical, setpoint, us) = (N/A, %.2f, N/A)", i, sp_servo[i]);
 #endif
   }
 
