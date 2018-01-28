@@ -110,7 +110,7 @@ const int HEAVE_BAND = MAX_HEAVE - MIN_HEAVE;
 
 #ifdef ENABLE_NUNCHUCK
 
-Blinker blinker = Blinker::attach(LED_BUILTIN, false, 150, 150);
+Blinker blinker = Blinker::attach(LED_BUILTIN, true, 150, 150);
 
 /*
   Define a deadband for the nunchuck joystick. If we're in the deadband during CONTROL mode, the platform will move to the HOME position.
