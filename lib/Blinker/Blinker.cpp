@@ -11,7 +11,7 @@ Blinker Blinker::attach(int pin, bool invert, int onTime, int offTime){
   b._offTime = offTime;
   b._state=false;
   pinMode(b._pin, OUTPUT);
-  digitalWrite(b._pin, LOW);
+  digitalWrite(b._pin, b._invert ? HIGH : LOW);
   b._lastFall=millis();
   return b;
 }
@@ -26,7 +26,7 @@ void Blinker::blink(int times){
     _numerator=0;
     _lastFall=0;
     _state=true;
-    digitalWrite(_pin, HIGH); //start.
+    digitalWrite(_pin, _invert ? LOW : HIGH); //start.
     _lastRise=millis();
   }
 }
@@ -40,13 +40,13 @@ void Blinker::loop() {
       if(_state && millis()-_lastRise >= _onTime){
         //time to turn off.
         _state=false;
-        digitalWrite(_pin, LOW);
+        digitalWrite(_pin, _invert ? HIGH : LOW);
         _numerator++;
         _lastFall=millis();
       } else if(!_state && millis()-_lastFall >= _offTime){
         _state=true;
         //time to turn on.
-        digitalWrite(_pin, HIGH);
+        digitalWrite(_pin, _invert ? LOW : HIGH);
         _lastRise=millis();
       }
     }
@@ -57,7 +57,7 @@ void Blinker::loop() {
   Detach the Blinker from the output pin. subsequent calls to blink() or loop() will have no effect.
 */
 void Blinker::detach(){
-  digitalWrite(_pin, LOW);
+  digitalWrite(_pin, _invert ? HIGH : LOW);
   _lastFall=millis();
 
   _pin=-1;    //Yes, okay, this is a magic number.
