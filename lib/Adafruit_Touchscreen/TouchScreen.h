@@ -22,6 +22,10 @@ typedef volatile uint32_t RwReg;
   #define USE_FAST_PINIO
 #endif
 
+#if defined(__arm__)
+  #define VOLTAGE_SETTLE 100
+#endif
+
 class TSPoint {
  public:
   TSPoint(void);

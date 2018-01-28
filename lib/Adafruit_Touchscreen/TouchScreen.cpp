@@ -74,7 +74,7 @@ TSPoint TouchScreen::getPoint(void) {
 #endif
 
 #ifdef __arm__
-  delayMicroseconds(20); // Fast ARM chips need to allow voltages to settle
+  delayMicroseconds(VOLTAGE_SETTLE); // Fast ARM chips need to allow voltages to settle
 #endif
 
    for (i=0; i<NUMSAMPLES; i++) {
@@ -111,7 +111,7 @@ TSPoint TouchScreen::getPoint(void) {
 
   
 #ifdef __arm__
-   delayMicroseconds(20); // Fast ARM chips need to allow voltages to settle
+   delayMicroseconds(VOLTAGE_SETTLE); // Fast ARM chips need to allow voltages to settle
 #endif
 
    for (i=0; i<NUMSAMPLES; i++) {
