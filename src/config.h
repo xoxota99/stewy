@@ -31,7 +31,7 @@
   them to a "safe" value. Commenting this line out allows to test things that
   are not servo-related, without killing the battery, or overheating the servos.
 */
-// #define ENABLE_SERVOS
+#define ENABLE_SERVOS
 
 #define LOG_LEVEL       Logger::DEBUG
 
