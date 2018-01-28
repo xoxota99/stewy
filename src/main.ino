@@ -96,7 +96,7 @@ void updateServos() {
     if (val != sValues[i]) {
       //don't write to the servo if you don't have to.
       sValues[i] = val;
-      Logger::trace("s%d = %.2f + %d (value + trim)", i, val, SERVO_TRIM[i]);
+      Logger::trace("SRV: s%d = %.2f + %d (value + trim)", i, val, SERVO_TRIM[i]);
 
 #ifdef ENABLE_SERVOS
       servos[i].writeMicroseconds(min(SERVO_MAX_US, max(SERVO_MIN_US, (int)val + SERVO_TRIM[i])));
@@ -133,6 +133,12 @@ void setServoMicros(int i, int micros) {
 void setupTouchscreen() {
   #ifdef ENABLE_TOUCHSCREEN
   Logger::debug("Touchscreen ENABLED.");
+  rollPID.SetSampleTime(10);
+  pitchPID.SetSampleTime(10);
+  rollPID.SetOutputLimits(-128,128);
+  pitchPID.SetOutputLimits(-128,128);
+  rollPID.SetMode(AUTOMATIC);
+  pitchPID.SetMode(AUTOMATIC);
   #else
   Logger::debug("Touchscreen DISABLED.");
   #endif

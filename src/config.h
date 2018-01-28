@@ -319,6 +319,9 @@ const int TS_HEIGHT = TS_MAX_Y-TS_MIN_Y;
 double setpointX=512, inputX, outputX;
 double setpointY=512, inputY, outputY;
 
+//Specify the links and initial tuning parameters
+double PX=2, IX=.05, DX=0;
+double PY=1.33, IY=0, DY=0;  //reflects the aspect ratio of the actual touch sensor (4:3)
 
 #endif    //ENABLE_TOUCHSCREEN
 

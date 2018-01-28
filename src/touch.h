@@ -22,10 +22,13 @@
 #ifdef ENABLE_TOUCHSCREEN
 #include <TouchScreen.h> //from https://github.com/adafruit/Touch-Screen-Library
 #include "config.h"
+#include <PID_v1.h> //https://github.com/br3ttb/Arduino-PID-Library
+
+PID rollPID(&inputX, &outputX, &setpointX, PX, IX, DX, P_ON_E, DIRECT);
+PID pitchPID(&inputY, &outputY, &setpointY, PY, IY, DY, P_ON_E, REVERSE);  //REVERSE
+TouchScreen ts(XP, YP, XM, YM, TS_OHMS);
 
 void processTouchscreen();
-
-TouchScreen ts = TouchScreen(XP, YP, XM, YM, TS_OHMS);
 
 #endif  //ENABLE_TOUCHSCREEN
 #endif  //__STU_TOUCH_H__
