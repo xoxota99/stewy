@@ -29,7 +29,8 @@
 /*
   Comment out, to disable Servos. Servos can get hot if you don't set
   them to a "safe" value. Commenting this line out allows to test things that
-  are not servo-related, without killing the battery, or overheating the servos.
+  are not servo-related, without killing the battery, browning out the USB,
+  or overheating the servos.
 */
 #define ENABLE_SERVOS
 
