@@ -215,11 +215,11 @@ float sp_radius;                 //radius, for modes that need a radius. For CIR
 // #define SLAM
 
 /*
-  Multiplier to apply to the output of the IK solution for each servo.
+  Prescalar to the output of the platform IK solution for each servo.
   NOTE: Even with aggro, the solution will never fall outside the range of
   [SERVO_ANGLE_MIN .. SERVO_ANGLE_MAX]
 */
-#define AGGRO       1.0F
+#define AGGRO       1.5F
 
 /*
    There are three axes of symmetry (AXIS1, AXIS2, AXIS3). Looking down on the
