@@ -1,6 +1,3 @@
-#include <Arduino.h>
-#include <Blinker.h>
-
 /*
    6dof-stewduino
    Copyright (C) 2018  Philippe Desrosiers
@@ -19,6 +16,8 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <Arduino.h>
+#include <Blinker.h>
 
 #ifndef __STU_CONFIG_H__
 #define __STU_CONFIG_H__

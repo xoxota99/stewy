@@ -1,4 +1,3 @@
-
 #ifndef __STU_TOUCH_H__
 #define __STU_TOUCH_H__
 /*

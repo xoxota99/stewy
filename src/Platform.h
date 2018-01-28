@@ -1,4 +1,3 @@
-
 #ifndef __STU_PLATFORM_H__
 #define __STU_PLATFORM_H__
 /*
@@ -30,7 +29,7 @@
 class Platform {
 
 private:
-  
+
 //Setpoints (internal state)
 int _sp_sway = 0,           //sway (x) in mm
     _sp_surge = 0,          //surge (y) in mm
