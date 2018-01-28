@@ -18,6 +18,7 @@
 */
 
 #include "commands.h"
+#include "config.h"
 
 void processCommands()
 {
@@ -41,9 +42,9 @@ int shell_reader(char * data)
 }
 
 /**
-Function to write data to serial port
-Functions to write to physical media should use this prototype
-void my_writer_function(char data)
+  Function to write data to serial port
+  Functions to write to physical media should use this prototype
+  void my_writer_function(char data)
 */
 void shell_writer(char data)
 {
@@ -51,37 +52,37 @@ void shell_writer(char data)
 }
 
 int handleDemo(int argc, char** argv) {
-  const int d = 300;
+  const int d = 500;
 
   const int dval[][6]= {
     //sway
-    {50, 0, 0, 0, 0, 0},
-    {-50, 0, 0, 0, 0, 0},
+    {MAX_SWAY, 0, 0, 0, 0, 0},
+    {MIN_SWAY, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0},
 
     //surge
-    {0, 55, 0, 0, 0, 0},
-    {0, -55, 0, 0, 0, 0},
+    {0, MAX_SURGE, 0, 0, 0, 0},
+    {0, MIN_SURGE, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0},
 
     //heave
-    {0, 0, 25, 0, 0, 0},
-    {0, 0, -22, 0, 0, 0},
+    {0, 0, MAX_HEAVE, 0, 0, 0},
+    {0, 0, MIN_HEAVE, 0, 0, 0},
     {0, 0, 0, 0, 0, 0},
 
     //pitch
-    {0, 0, 0, 32, 0, 0},
-    {0, 0, 0, -29, 0, 0},
+    {0, 0, 0, MAX_PITCH, 0, 0},
+    {0, 0, 0, MIN_PITCH, 0, 0},
     {0, 0, 0, 0, 0, 0},
 
     //roll
-    {0, 0, 0, 0, 30, 0},
-    {0, 0, 0, 0, -30, 0},
+    {0, 0, 0, 0, MAX_ROLL, 0},
+    {0, 0, 0, 0, MIN_ROLL, 0},
     {0, 0, 0, 0, 0, 0},
 
     //yaw
-    {0, 0, 0, 0, 0, 69},
-    {0, 0, 0, 0, 0, -69},
+    {0, 0, 0, 0, 0, MAX_YAW},
+    {0, 0, 0, 0, 0, MIN_YAW},
     {0, 0, 0, 0, 0, 0}
   };
 
@@ -187,17 +188,10 @@ Print some help.
 */
 int handleHelp(int argc, char** argv)
 {
-  Logger::info("demo      Do a little dance.");
-  Logger::info("dump      Display information about the system.");
-  Logger::info("moveTo    Move the platform to the specified pitch / roll (in degrees).");
-  Logger::info("reset     Restart the system.");
-  Logger::info("set       Set a specific servo to a specific angle (in degrees).");
-  Logger::info("mset      Set a specific servo to a specific angle (in microseconds).");
-  Logger::info("setall    Set all servos to a specific angle (in degrees).");
-  Logger::info("msetall   Set all servos to a specific angle (in microseconds).");
-  Logger::info("log       Set the log level.");
-  Logger::info("help | ?  This message.");
-
+  int size=*(&commands + 1) - commands;
+  for(int i=0;i<size;i++){
+    Logger::info("%s\t\t%s",commands[i].shell_command_string, commands[i].shell_help_string);
+  }
   return SHELL_RET_SUCCESS;
 }
 
