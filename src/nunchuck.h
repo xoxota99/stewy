@@ -48,6 +48,8 @@ ChuckData chuckTrim = {
   -2
 };
 
+unsigned long lastSquareShiftTime = 0L;
+
 // bool zDown, cDown;
 
 void processNunchuck();

@@ -1,4 +1,3 @@
-
 /*
    6dof-stewduino
    Copyright (C) 2018  Philippe Desrosiers

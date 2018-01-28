@@ -1,6 +1,3 @@
-#include <Arduino.h>
-#include <Blinker.h>
-
 /*
    6dof-stewduino
    Copyright (C) 2018  Philippe Desrosiers
@@ -19,6 +16,8 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <Arduino.h>
+#include <Blinker.h>
 
 #ifndef __STU_CONFIG_H__
 #define __STU_CONFIG_H__
@@ -74,12 +73,43 @@ typedef struct xy_coordf {
 const xy_coordf DEFAULT_SETPOINT = {0,0};
 
 /*
+  NOTE: The actual "min" and "max" for each DOF are interdependent. eg:
+  If the platform is pitched by some amount, the roll min/max will be physically
+  different than what's defined here. These are just the absolute maximums under
+  ideal conditions (eg: max for roll when pitch is zero).
+*/
+
+#define MIN_PITCH  -20
+#define MAX_PITCH  23
+const int PITCH_BAND = MAX_PITCH - MIN_PITCH;
+
+#define MIN_ROLL   -23
+#define MAX_ROLL   20
+const int ROLL_BAND = MAX_ROLL - MIN_ROLL;
+
+#define MIN_YAW   -69
+#define MAX_YAW   69
+const int YAW_BAND = MAX_YAW - MIN_YAW;
+
+#define MIN_SWAY   -55
+#define MAX_SWAY   55
+const int SWAY_BAND = MAX_SWAY - MIN_SWAY;
+
+#define MIN_SURGE   -70
+#define MAX_SURGE   55
+const int SURGE_BAND = MAX_SURGE - MIN_SURGE;
+
+#define MIN_HEAVE   -22
+#define MAX_HEAVE   25
+const int HEAVE_BAND = MAX_HEAVE - MIN_HEAVE;
+
+/*
 * ======== Nunchuck Settings ==========
 */
 
 #ifdef ENABLE_NUNCHUCK
 
-Blinker blinker = Blinker::attach(LED_BUILTIN, false, 150, 150);
+Blinker blinker = Blinker::attach(LED_BUILTIN, true, 150, 150);
 
 /*
   Define a deadband for the nunchuck joystick. If we're in the deadband during CONTROL mode, the platform will move to the HOME position.
@@ -92,6 +122,11 @@ xy_coordf deadBand = {2,2};     //sort of using xy_coordf for the wrong thing he
   interpreted as single clicks.
 */
 #define NUNCHUCK_DBLCLICK_THRESHOLD_MS  500
+
+/*
+  Delay between movements of the Setpoint, in SQUARE mode.
+*/
+#define SQUARE_DELAY_MS 1000
 
 /*
   Epsilon values for floating point comparison of Nunchuck tilt values.
@@ -179,11 +214,11 @@ float sp_radius;                 //radius, for modes that need a radius. For CIR
 // #define SLAM
 
 /*
-  Multiplier to apply to the output of the IK solution for each servo.
+  Prescalar to the output of the platform IK solution for each servo.
   NOTE: Even with aggro, the solution will never fall outside the range of
   [SERVO_ANGLE_MIN .. SERVO_ANGLE_MAX]
 */
-#define AGGRO       1.0F
+#define AGGRO       1.5F
 
 /*
    There are three axes of symmetry (AXIS1, AXIS2, AXIS3). Looking down on the
@@ -260,27 +295,32 @@ const double B_COORDS[6][2] = {
 #define XP A7  // YELLOW / XRT. can be a digital pin.
 #define XM A6  // WHITE / XLE. must be an analog pin, use "An" notation!
 
-#define YP A9  // BLACK / YUP. must be an analog pin, use "An" notation!
-#define YM A8  // RED / YLO. can be a digital pin.
+#define YP A8  // RED / YLO. must be an analog pin, use "An" notation!
+#define YM A9  // BLACK / YUP. can be a digital pin.
 
 // For better pressure precision, we need to know the resistance
 // between X+ and X- Use any multimeter to read it
 // For the one we're using, its 711 ohms across the X plate
 #define TS_OHMS 711 //resistance between X+ and X-
 
-
 //The Adafruit touchscreen library returns raw values from the ADC (between 0-1024).
 //Here, we adjust for our specific touchscreen part. (In this case, https://www.digikey.com/product-detail/en/nkk-switches/FTAS00-12.1AN-4/360-3520-ND/6823699)
 
-//X and Y values are not completely independent. This defines the linear
-//fall-off rate of the Y value, in terms of a slope constant.
-#define TS_SLOPE_Y            -0.325
-
 //Min / max values of X and Y.
-#define TS_MIN_X              5         //this is just to protect against the "no-touch" X value of zero.
-#define TS_MAX_X              800
+#define TS_MIN_X              1
+#define TS_MAX_X              950       //1023
+const int TS_WIDTH = TS_MAX_X-TS_MIN_X;
+
 #define TS_MIN_Y              100
-#define TS_MAX_Y              800
+#define TS_MAX_Y              930       //1023
+const int TS_HEIGHT = TS_MAX_Y-TS_MIN_Y;
+
+double setpointX=512, inputX, outputX;
+double setpointY=512, inputY, outputY;
+
+//Specify the links and initial tuning parameters
+double PX=2, IX=.05, DX=0;
+double PY=1.33, IY=0, DY=0;  //reflects the aspect ratio of the actual touch sensor (4:3)
 
 #endif    //ENABLE_TOUCHSCREEN
 

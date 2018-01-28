@@ -1,4 +1,3 @@
-
 #ifndef __STU_COMMANDS_H__
 #define __STU_COMMANDS_H__
 /*
@@ -22,12 +21,14 @@
 #ifdef ENABLE_SERIAL_COMMANDS
 #include <Shell.h>  //https://github.com/geekfactory/Shell
 
-typedef struct shell_command_entry Command;
+typedef struct Command {
+	shell_program_t shell_program;
+	const char * shell_command_string;
+	const char * shell_help_string;
+} Command;
 
 void processCommands();
-
 int shell_reader(char * data);
-
 void shell_writer(char data);
 
 int handleSet(int argc, char** argv);
@@ -44,17 +45,17 @@ int handleLog(int argc, char** argv);
 //===
 
 const Command commands[] = {
-  {handleHelp,    "help"},
-  {handleHelp,    "?"},
-  {handleSet,     "set"},
-  {handleMSet,    "mset"},
-  {handleSetAll,  "setall"},
-  {handleMSetAll, "msetall"},
-  {handleDump,    "dump"},
-  {handleReset,   "reset"},
-  {handleMoveTo,  "moveto"},
-  {handleDemo,    "demo"},
-  {handleLog,     "log"}
+  {handleHelp,    "help",     "This message."},
+  {handleDemo,    "demo",     "Do a little dance."},
+  {handleDump,    "dump",     "Display information about the system."},
+  {handleLog,     "log",      "Set the log level"},
+  {handleMoveTo,  "moveto",   "Move the platform to the specified pitch / roll (in degrees)."},
+  {handleMSet,    "mset",     "Set a specific servo to a specific angle (in microseconds)."},
+  {handleMSetAll, "msetall",  "Set all servos to a specific angle (in microseconds)."},
+  {handleHelp,    "?",        "Synonym for 'help'"},
+  {handleReset,   "reset",    "Restart the system."},
+  {handleSet,     "set",      "Set a specific servo to a specific angle (in degrees)."},
+  {handleSetAll,  "setall",   "Set all servos to a specific angle (in degrees)."}
 };
 
 #endif //ENABLE_SERIAL_COMMANDS

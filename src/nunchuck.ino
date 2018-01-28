@@ -48,14 +48,37 @@ void processNunchuck()
       }
     }
 
+    //TODO: Quite a few magic numbers that should be refactored out.
     switch (mode) {
+      case SETPOINT: {
+          // Joystick moves the setpoint.
+          // joystick is on a scale of -100 to 100
+          // setpoint is on  ascale of -1 to 1.
+          // at max stick, the setpoint should move at a rate of SETPOINT_MOVE_RATE.
+          if(abs(nc.getJoyX())>deadBand.x ||
+            abs(nc.getJoyY())>deadBand.y) {
+            float x=setpoint.x, y=setpoint.y;
+            x+=(SETPOINT_MOVE_RATE * nc.getJoyX()/100.0);
+            y+=(SETPOINT_MOVE_RATE * nc.getJoyY()/100.0);
+
+            x=fmin(fmax(x,-1),1);
+            y=fmin(fmax(y,-1),1);
+
+            setpoint = {x,y};
+            Logger::trace("SP: %.2f\t%.2f",setpoint.x,setpoint.y);
+          }
+
+          //NOTE: Actual platform behavior in this mode is handled in touch.ino
+
+          break;
+        }
       case CONTROL:
         if(abs(nc.getJoyX()) > deadBand.x ||
            abs(nc.getJoyY()) > deadBand.y) {
           switch (controlSubMode) {
             case PITCH_ROLL: {
-              double pitch = -((((float)nc.getJoyY() + 100)/200 * 43) - 23);    //a number between -20 and 23
-              double roll = (((float)nc.getJoyX() + 100)/200 * 43) - 23;        //a number between -23 and 20
+              double pitch = -((((float)nc.getJoyY() + 100)/200 * PITCH_BAND) + MIN_PITCH);    //MAGIC: a number between -20 and 23
+              double roll = (((float)nc.getJoyX() + 100)/200 * ROLL_BAND) + MIN_ROLL;        //MAGIC: a number between -23 and 20
 
               Logger::trace("PITCH_ROLL moving to %.2f , %.2f",pitch,roll);
               stu.moveTo(sp_servo, pitch, roll);
@@ -63,8 +86,8 @@ void processNunchuck()
               break;
             }
             case SWAY_SURGE: {
-              double surge = (((float)nc.getJoyY() + 100)/200 * 118) - 59;    //a number between -59 and 59
-              double sway = (((float)nc.getJoyX() + 100)/200 * 127) - 71;        //a number between -71 and 56
+              double surge = (((float)nc.getJoyY() + 100)/200 * SURGE_BAND) + MIN_SURGE;    //a number between -59 and 59
+              double sway = (((float)nc.getJoyX() + 100)/200 * SWAY_BAND) + MIN_SWAY;        //a number between -71 and 56
 
               Logger::trace("SWAY_SURGE moving to %.2f , %.2f",sway,surge);
               stu.moveTo(sp_servo, sway, surge, 0, 0, 0, 0);
@@ -72,8 +95,8 @@ void processNunchuck()
               break;
             }
             case HEAVE_YAW: {
-              double heave = (((float)nc.getJoyY() + 100)/200 * 49) - 22;    //a number between -22 and 27
-              double yaw = (((float)nc.getJoyX() + 100)/200 * 138) - 69;        //a number between -69 and 69
+              double heave = (((float)nc.getJoyY() + 100)/200 * HEAVE_BAND) + MIN_HEAVE;    //a number between -22 and 27
+              double yaw = (((float)nc.getJoyX() + 100)/200 * YAW_BAND) + MIN_YAW;        //a number between -69 and 69
 
               Logger::trace("HEAVE_YAW moving to %.2f , %.2f",heave,yaw);
               stu.moveTo(sp_servo, 0, 0, heave, 0, 0, yaw);
@@ -102,7 +125,7 @@ void processNunchuck()
         float y = sin(step) * setpoint.x + cos(step) * setpoint.y;
         setpoint = {x,y};
 
-        Logger::debug("%d\t%d",(int)(x*100),(int)(y*100));
+        Logger::trace("SP: %.2f\t%.2f",setpoint.x,setpoint.y);
         break;
       }
     case EIGHT: {
@@ -113,30 +136,22 @@ void processNunchuck()
         float y = scale * sin(2*t) / 2;
         setpoint = {x,y};
 
-        Logger::trace("%d\t%d",(int)(x*100),(int)(y*100));
+        Logger::trace("SP: %.2f\t%.2f",setpoint.x,setpoint.y);
         break;
       }
     case SQUARE:
-      break;
-    case SETPOINT: {
-        // Joystick moves the setpoint.
-        // joystick is on a scale of -100 to 100
-        // setpoint is on  ascale of -1 to 1.
-        // at max stick, the setpoint should move at a rate of SETPOINT_MOVE_RATE.
-        if(abs(nc.getJoyX())>deadBand.x ||
-          abs(nc.getJoyY())>deadBand.y) {
-          float x=setpoint.x, y=setpoint.y;
-          x+=(SETPOINT_MOVE_RATE * nc.getJoyX()/100.0);
-          y+=(SETPOINT_MOVE_RATE * nc.getJoyY()/100.0);
-
-          x=fmin(fmax(x,-1),1);
-          y=fmin(fmax(y,-1),1);
-
-          setpoint = {x,y};
-          Logger::debug("%.3f\t%.3f",x,y);
+      if(millis() - lastSquareShiftTime > SQUARE_DELAY_MS) {
+        if((setpoint.x>0 && setpoint.y > 0 && dir==CCW) ||
+          (setpoint.x>0 && setpoint.y < 0 && dir==CW) ||
+          (setpoint.x<0 && setpoint.y > 0 && dir==CW) ||
+          (setpoint.x<0 && setpoint.y < 0 && dir==CCW)){
+          setpoint.x = -setpoint.x;
+        } else {
+          setpoint.y = -setpoint.y;
         }
-        break;
+        Logger::trace("SP: %.2f\t%.2f",setpoint.x,setpoint.y);
       }
+      break;
     default:
       break;
     }
@@ -183,8 +198,20 @@ void onCButtonDown() {
 }
 
 void setMode(Mode _mode){
-
   mode = _mode;
+
+#ifdef ENABLE_TOUCHSCREEN
+  Mode oldMode = mode;
+  if((oldMode == CONTROL) != (_mode == CONTROL)) {
+    // Turn off the PIDs if we're moving to CONTROL mode.
+    // Turn them on if we're moving out of CONTROL mode.
+    int onOff = _mode == CONTROL ? MANUAL : AUTOMATIC;
+    Logger::debug("setting PID mode to %s",onOff ? "AUTOMATIC" : "MANUAL");
+    rollPID.SetMode(onOff);
+    pitchPID.SetMode(onOff);
+  }
+#endif
+
   Logger::debug("Mode = %s",modeStrings[mode]);
   blinker.blink(int(mode)+1);
 
