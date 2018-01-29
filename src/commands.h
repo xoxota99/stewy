@@ -41,7 +41,9 @@ int handleReset(int argc, char** argv);
 int handleDemo(int argc, char** argv);
 int handleMoveTo(int argc, char** argv);
 int handleLog(int argc, char** argv);
-
+#ifdef ENABLE_TOUCHSCREEN
+int handlePID(int argc, char** argv);
+#endif
 //===
 
 const Command commands[] = {
@@ -56,6 +58,14 @@ const Command commands[] = {
   {handleReset,   "reset",    "Restart the system."},
   {handleSet,     "set",      "Set a specific servo to a specific angle (in degrees)."},
   {handleSetAll,  "setall",   "Set all servos to a specific angle (in degrees)."}
+	#ifdef ENABLE_TOUCHSCREEN
+	, {handlePID,  		"px",   		"Set P value for X-axis (roll)."}
+  , {handlePID,  		"ix",   		"Set I value for X-axis (roll)."}
+  , {handlePID,  		"dx",   		"Set D value for X-axis (roll)."}
+  , {handlePID,  		"py",   		"Set P value for Y-axis (pitch)."}
+  , {handlePID,  		"iy",   		"Set I value for Y-axis (pitch)."}
+  , {handlePID,  		"dy",   		"Set D value for Y-axis (pitch)."}
+	#endif
 };
 
 #endif //ENABLE_SERIAL_COMMANDS
