@@ -429,16 +429,22 @@ int handlePID(int argc, char** argv){
   double val = atof(argv[1]);
   if (strncmp(cmd, "px",2)==0){
     PX=val;
+    rollPID.SetTunings(PX,IX,DX);
   } else if (strncmp(cmd, "ix",2)==0){
     IX=val;
+    rollPID.SetTunings(PX,IX,DX);
   } else if (strncmp(cmd, "dx",2)==0){
     DX=val;
+    rollPID.SetTunings(PX,IX,DX);
   } else if (strncmp(cmd, "py",2)==0){
     PY=val;
+    pitchPID.SetTunings(PY,IY,DY);
   } else if (strncmp(cmd, "iy",2)==0){
     IY=val;
+    pitchPID.SetTunings(PY,IY,DY);
   } else if (strncmp(cmd, "dy",2)==0){
     DY=val;
+    pitchPID.SetTunings(PY,IY,DY);
   }
   return SHELL_RET_SUCCESS;
 }
