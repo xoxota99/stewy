@@ -310,6 +310,14 @@ const double B_COORDS[6][2] = {
 //Min / max values of X and Y.
 #define TS_MIN_X              1
 #define TS_MAX_X              950       //1023
+
+/*
+  Time (in millis) between the touch sensor "losing" the ball, and the platform
+  getting a signal to go to the "home" position. Until this time has passed, the
+  platform will stay in it's last position.
+*/
+#define LOST_BALL_TIMEOUT     100
+
 const int TS_WIDTH = TS_MAX_X-TS_MIN_X;
 
 #define TS_MIN_Y              100

@@ -20,6 +20,8 @@
 #include "touch.h"
 
 void processTouchscreen() {
+  static unsigned long ballLastSeen;
+
   //we should NOT process the touchscreen output if the PID is in MANUAL mode.
   if(pitchPID.GetMode()!=MANUAL &&
      rollPID.GetMode()!=MANUAL) {
@@ -33,7 +35,7 @@ void processTouchscreen() {
       && p.x < TS_MAX_X
       && p.y > TS_MIN_Y
       && p.y < TS_MAX_Y) {
-
+        ballLastSeen=millis();
         //setpoint may have changed. setpoint is on a scale of -1.0 to +1.0, in both axes.
         setpointX = TS_MIN_X + ((setpoint.x+1)/2 *TS_WIDTH);
         setpointY = TS_MIN_Y + ((setpoint.y+1)/2 *TS_HEIGHT);
@@ -50,14 +52,19 @@ void processTouchscreen() {
           unsigned long m = millis();
 
           Logger::debug("Time/InX/OutX/roll:\t%d\t%.2f\t%.2f\t%.2f", m, inputX, outputX, roll);
-          
+
           // stu.moveTo(sp_servo, pitch, roll);
           stu.moveTo(sp_servo, 0, roll);  //isolate to X-axis only, while we tune pids.
         }
     } else {
-      //start a countdown. Until you hit zero, do nothing. This is to avoid sudden
-      //movement to home, while the ball is near the edge of the platform.
-      stu.home(sp_servo);
+      //The ball has disappeared. Start a countdown.
+      unsigned long m = millis();
+      if(m-ballLastSeen >= LOST_BALL_TIMEOUT){
+        //start a countdown. Until you hit zero, do nothing. This is to avoid sudden
+        //movement to home, while the ball is near the edge of the platform, and
+        //possibly still recoverable.
+        stu.home(sp_servo);
+      }
     }
   }
 }
