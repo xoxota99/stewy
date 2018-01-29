@@ -167,7 +167,7 @@ void setupServos() {
   updateServos();
   delay(d);
 
-  for(int pos=SERVO_MIN_ANGLE;pos<SERVO_MID_ANGLE;pos+=2){
+  for(int pos=SERVO_MIN_ANGLE;pos<SERVO_MID_ANGLE;pos+=4){
     for (int i = 0; i < 6; i++) {
       setServo(i,pos);
     }
