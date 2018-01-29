@@ -20,37 +20,52 @@
 #include "touch.h"
 
 void processTouchscreen() {
-  // a point object holds x y and z coordinates
-  TSPoint p = ts.getPoint();
+  static unsigned long ballLastSeen;
 
-  inputX = p.x; //1023 * (p.x-TS_MIN_X)/TS_WIDTH;
-  inputY = p.y; //-(TS_SLOPE_Y*(TS_MAX_X-p.x));
+  //we should NOT process the touchscreen output if the PID is in MANUAL mode.
+  if(pitchPID.GetMode()!=MANUAL &&
+     rollPID.GetMode()!=MANUAL) {
+    // a point object holds x y and z coordinates
+    TSPoint p = ts.getPoint();
 
-  if(p.x > TS_MIN_X
-    && p.x < TS_MAX_X
-    && p.y > TS_MIN_Y
-    && p.y < TS_MAX_Y) {
+    inputX = p.x; //1023 * (p.x-TS_MIN_X)/TS_WIDTH;
+    inputY = p.y; //-(TS_SLOPE_Y*(TS_MAX_X-p.x));
 
-      //setpoint may have changed. setpoint is on a scale of -1.0 to +1.0, in both axes.
-      setpointX = TS_MIN_X + ((setpoint.x+1)/2 *TS_WIDTH);
-      setpointY = TS_MIN_Y + ((setpoint.y+1)/2 *TS_HEIGHT);
+    if(p.x > TS_MIN_X
+      && p.x < TS_MAX_X
+      && p.y > TS_MIN_Y
+      && p.y < TS_MAX_Y) {
+        ballLastSeen=millis();
+        //setpoint may have changed. setpoint is on a scale of -1.0 to +1.0, in both axes.
+        setpointX = TS_MIN_X + ((setpoint.x+1)/2 *TS_WIDTH);
+        setpointY = TS_MIN_Y + ((setpoint.y+1)/2 *TS_HEIGHT);
 
-      if(rollPID.Compute() ||
-        pitchPID.Compute()) {
-        // PID controller will deliver an output in the range -128 to +128.
-        Logger::trace("TOUCH: %d\t%d\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f", rollPID.GetMode(), millis(), inputX, inputY, setpoint.x, setpoint.y, setpointX, setpointY, outputX, outputY);
+        if(rollPID.Compute() ||
+          pitchPID.Compute()) {
+          // PID controller will deliver an output in the range -128 to +128.
+          Logger::trace("TOUCH: %d\t%d\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f", rollPID.GetMode(), millis(), inputX, inputY, setpoint.x, setpoint.y, setpointX, setpointY, outputX, outputY);
 
-        //clamp pitch/roll
-        // float pitch=MIN_PITCH + (float)outputY/128 * PITCH_BAND;
-        float roll=(float)outputX/256 * ROLL_BAND;
+          //clamp pitch/roll
+          float pitch=(float)outputY/256 * PITCH_BAND;
+          float roll=(float)outputX/256 * ROLL_BAND;
 
-        if(millis()%100<=5) {
-          Logger::debug("OutX/roll: %.2f\t%.2f",outputX, roll);
+          unsigned long m = millis();
+
+          Logger::debug("Time/InX/OutX/roll:\t%d\t%.2f\t%.2f\t%.2f", m, inputX, outputX, roll);
+
+          // stu.moveTo(sp_servo, pitch, roll);
+          stu.moveTo(sp_servo, 0, roll);  //isolate to X-axis only, while we tune pids.
         }
-        // stu.moveTo(sp_servo, 0, roll);
+    } else {
+      //The ball has disappeared. Start a countdown.
+      unsigned long m = millis();
+      if(m-ballLastSeen >= LOST_BALL_TIMEOUT){
+        //start a countdown. Until you hit zero, do nothing. This is to avoid sudden
+        //movement to home, while the ball is near the edge of the platform, and
+        //possibly still recoverable.
+        stu.home(sp_servo);
       }
-  } else {
-    // stu.home(sp_servo);
+    }
   }
 }
 

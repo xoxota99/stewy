@@ -300,6 +300,14 @@ int handleMSetAll(int argc, char** argv)
 
 int handleDump(int argc, char** argv) {
 
+  Logger::info("===== Config =====");
+  Logger::info("px = %.3f", PX);
+  Logger::info("ix = %.3f", IX);
+  Logger::info("dx = %.3f", DX);
+  Logger::info("py = %.3f", PY);
+  Logger::info("iy = %.3f", IY);
+  Logger::info("dy = %.3f", DY);
+
   Logger::info("===== Platform =====");
   Logger::info("platform.sway = %d", stu.getSway());
   Logger::info("platform.surge = %d", stu.getSurge());
@@ -408,5 +416,38 @@ int handleMoveTo(int argc, char** argv) {
   // updateServos();
   return SHELL_RET_SUCCESS;
 }
+
+#ifdef ENABLE_TOUCHSCREEN
+int handlePID(int argc, char** argv){
+  char* cmd = argv[0];
+  if(argc!=2){
+    Logger::info("Usage: %s <value>",cmd);
+    return SHELL_RET_FAILURE;
+  }
+
+  // char* token = argv[1];
+  double val = atof(argv[1]);
+  if (strncmp(cmd, "px",2)==0){
+    PX=val;
+    rollPID.SetTunings(PX,IX,DX);
+  } else if (strncmp(cmd, "ix",2)==0){
+    IX=val;
+    rollPID.SetTunings(PX,IX,DX);
+  } else if (strncmp(cmd, "dx",2)==0){
+    DX=val;
+    rollPID.SetTunings(PX,IX,DX);
+  } else if (strncmp(cmd, "py",2)==0){
+    PY=val;
+    pitchPID.SetTunings(PY,IY,DY);
+  } else if (strncmp(cmd, "iy",2)==0){
+    IY=val;
+    pitchPID.SetTunings(PY,IY,DY);
+  } else if (strncmp(cmd, "dy",2)==0){
+    DY=val;
+    pitchPID.SetTunings(PY,IY,DY);
+  }
+  return SHELL_RET_SUCCESS;
+}
+#endif
 
 #endif  //ENABLE_SERIAL_COMMANDS

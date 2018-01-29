@@ -29,7 +29,8 @@
 /*
   Comment out, to disable Servos. Servos can get hot if you don't set
   them to a "safe" value. Commenting this line out allows to test things that
-  are not servo-related, without killing the battery, or overheating the servos.
+  are not servo-related, without killing the battery, browning out the USB,
+  or overheating the servos.
 */
 #define ENABLE_SERVOS
 
@@ -309,6 +310,14 @@ const double B_COORDS[6][2] = {
 //Min / max values of X and Y.
 #define TS_MIN_X              1
 #define TS_MAX_X              950       //1023
+
+/*
+  Time (in millis) between the touch sensor "losing" the ball, and the platform
+  getting a signal to go to the "home" position. Until this time has passed, the
+  platform will stay in it's last position.
+*/
+#define LOST_BALL_TIMEOUT     100
+
 const int TS_WIDTH = TS_MAX_X-TS_MIN_X;
 
 #define TS_MIN_Y              100

@@ -15,7 +15,7 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 //=== Includes
 #include <Arduino.h>
 #include <Servo.h>
@@ -167,17 +167,25 @@ void setupServos() {
   updateServos();
   delay(d);
 
-  for (int i = 0; i < 6; i++) {
-    setServo(i, SERVO_MAX_ANGLE);
+  for(int pos=SERVO_MIN_ANGLE;pos<SERVO_MID_ANGLE;pos+=4){
+    for (int i = 0; i < 6; i++) {
+      setServo(i,pos);
+    }
+    updateServos();
+    delay(10);
   }
-  updateServos();
-  delay(d);
 
-  for (int i = 0; i < 6; i++) {
-    setServo(i, SERVO_MID_ANGLE);
-  }
-  updateServos();
-  delay(d);
+  // for (int i = 0; i < 6; i++) {
+  //   setServo(i, SERVO_MAX_ANGLE);
+  // }
+  // updateServos();
+  // delay(d);
+  //
+  // for (int i = 0; i < 6; i++) {
+  //   setServo(i, SERVO_MID_ANGLE);
+  // }
+  // updateServos();
+  // delay(d);
 }
 
 /**

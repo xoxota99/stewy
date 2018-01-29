@@ -176,7 +176,7 @@ void processNunchuck()
   } else {
     mode = SETPOINT; //Nunchuck is on the fritz / disconnected. Default back to the center setpoint.
     dir = CW;
-    Logger::trace("WHOOPS, there was a problem reading the nunchuck!");
+    Logger::trace("No nunchuck.");
   }
 
   // Wait a short while
@@ -197,31 +197,35 @@ void onCButtonDown() {
   }
 }
 
-void setMode(Mode _mode){
-  mode = _mode;
+void setMode(Mode newMode){
+
+  if(mode !=newMode){
 
 #ifdef ENABLE_TOUCHSCREEN
-  Mode oldMode = mode;
-  if((oldMode == CONTROL) != (_mode == CONTROL)) {
-    // Turn off the PIDs if we're moving to CONTROL mode.
-    // Turn them on if we're moving out of CONTROL mode.
-    int onOff = _mode == CONTROL ? MANUAL : AUTOMATIC;
-    Logger::debug("setting PID mode to %s",onOff ? "AUTOMATIC" : "MANUAL");
-    rollPID.SetMode(onOff);
-    pitchPID.SetMode(onOff);
-  }
+    Mode oldMode = mode;
+    if((oldMode == CONTROL) != (newMode == CONTROL)) {
+      // Turn off the PIDs if we're moving to CONTROL mode.
+      // Turn them on if we're moving out of CONTROL mode.
+      int onOff = newMode == CONTROL ? MANUAL : AUTOMATIC;
+      Logger::debug("setting PID mode to %s",onOff ? "AUTOMATIC" : "MANUAL");
+      rollPID.SetMode(onOff);
+      pitchPID.SetMode(onOff);
+    }
 #endif
 
-  Logger::debug("Mode = %s",modeStrings[mode]);
-  blinker.blink(int(mode)+1);
+    mode = newMode;
 
-  //initialize the mode
-  sp_speed = DEFAULT_SPEED;           //reset to default speed.
-  controlSubMode = DEFAULT_SUB_MODE;  //reset to default subMode.
-  stu.home(sp_servo);                 //reset the platform.
+    Logger::debug("Mode = %s",modeStrings[mode]);
+    blinker.blink(int(mode)+1);
 
-  //TODO: Make sure that the radius never goes outside the actual plate.
-  sp_radius = sqrt(pow(setpoint.x - DEFAULT_SETPOINT.x,2) + pow(setpoint.y - DEFAULT_SETPOINT.y,2));  //radius is based on wherever the setpoint is right now.
+    //initialize the mode
+    sp_speed = DEFAULT_SPEED;           //reset to default speed.
+    controlSubMode = DEFAULT_SUB_MODE;  //reset to default subMode.
+    stu.home(sp_servo);                 //reset the platform.
+
+    //TODO: Make sure that the radius never goes outside the actual plate.
+    sp_radius = sqrt(pow(setpoint.x - DEFAULT_SETPOINT.x,2) + pow(setpoint.y - DEFAULT_SETPOINT.y,2));  //radius is based on wherever the setpoint is right now.
+  }
 }
 
 void onCButtonUp() {
