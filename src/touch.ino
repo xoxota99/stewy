@@ -36,9 +36,10 @@ void processTouchscreen() {
       && p.y > TS_MIN_Y
       && p.y < TS_MAX_Y) {
         ballLastSeen=millis();
+
         //setpoint may have changed. setpoint is on a scale of -1.0 to +1.0, in both axes.
-        setpointX = TS_MIN_X + ((setpoint.x+1)/2 *TS_WIDTH);
-        setpointY = TS_MIN_Y + ((setpoint.y+1)/2 *TS_HEIGHT);
+        setpointX = map(setpoint.x, -1.0, 1.0, TS_MIN_X, TS_MAX_X);
+        setpointY = map(setpoint.y, -1.0, 1.0, TS_MIN_Y, TS_MAX_Y);
 
         if(rollPID.Compute() ||
           pitchPID.Compute()) {
@@ -46,8 +47,8 @@ void processTouchscreen() {
           Logger::trace("TOUCH: %d\t%d\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f", rollPID.GetMode(), millis(), inputX, inputY, setpoint.x, setpoint.y, setpointX, setpointY, outputX, outputY);
 
           //clamp pitch/roll
-          float pitch=(float)outputY/256 * PITCH_BAND;
-          float roll=(float)outputX/256 * ROLL_BAND;
+          float pitch = map(outputY, PITCH_PID_LIMIT_MIN, PITCH_PID_LIMIT_MAX, MIN_PITCH, MAX_PITCH);
+          float roll = map(outputX, ROLL_PID_LIMIT_MIN, ROLL_PID_LIMIT_MAX, MIN_ROLL, MAX_ROLL);
 
           unsigned long m = millis();
 
