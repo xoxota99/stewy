@@ -75,7 +75,7 @@ bool Platform::moveTo(float *servoValues, int sway, int surge, int heave, float 
     m = 2 * ARM_LENGTH * (cos(THETA_S[i]) * (pivot_x - B_COORDS[i][0]) + sin(THETA_S[i]) * (pivot_y - B_COORDS[i][1]));
     servo_rad = asin(k / sqrt(l * l + m * m)) - atan(m / l);
     //convert radians to an angle between SERVO_MIN_ANGLE and SERVO_MAX_ANGLE
-    servo_deg = SERVO_MIN_ANGLE + ((degrees(servo_rad) + 90) / 180) * (SERVO_MAX_ANGLE - SERVO_MIN_ANGLE);
+    servo_deg = map(degrees(servo_rad),-90,90,SERVO_MIN_ANGLE,SERVO_MAX_ANGLE);
 
     if (sqrt(d2) > (ARM_LENGTH + ROD_LENGTH) //the required virtual arm length is longer than physically possible
         || abs(k / (sqrt(l * l + m * m))) >= 1) { //some other bad stuff happened.
@@ -85,7 +85,7 @@ bool Platform::moveTo(float *servoValues, int sway, int surge, int heave, float 
       Logger::info("sqrt(d2)>(ARM_LENGTH+ROD_LENGTH) = %s",(sqrt(d2) > (ARM_LENGTH + ROD_LENGTH)) ? "true" : "false");
 
 #ifdef SLAM
-      servo_deg = SERVO_MAX_ANGLE;
+      servo_deg = SERVO_MAX_ANGLE;  //BUG: Not correct. servo_deg should be one of SERVO_MAX_ANGLE or SERVO_MIN_ANGLE. need to figure out which one, rather than assuming SERVO_MAX_ANGLE.
 #else
       // bOk = false;
       //do nothing with this servo. We assume that it's current position is "close enough" (Not sure this is safe, but so far it works).
@@ -114,8 +114,8 @@ bool Platform::moveTo(float *servoValues, int sway, int surge, int heave, float 
       int diff = servoValues[i]-SERVO_MID_ANGLE;
 
       servoValues[i] = SERVO_MID_ANGLE + (diff * AGGRO);
-      servoValues[i] = fmax(fmin(servoValues[i],SERVO_MAX_ANGLE),SERVO_MIN_ANGLE);
-    }
+      servoValues[i] = constrain(servoValues[i],SERVO_MIN_ANGLE, SERVO_MAX_ANGLE);
+      }
   } else {
     //reset back to old values.
     for (int i = 0; i < 6; i++) {
