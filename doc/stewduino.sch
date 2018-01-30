@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.3.0">
+<eagle version="8.5.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
+<setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
 <grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
@@ -622,12 +623,12 @@
 </instance>
 <instance part="P+1" gate="VCC" x="93.98" y="93.98"/>
 <instance part="GND1" gate="1" x="93.98" y="10.16"/>
-<instance part="NUNCHUCKY" gate="A" x="17.78" y="15.24" rot="R180"/>
+<instance part="NUNCHUCKY" gate="A" x="0" y="35.56" rot="R180"/>
 <instance part="+3V1" gate="G$1" x="114.3" y="81.28"/>
-<instance part="+3V2" gate="G$1" x="27.94" y="27.94"/>
-<instance part="GND3" gate="1" x="25.4" y="2.54"/>
+<instance part="+3V2" gate="G$1" x="10.16" y="48.26"/>
+<instance part="GND3" gate="1" x="7.62" y="22.86"/>
 <instance part="SERVOS" gate="A" x="17.78" y="71.12" rot="R180"/>
-<instance part="TOUCH" gate="A" x="17.78" y="40.64" rot="R180"/>
+<instance part="TOUCH" gate="A" x="17.78" y="22.86" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -653,36 +654,36 @@
 </segment>
 <segment>
 <pinref part="NUNCHUCKY" gate="A" pin="4"/>
-<wire x1="20.32" y1="17.78" x2="25.4" y2="17.78" width="0.1524" layer="91"/>
-<wire x1="25.4" y1="17.78" x2="25.4" y2="5.08" width="0.1524" layer="91"/>
+<wire x1="2.54" y1="38.1" x2="7.62" y2="38.1" width="0.1524" layer="91"/>
+<wire x1="7.62" y1="38.1" x2="7.62" y2="25.4" width="0.1524" layer="91"/>
 <pinref part="GND3" gate="1" pin="GND"/>
 </segment>
 </net>
 <net name="SDA" class="0">
 <segment>
 <pinref part="TEENSY_3.2" gate="G$1" pin="18/A4/T/SDA0"/>
-<wire x1="38.1" y1="30.48" x2="30.48" y2="30.48" width="0.1524" layer="91"/>
-<wire x1="30.48" y1="30.48" x2="30.48" y2="12.7" width="0.1524" layer="91"/>
-<wire x1="30.48" y1="12.7" x2="20.32" y2="12.7" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="30.48" x2="33.02" y2="30.48" width="0.1524" layer="91"/>
+<wire x1="33.02" y1="30.48" x2="33.02" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="33.02" y1="33.02" x2="2.54" y2="33.02" width="0.1524" layer="91"/>
 <pinref part="NUNCHUCKY" gate="A" pin="2"/>
-<label x="33.02" y="30.48" size="1.778" layer="95"/>
+<label x="15.24" y="33.02" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="SCL" class="0">
 <segment>
 <pinref part="TEENSY_3.2" gate="G$1" pin="19/A5/T/SCL0"/>
-<wire x1="38.1" y1="27.94" x2="33.02" y2="27.94" width="0.1524" layer="91"/>
-<wire x1="33.02" y1="27.94" x2="33.02" y2="10.16" width="0.1524" layer="91"/>
-<wire x1="33.02" y1="10.16" x2="20.32" y2="10.16" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="27.94" x2="30.48" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="30.48" y1="27.94" x2="30.48" y2="30.48" width="0.1524" layer="91"/>
+<wire x1="30.48" y1="30.48" x2="2.54" y2="30.48" width="0.1524" layer="91"/>
 <pinref part="NUNCHUCKY" gate="A" pin="1"/>
-<label x="33.02" y="27.94" size="1.778" layer="95"/>
+<label x="15.24" y="30.48" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="+3V3" class="0">
 <segment>
 <pinref part="NUNCHUCKY" gate="A" pin="3"/>
-<wire x1="20.32" y1="15.24" x2="27.94" y2="15.24" width="0.1524" layer="91"/>
-<wire x1="27.94" y1="15.24" x2="27.94" y2="25.4" width="0.1524" layer="91"/>
+<wire x1="2.54" y1="35.56" x2="10.16" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="10.16" y1="35.56" x2="10.16" y2="45.72" width="0.1524" layer="91"/>
 <pinref part="+3V2" gate="G$1" pin="+3V3"/>
 </segment>
 <segment>
@@ -740,44 +741,36 @@
 <label x="33.02" y="76.2" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="XRI" class="0">
-<segment>
-<pinref part="TEENSY_3.2" gate="G$1" pin="14/A0"/>
-<wire x1="38.1" y1="40.64" x2="33.02" y2="40.64" width="0.1524" layer="91"/>
-<wire x1="33.02" y1="40.64" x2="33.02" y2="43.18" width="0.1524" layer="91"/>
-<pinref part="TOUCH" gate="A" pin="4"/>
-<wire x1="33.02" y1="43.18" x2="20.32" y2="43.18" width="0.1524" layer="91"/>
-<label x="33.02" y="40.64" size="1.778" layer="95"/>
-</segment>
-</net>
 <net name="XLE" class="0">
 <segment>
-<pinref part="TEENSY_3.2" gate="G$1" pin="15/A1/T"/>
-<wire x1="38.1" y1="38.1" x2="30.48" y2="38.1" width="0.1524" layer="91"/>
-<wire x1="30.48" y1="38.1" x2="30.48" y2="40.64" width="0.1524" layer="91"/>
+<pinref part="TOUCH" gate="A" pin="4"/>
+<pinref part="TEENSY_3.2" gate="G$1" pin="20/A6/PWM"/>
+<wire x1="20.32" y1="25.4" x2="38.1" y2="25.4" width="0.1524" layer="91"/>
+<label x="25.4" y="25.4" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="XRT" class="0">
+<segment>
+<pinref part="TEENSY_3.2" gate="G$1" pin="21/A7/PWM"/>
 <pinref part="TOUCH" gate="A" pin="3"/>
-<wire x1="30.48" y1="40.64" x2="20.32" y2="40.64" width="0.1524" layer="91"/>
-<label x="33.02" y="38.1" size="1.778" layer="95"/>
+<wire x1="38.1" y1="22.86" x2="20.32" y2="22.86" width="0.1524" layer="91"/>
+<label x="25.4" y="22.86" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="YLO" class="0">
 <segment>
-<pinref part="TEENSY_3.2" gate="G$1" pin="16/A2/T"/>
-<wire x1="38.1" y1="35.56" x2="27.94" y2="35.56" width="0.1524" layer="91"/>
-<wire x1="27.94" y1="35.56" x2="27.94" y2="38.1" width="0.1524" layer="91"/>
+<pinref part="TEENSY_3.2" gate="G$1" pin="22/A8/T/PWM"/>
 <pinref part="TOUCH" gate="A" pin="2"/>
-<wire x1="27.94" y1="38.1" x2="20.32" y2="38.1" width="0.1524" layer="91"/>
-<label x="33.02" y="35.56" size="1.778" layer="95"/>
+<wire x1="38.1" y1="20.32" x2="20.32" y2="20.32" width="0.1524" layer="91"/>
+<label x="25.4" y="20.32" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="YUP" class="0">
 <segment>
-<pinref part="TEENSY_3.2" gate="G$1" pin="17/A3/T"/>
-<wire x1="38.1" y1="33.02" x2="25.4" y2="33.02" width="0.1524" layer="91"/>
-<wire x1="25.4" y1="33.02" x2="25.4" y2="35.56" width="0.1524" layer="91"/>
+<pinref part="TEENSY_3.2" gate="G$1" pin="23/A9/T/PWM"/>
 <pinref part="TOUCH" gate="A" pin="1"/>
-<wire x1="25.4" y1="35.56" x2="20.32" y2="35.56" width="0.1524" layer="91"/>
-<label x="33.02" y="33.02" size="1.778" layer="95"/>
+<wire x1="38.1" y1="17.78" x2="20.32" y2="17.78" width="0.1524" layer="91"/>
+<label x="25.4" y="17.78" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
