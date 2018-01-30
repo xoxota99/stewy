@@ -133,10 +133,10 @@ void setServoMicros(int i, int micros) {
 void setupTouchscreen() {
   #ifdef ENABLE_TOUCHSCREEN
   Logger::debug("Touchscreen ENABLED.");
-  rollPID.SetSampleTime(10);
-  pitchPID.SetSampleTime(10);
-  rollPID.SetOutputLimits(-128,128);
-  pitchPID.SetOutputLimits(-128,128);
+  rollPID.SetSampleTime(ROLL_PID_SAMPLE_TIME);
+  pitchPID.SetSampleTime(PITCH_PID_SAMPLE_TIME);
+  rollPID.SetOutputLimits(ROLL_PID_LIMIT_MIN, ROLL_PID_LIMIT_MAX);
+  pitchPID.SetOutputLimits(PITCH_PID_LIMIT_MIN, PITCH_PID_LIMIT_MAX);
   rollPID.SetMode(AUTOMATIC);
   pitchPID.SetMode(AUTOMATIC);
   #else
