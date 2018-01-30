@@ -169,7 +169,7 @@ int handleMSet(int argc, char** argv)
       if (SERVO_REVERSE[srv-1]) {
         val = SERVO_MIN_US + (SERVO_MAX_US - val);
       }
-      servos[srv-1].writeMicroseconds(min(SERVO_MAX_US, max(SERVO_MIN_US, (int)val + SERVO_TRIM[srv-1])));
+      servos[srv-1].writeMicroseconds((int)constrain(val + SERVO_TRIM[srv-1],SERVO_MIN_US, SERVO_MAX_US));
 #endif
     } else {
       Logger::info("Invalid servo value for Servo #%d. Valid values are (min, mid, max), or a number between %d and %d.", srv, SERVO_MIN_US, SERVO_MAX_US);
@@ -283,7 +283,7 @@ int handleMSetAll(int argc, char** argv)
         if (SERVO_REVERSE[i]) {
           val = SERVO_MIN_US + (SERVO_MAX_US - val);
         }
-        servos[i].writeMicroseconds(min(SERVO_MAX_US, max(SERVO_MIN_US, (int)val + SERVO_TRIM[i])));
+        servos[i].writeMicroseconds((int)constrain(val + SERVO_TRIM[i], SERVO_MIN_US, SERVO_MAX_US));
 #endif
       } else {
         Logger::info("Invalid servo value for Servo #%d. Valid values are min|mid|max, or a number between %d and %d.", i + 1, SERVO_MIN_US, SERVO_MAX_US);

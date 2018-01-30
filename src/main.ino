@@ -68,11 +68,11 @@ float sp_servo[6];      // servo setpoints in degrees, between SERVO_MIN_ANGLE a
 // Logger* logger = Logger::instance();
 
 float _toUs(int value) {
-  return SERVO_MIN_US + value * (float)(SERVO_MAX_US - SERVO_MIN_US) / (SERVO_MAX_ANGLE - SERVO_MIN_ANGLE); //Number of uS in one degree of angle. Roughly.
+  return map(value, SERVO_MIN_ANGLE, SERVO_MAX_ANGLE, SERVO_MIN_US, SERVO_MAX_US);
 }
 
 float _toAngle(float value) {
-  return SERVO_MIN_ANGLE + value * (float)(SERVO_MAX_ANGLE - SERVO_MIN_ANGLE) / (SERVO_MAX_US - SERVO_MIN_US); //Number of degrees per uS. Roughly.
+  return map(value, SERVO_MIN_US, SERVO_MAX_US, SERVO_MIN_ANGLE, SERVO_MAX_ANGLE);
 }
 
 //Set servo values to the angles represented by the setpoints in sp_servo[].
@@ -99,7 +99,7 @@ void updateServos() {
       Logger::trace("SRV: s%d = %.2f + %d (value + trim)", i, val, SERVO_TRIM[i]);
 
 #ifdef ENABLE_SERVOS
-      servos[i].writeMicroseconds(min(SERVO_MAX_US, max(SERVO_MIN_US, (int)val + SERVO_TRIM[i])));
+      servos[i].writeMicroseconds((int)constrain(val + SERVO_TRIM[i], SERVO_MIN_US, SERVO_MAX_US));
 #endif
     }
   }
