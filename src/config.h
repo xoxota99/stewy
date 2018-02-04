@@ -310,33 +310,38 @@ const double B_COORDS[6][2] = {
 //Min / max values of X and Y.
 #define TS_MIN_X              1
 #define TS_MAX_X              950       //1023
-
-/*
-  Time (in millis) between the touch sensor "losing" the ball, and the platform
-  getting a signal to go to the "home" position. Until this time has passed, the
-  platform will stay in it's last position.
-*/
-#define LOST_BALL_TIMEOUT     100
-
 const int TS_WIDTH = TS_MAX_X-TS_MIN_X;
 
 #define TS_MIN_Y              100
 #define TS_MAX_Y              930       //1023
 const int TS_HEIGHT = TS_MAX_Y-TS_MIN_Y;
 
-double setpointX=512, inputX, outputX;
-double setpointY=512, inputY, outputY;
+/*
+  Time (in millis) between the touch sensor "losing" the ball, and the platform
+  getting a signal to go to the "home" position. Until this time has passed, the
+  platform will stay in it's last position.
+*/
+#define LOST_BALL_TIMEOUT     250
+
+double setpointX=TS_MIN_X+(TS_WIDTH/2);
+double inputX;
+double outputX;
+
+double setpointY=TS_MIN_Y+(TS_HEIGHT/2);
+double inputY;
+double outputY;
 
 //Specify the links and initial tuning parameters
-double PX=1, IX=0, DX=0;
-double PY=1.33, IY=0, DY=0;  //reflects the aspect ratio of the actual touch sensor (4:3)
+double PX=3, IX=0, DX=0;
+double PY=1, IY=0, DY=0;
 
 #define ROLL_PID_SAMPLE_TIME 10
-#define PITCH_PID_SAMPLE_TIME 10
-#define ROLL_PID_LIMIT_MAX 1024
 #define ROLL_PID_LIMIT_MIN -1024
-#define PITCH_PID_LIMIT_MAX 1024
+#define ROLL_PID_LIMIT_MAX 1024
+
+#define PITCH_PID_SAMPLE_TIME 10
 #define PITCH_PID_LIMIT_MIN -1024
+#define PITCH_PID_LIMIT_MAX 1024
 
 #endif    //ENABLE_TOUCHSCREEN
 
