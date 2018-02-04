@@ -40,22 +40,21 @@ void processTouchscreen() {
         //setpoint may have changed. setpoint is on a scale of -1.0 to +1.0, in both axes.
         setpointX = map(setpoint.x, -1.0, 1.0, TS_MIN_X, TS_MAX_X);
         setpointY = map(setpoint.y, -1.0, 1.0, TS_MIN_Y, TS_MAX_Y);
-
+        // Logger::debug("setpointY=%f",setpointY);
         if(rollPID.Compute() ||
           pitchPID.Compute()) {
-          // PID controller will deliver an output in the range -128 to +128.
+
           Logger::trace("TOUCH: %d\t%d\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f", rollPID.GetMode(), millis(), inputX, inputY, setpoint.x, setpoint.y, setpointX, setpointY, outputX, outputY);
 
-          //clamp pitch/roll
-          float pitch = map(outputY, PITCH_PID_LIMIT_MIN, PITCH_PID_LIMIT_MAX, MIN_PITCH, MAX_PITCH);
           float roll = map(outputX, ROLL_PID_LIMIT_MIN, ROLL_PID_LIMIT_MAX, MIN_ROLL, MAX_ROLL);
+          float pitch = map(outputY, PITCH_PID_LIMIT_MIN, PITCH_PID_LIMIT_MAX, MIN_PITCH, MAX_PITCH);
 
           unsigned long m = millis();
 
-          Logger::debug("Time/InX/OutX/roll:\t%d\t%.2f\t%.2f\t%.2f", m, inputX, outputX, roll);
+          Logger::debug("Time/InX/InY/OutX/OutY/roll/pitch:\t%d\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f", m, inputX, inputY, outputX, outputY, roll, pitch);
 
-          // stu.moveTo(sp_servo, pitch, roll);
-          stu.moveTo(sp_servo, 0, roll);  //isolate to X-axis only, while we tune pids.
+          stu.moveTo(sp_servo, pitch, roll);
+          // stu.moveTo(sp_servo, 0, roll);  //isolate to X-axis only, while we tune pids.
         }
     } else {
       //The ball has disappeared. Start a countdown.
