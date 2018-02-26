@@ -48,7 +48,6 @@ void processNunchuck()
       }
     }
 
-    //TODO: Quite a few magic numbers that should be refactored out.
     switch (mode) {
       case SETPOINT: {
           // Joystick moves the setpoint.
@@ -58,11 +57,13 @@ void processNunchuck()
           if(abs(nc.getJoyX())>deadBand.x ||
             abs(nc.getJoyY())>deadBand.y) {
             float x=setpoint.x, y=setpoint.y;
+
+            //TODO: Magic numbers.
             x+=(SETPOINT_MOVE_RATE * nc.getJoyX()/100.0);
             y+=(SETPOINT_MOVE_RATE * nc.getJoyY()/100.0);
 
-            x=fmin(fmax(x,-1),1);
-            y=fmin(fmax(y,-1),1);
+            x=constrain(x,-1,1);
+            y=constrain(y,-1,1);
 
             setpoint = {x,y};
             Logger::trace("SP: %.2f\t%.2f",setpoint.x,setpoint.y);
@@ -77,8 +78,8 @@ void processNunchuck()
            abs(nc.getJoyY()) > deadBand.y) {
           switch (controlSubMode) {
             case PITCH_ROLL: {
-              double pitch = -((((float)nc.getJoyY() + 100)/200 * PITCH_BAND) + MIN_PITCH);    //MAGIC: a number between -20 and 23
-              double roll = (((float)nc.getJoyX() + 100)/200 * ROLL_BAND) + MIN_ROLL;        //MAGIC: a number between -23 and 20
+              double pitch = map(nc.getJoyY(), -100, 100, MIN_PITCH, MAX_PITCH);
+              double roll = map(nc.getJoyX(), -100, 100, MIN_ROLL, MAX_ROLL);
 
               Logger::trace("PITCH_ROLL moving to %.2f , %.2f",pitch,roll);
               stu.moveTo(sp_servo, pitch, roll);
@@ -86,8 +87,8 @@ void processNunchuck()
               break;
             }
             case SWAY_SURGE: {
-              double surge = (((float)nc.getJoyY() + 100)/200 * SURGE_BAND) + MIN_SURGE;    //a number between -59 and 59
-              double sway = (((float)nc.getJoyX() + 100)/200 * SWAY_BAND) + MIN_SWAY;        //a number between -71 and 56
+              double surge = map(nc.getJoyY(), -100, 100, MIN_SURGE, MAX_SURGE);
+              double sway = map(nc.getJoyX(), -100, 100, MIN_SWAY, MAX_SWAY);
 
               Logger::trace("SWAY_SURGE moving to %.2f , %.2f",sway,surge);
               stu.moveTo(sp_servo, sway, surge, 0, 0, 0, 0);
@@ -95,8 +96,8 @@ void processNunchuck()
               break;
             }
             case HEAVE_YAW: {
-              double heave = (((float)nc.getJoyY() + 100)/200 * HEAVE_BAND) + MIN_HEAVE;    //a number between -22 and 27
-              double yaw = (((float)nc.getJoyX() + 100)/200 * YAW_BAND) + MIN_YAW;        //a number between -69 and 69
+              double heave = map(nc.getJoyY(), -100, 100, MIN_HEAVE, MAX_HEAVE);
+              double yaw = map(nc.getJoyX(), -100, 100, MIN_YAW, MAX_YAW);
 
               Logger::trace("HEAVE_YAW moving to %.2f , %.2f",heave,yaw);
               stu.moveTo(sp_servo, 0, 0, heave, 0, 0, yaw);
@@ -112,11 +113,11 @@ void processNunchuck()
         break;
     case CIRCLE: {
         //Y-axis joystick controls the speed of the circle.
-
+        // TODO: Magic numbers.
         double inc = (float)nc.getJoyY()/1000;    //a number between -0.1 and 0.1
         if(abs(nc.getJoyY()) > deadBand.y){
           sp_speed += inc;
-          sp_speed = fmin(fmax(sp_speed,0.001),1);
+          sp_speed = constrain(sp_speed,0.001,1);
         }
 
         //max speed is, say, 1 degree. So at max speed, we want to move 1 degree around a circle of radius sp_radius.
