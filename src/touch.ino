@@ -40,7 +40,7 @@ void processTouchscreen() {
         //setpoint may have changed. setpoint is on a scale of -1.0 to +1.0, in both axes.
         setpointX = map(setpoint.x, -1.0, 1.0, TS_MIN_X, TS_MAX_X);
         setpointY = map(setpoint.y, -1.0, 1.0, TS_MIN_Y, TS_MAX_Y);
-        
+
         // Logger::debug("setpointY=%f",setpointY);
         double newOutX = rollPID.Compute(inputX, setpointX);
         double newOutY = pitchPID.Compute(inputY, setpointY);
