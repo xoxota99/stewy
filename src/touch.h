@@ -23,8 +23,8 @@
 #include "config.h"
 #include <PID_v1.h> //https://github.com/br3ttb/Arduino-PID-Library
 
-PID rollPID(&inputX, &outputX, &setpointX, PX, IX, DX, P_ON_E, DIRECT);
-PID pitchPID(&inputY, &outputY, &setpointY, PY, IY, DY, P_ON_E, REVERSE);  //REVERSE
+PID rollPID(inputX, outputX, setpointX, PX, IX, DX, P_ON_E, DIRECT);
+PID pitchPID(inputY, outputY, setpointY, PY, IY, DY, P_ON_E, DIRECT);  //REVERSE
 TouchScreen ts(XP, YP, XM, YM, TS_OHMS);
 
 void processTouchscreen();
