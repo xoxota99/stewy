@@ -1,5 +1,4 @@
-#ifndef __STU_NUNCHUCK_H__
-#define __STU_NUNCHUCK_H__
+#pragma once
 /*
    6dof-stewduino
    Copyright (C) 2018  Philippe Desrosiers
@@ -18,11 +17,13 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifdef ENABLE_NUNCHUCK
-#include <Nunchuk.h> //from https://github.com/hughpyle/machinesalem-arduino-libs/tree/master/nunchuk
 #include "config.h"
 
-typedef struct ChuckData {
+#ifdef ENABLE_NUNCHUCK
+#include <WiiChuck.h>
+
+struct ChuckState
+{
   bool buttonC;
   bool buttonZ;
   int joyX;
@@ -33,20 +34,18 @@ typedef struct ChuckData {
   float tiltX;
   float tiltY;
   float tiltZ;
-  long lastCButtonDown;         //to help with "double-clicking"
+  long lastCButtonDown; // timestamp, to help with "double-clicking"
   long lastZButtonDown;
-} ChuckData;
-
-
-Nunchuk nc;
-ChuckData chuckData;
-//calibration / trim data.
-ChuckData chuckTrim = {
-  false,    //Not used.
-  false,    //Not used.
-  1,
-  -2
 };
+
+Accessory nc;
+ChuckState chuckData;
+// calibration / trim data.
+ChuckState chuckTrim = {
+    false, // Not used.
+    false, // Not used.
+    1,
+    -2};
 
 unsigned long lastSquareShiftTime = 0L;
 
@@ -65,4 +64,3 @@ void onZButtonDblClick();
 void onCButtonDblClick();
 
 #endif
-#endif    //__STU_NUNCHUCK_H__

@@ -1,5 +1,4 @@
-#ifndef __STU_TOUCH_H__
-#define __STU_TOUCH_H__
+#pragma once
 /*
    6dof-stewduino
    Copyright (C) 2018  Philippe Desrosiers
@@ -18,16 +17,15 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "config.h"
+
 #ifdef ENABLE_TOUCHSCREEN
 #include <TouchScreen.h> //from https://github.com/adafruit/Touch-Screen-Library
-#include "config.h"
-#include <PID_v1.h> //https://github.com/br3ttb/Arduino-PID-Library
+#include <PID_v1.h>      //https://github.com/br3ttb/Arduino-PID-Library
 
-PID rollPID(inputX, outputX, setpointX, PX, IX, DX, P_ON_E, DIRECT);
-PID pitchPID(inputY, outputY, setpointY, PY, IY, DY, P_ON_E, DIRECT);  //REVERSE
+PID rollPID(&inputX, &outputX, &setpointX, PX, IX, DX, P_ON_E, DIRECT);
+PID pitchPID(&inputY, &outputY, &setpointY, PY, IY, DY, P_ON_E, DIRECT); // REVERSE
 TouchScreen ts(XP, YP, XM, YM, TS_OHMS);
 
 void processTouchscreen();
-
-#endif  //ENABLE_TOUCHSCREEN
-#endif  //__STU_TOUCH_H__
+#endif // ENABLE_TOUCHSCREEN
