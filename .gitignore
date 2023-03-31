@@ -38,9 +38,6 @@
 .piolibdeps
 .clang_complete
 .gcc-flags.json
-.pioenvs
-.piolibdeps
 
-doc/notes.txt
-.pio/*
-.vscode/*
+.pio/**
+.vscode/**
