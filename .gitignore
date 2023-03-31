@@ -42,3 +42,5 @@
 .piolibdeps
 
 doc/notes.txt
+.vscode/*
+.pio/*
