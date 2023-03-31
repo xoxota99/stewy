@@ -24,7 +24,7 @@
 #include "Platform.h"
 
 #ifdef ENABLE_NUNCHUCK
-#include "nunchuck.h"
+#include "chuck.h"
 
 #endif
 
