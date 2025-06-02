@@ -20,7 +20,7 @@
 #include "config.h"
 
 #ifdef ENABLE_NUNCHUCK
-#include <WiiChuck.h>
+#include <Nunchuk.h>
 
 struct ChuckState
 {
@@ -38,7 +38,7 @@ struct ChuckState
   long lastZButtonDown;
 };
 
-Accessory nc;
+Nunchuk nc;
 ChuckState chuckData;
 // calibration / trim data.
 ChuckState chuckTrim = {

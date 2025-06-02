@@ -20,6 +20,8 @@
    Derived from the work of Daniel Waters, https://www.youtube.com/watch?v=1jrP3_1ML9M
 */
 
+// #include "config.h"
+#include "Arduino.h"
 #include "Platform.h"
 
 bool Platform::home(float *servoValues)
@@ -77,8 +79,8 @@ bool Platform::moveTo(float *servoValues, int sway, int surge, int heave, float 
     l = 2 * ARM_LENGTH * pivot_z;
     m = 2 * ARM_LENGTH * (cos(THETA_S[i]) * (pivot_x - B_COORDS[i][0]) + sin(THETA_S[i]) * (pivot_y - B_COORDS[i][1]));
     servo_rad = asin(k / sqrt(l * l + m * m)) - atan(m / l);
-    // convert radians to an angle between SERVO_MIN_ANGLE and SERVO_MAX_ANGLE
-    servo_deg = map(degrees(servo_rad), -90, 90, SERVO_MIN_ANGLE, SERVO_MAX_ANGLE);
+    // convert radians to an angle between _servo_min_angle and _servo_max_angle
+    servo_deg = map(degrees(servo_rad), -90, 90, _servo_min_angle, _servo_max_angle);
 
     if (sqrt(d2) > (ARM_LENGTH + ROD_LENGTH) // the required virtual arm length is longer than physically possible
         || abs(k / (sqrt(l * l + m * m))) >= 1)
@@ -89,7 +91,7 @@ bool Platform::moveTo(float *servoValues, int sway, int surge, int heave, float 
       Log.info("sqrt(d2)>(ARM_LENGTH+ROD_LENGTH) = %s", (sqrt(d2) > (ARM_LENGTH + ROD_LENGTH)) ? "true" : "false");
 
 #ifdef SLAM
-      servo_deg = SERVO_MAX_ANGLE; // BUG: Not correct. servo_deg should be one of SERVO_MAX_ANGLE or SERVO_MIN_ANGLE. need to figure out which one, rather than assuming SERVO_MAX_ANGLE.
+      servo_deg = _servo_max_angle; // BUG: Not correct. servo_deg should be one of _servo_max_angle or _servo_min_angle. need to figure out which one, rather than assuming _servo_max_angle.
 #else
       // bOk = false;
       // do nothing with this servo. We assume that it's current position is "close enough" (Not sure this is safe, but so far it works).
@@ -97,13 +99,13 @@ bool Platform::moveTo(float *servoValues, int sway, int surge, int heave, float 
 #endif
       break;
     }
-    else if (servo_deg > SERVO_MAX_ANGLE)
+    else if (servo_deg > _servo_max_angle)
     {
-      servo_deg = SERVO_MAX_ANGLE;
+      servo_deg = _servo_max_angle;
     }
-    else if (servo_deg < SERVO_MIN_ANGLE)
+    else if (servo_deg < _servo_min_angle)
     {
-      servo_deg = SERVO_MIN_ANGLE;
+      servo_deg = _servo_min_angle;
     }
 
     servoValues[i] = servo_deg;
@@ -121,10 +123,10 @@ bool Platform::moveTo(float *servoValues, int sway, int surge, int heave, float 
     // scale values by aggro.
     for (int i = 0; i < 6; i++)
     {
-      int diff = servoValues[i] - SERVO_MID_ANGLE;
+      int diff = servoValues[i] - (_servo_min_angle + (_servo_max_angle - _servo_min_angle) / 2);
 
-      servoValues[i] = SERVO_MID_ANGLE + (diff * AGGRO);
-      servoValues[i] = constrain(servoValues[i], SERVO_MIN_ANGLE, SERVO_MAX_ANGLE);
+      servoValues[i] = (_servo_min_angle + (_servo_max_angle - _servo_min_angle) / 2) + (diff * AGGRO);
+      servoValues[i] = constrain(servoValues[i], _servo_min_angle, _servo_max_angle);
     }
   }
   else
@@ -151,10 +153,12 @@ int Platform::getSway()
 {
   return _sp_sway;
 }
+
 int Platform::getSurge()
 {
   return _sp_surge;
 }
+
 int Platform::getHeave()
 {
   return _sp_heave;
@@ -164,10 +168,12 @@ float Platform::getPitch()
 {
   return _sp_pitch;
 }
+
 float Platform::getRoll()
 {
   return _sp_roll;
 }
+
 float Platform::getYaw()
 {
   return _sp_yaw;

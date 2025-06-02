@@ -25,7 +25,6 @@
 
 #ifdef ENABLE_NUNCHUCK
 #include "chuck.h"
-
 #endif
 
 #ifdef ENABLE_SERIAL_COMMANDS
@@ -58,7 +57,7 @@ asm(".global _scanf_float");
 
 xy_coordf setpoint = DEFAULT_SETPOINT;
 
-Platform stu; // Stewart platform object.
+Platform stu(SERVO_MIN_ANGLE, SERVO_MAX_ANGLE); // Stewart platform object.
 
 #ifdef ENABLE_SERVOS
 Servo servos[6]; // servo objects.
@@ -253,21 +252,6 @@ void setupNunchuck()
   Log.trace("Nunchuck support is ENABLED.");
 
   nc.begin();
-  if (nc.type == Unknown)
-  {
-    /** If the device isn't auto-detected, set the type explicatly
-     * 	NUNCHUCK,
-     WIICLASSIC,
-     GuitarHeroController,
-     GuitarHeroWorldTourDrums,
-     DrumController,
-     DrawsomeTablet,
-     Turntable
-     */
-
-    Log.warning("Controller type NOT AUTO-DETECTED. Set to Nunchuck by default.");
-    nc.type = NUNCHUCK;
-  }
 #else
   Log.trace("Nunchuck support is DISABLED.");
 #endif
