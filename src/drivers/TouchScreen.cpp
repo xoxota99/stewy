@@ -385,7 +385,8 @@ namespace stewy
 
     void TouchScreenDriver::getPID(char axis, double &p, double &i, double &d)
     {
-      PID *_pid;
+      PID *_pid = nullptr; // Initialize to nullptr to avoid the warning
+
       if (axis == 'x' || axis == 'X')
       {
         _pid = rollPID;
@@ -400,6 +401,13 @@ namespace stewy
         p = _pid->GetKp();
         i = _pid->GetKi();
         d = _pid->GetKd();
+      }
+      else
+      {
+        // Default values if axis is invalid
+        p = 0.0;
+        i = 0.0;
+        d = 0.0;
       }
     }
 
