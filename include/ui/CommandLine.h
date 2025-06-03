@@ -11,11 +11,12 @@
  * @license GPL-3.0
  */
 
-// Forward declare the Shell type from the GeekFactory Shell Library
-// to avoid C/C++ compatibility issues
-extern "C" {
-  typedef struct shell_struct shell_t;
-  typedef shell_t Shell;
+// Forward declare the shell functions from the GeekFactory Shell Library
+extern "C"
+{
+  bool shell_init(int (*reader)(char *), void (*writer)(char), char *msg);
+  bool shell_register(int (*program)(int, char **), const char *string);
+  void shell_task(void);
 }
 
 #include "core/Config.h"
@@ -37,7 +38,6 @@ namespace stewy
     class CommandLine
     {
     private:
-      Shell *shell;
       drivers::TouchScreenDriver *touchscreen;
       drivers::NunchuckDriver *nunchuck;
       float *servoValues;
