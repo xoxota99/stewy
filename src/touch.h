@@ -22,10 +22,48 @@
 #ifdef ENABLE_TOUCHSCREEN
 #include <TouchScreen.h> //from https://github.com/adafruit/Touch-Screen-Library
 #include <PID_v1.h>      //https://github.com/br3ttb/Arduino-PID-Library
+#include <EEPROM.h>      //for storing calibration data
 
-PID rollPID(&inputX, &outputX, &setpointX, PX, IX, DX, P_ON_E, DIRECT);
-PID pitchPID(&inputY, &outputY, &setpointY, PY, IY, DY, P_ON_E, DIRECT); // REVERSE
-TouchScreen ts(XP, YP, XM, YM, TS_OHMS);
+// Touchscreen filter class for smoothing input
+class TouchFilter
+{
+private:
+  float xValues[TOUCH_FILTER_SAMPLES];
+  float yValues[TOUCH_FILTER_SAMPLES];
+  int currentIndex;
+  bool filled;
 
+public:
+  TouchFilter();
+  void addSample(float x, float y);
+  void reset();
+  float getFilteredX();
+  float getFilteredY();
+};
+
+// Touchscreen calibration structure
+struct TouchCalibration
+{
+  int minX;
+  int maxX;
+  int minY;
+  int maxY;
+  bool isCalibrated;
+};
+
+extern PID rollPID;
+extern PID pitchPID;
+extern TouchScreen ts;
+extern TouchFilter touchFilter;
+extern TouchCalibration touchCalibration;
+
+// Function declarations
 void processTouchscreen();
+void initTouchscreen();
+bool loadCalibration();
+bool saveCalibration();
+void startCalibration();
+void processCalibrationPoint(int step, TSPoint p);
+void finishCalibration();
+
 #endif // ENABLE_TOUCHSCREEN

@@ -147,12 +147,9 @@ void setupTouchscreen()
 {
 #ifdef ENABLE_TOUCHSCREEN
   Log.trace("Touchscreen ENABLED.");
-  rollPID.SetSampleTime(ROLL_PID_SAMPLE_TIME);
-  pitchPID.SetSampleTime(PITCH_PID_SAMPLE_TIME);
-  rollPID.SetOutputLimits(ROLL_PID_LIMIT_MIN, ROLL_PID_LIMIT_MAX);
-  pitchPID.SetOutputLimits(PITCH_PID_LIMIT_MIN, PITCH_PID_LIMIT_MAX);
-  rollPID.SetMode(AUTOMATIC);
-  pitchPID.SetMode(AUTOMATIC);
+
+  // Initialize touchscreen with filtering and calibration
+  initTouchscreen();
 #else
   Log.trace("Touchscreen DISABLED.");
 #endif

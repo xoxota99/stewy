@@ -208,17 +208,29 @@ float sp_radius;                // radius, for modes that need a radius. For CIR
 // For the one we're using, its 711 ohms across the X plate
 #define TS_OHMS 711 // resistance between X+ and X-
 
-// The Adafruit touchscreen library returns raw values from the ADC (between 0-1024).
-// Here, we adjust for our specific touchscreen part. (In this case, https://www.digikey.com/product-detail/en/nkk-switches/FTAS00-12.1AN-4/360-3520-ND/6823699)
+// Default Min / max values of X and Y (will be overridden by calibration)
+#define TS_DEFAULT_MIN_X 1
+#define TS_DEFAULT_MAX_X 950 // 1023
+#define TS_DEFAULT_WIDTH (TS_DEFAULT_MAX_X - TS_DEFAULT_MIN_X)
+#define TS_DEFAULT_MIDPOINT_X (TS_DEFAULT_MIN_X + (TS_DEFAULT_WIDTH / 2))
 
-// Min / max values of X and Y.
-#define TS_MIN_X 1
-#define TS_MAX_X 950 // 1023
-const int TS_WIDTH = TS_MAX_X - TS_MIN_X;
+#define TS_DEFAULT_MIN_Y 100
+#define TS_DEFAULT_MAX_Y 930 // 1023
+#define TS_DEFAULT_HEIGHT (TS_DEFAULT_MAX_Y - TS_DEFAULT_MIN_Y)
+#define TS_DEFAULT_MIDPOINT_Y (TS_DEFAULT_MIN_Y + (TS_DEFAULT_HEIGHT / 2))
 
-#define TS_MIN_Y 100
-#define TS_MAX_Y 930 // 1023
-const int TS_HEIGHT = TS_MAX_Y - TS_MIN_Y;
+// EEPROM address for storing touchscreen calibration data
+#define TOUCH_CALIBRATION_ADDR 0
+
+// Touchscreen filtering
+#define TOUCH_FILTER_SAMPLES 5  // Number of samples to use in moving average filter
+#define TOUCH_FILTER_WEIGHT 0.7 // Weight for exponential filter (0-1, higher = more smoothing)
+#define TOUCH_DEADZONE 5        // Deadzone to ignore small movements (in raw ADC units)
+
+// Calibration process
+#define CALIBRATION_POINTS 4   // Number of points to use for calibration
+#define CALIBRATION_DELAY 2000 // Delay between calibration points in ms
+#define CALIBRATION_SAMPLES 10 // Number of samples to average for each calibration point
 
 /*
   Time (in millis) between the touch sensor "losing" the ball, and the platform
@@ -227,11 +239,13 @@ const int TS_HEIGHT = TS_MAX_Y - TS_MIN_Y;
 */
 #define LOST_BALL_TIMEOUT 250
 
-double setpointX = TS_MIN_X + (TS_WIDTH / 2);
+// "setpoint" is the desired position of the ball on the platform
+
+double setpointX = TS_DEFAULT_MIDPOINT_X; // Will be initialized properly after calibration
 double inputX;
 double outputX;
 
-double setpointY = TS_MIN_Y + (TS_HEIGHT / 2);
+double setpointY = TS_DEFAULT_MIDPOINT_Y; // Will be initialized properly after calibration
 double inputY;
 double outputY;
 

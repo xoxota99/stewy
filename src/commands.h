@@ -38,6 +38,7 @@ int handleSetAll(int argc, char **argv);
 int handleMSetAll(int argc, char **argv);
 int handleDump(int argc, char **argv);
 int handleReset(int argc, char **argv);
+int handleCalibrateTouchscreen(int argc, char **argv);
 int handleDemo(int argc, char **argv);
 int handleMoveTo(int argc, char **argv);
 int handleLog(int argc, char **argv);
@@ -65,7 +66,8 @@ const Command commands[] = {
     {handlePID, "dx", "Set D value for X-axis (roll)."},
     {handlePID, "py", "Set P value for Y-axis (pitch)."},
     {handlePID, "iy", "Set I value for Y-axis (pitch)."},
-    {handlePID, "dy", "Set D value for Y-axis (pitch)."}
+    {handlePID, "dy", "Set D value for Y-axis (pitch)."},
+    {handleCalibrateTouchscreen, "calibrate", "Start touchscreen calibration process."}
 #endif
 };
 #endif // ENABLE_SERIAL_COMMANDS
