@@ -192,7 +192,8 @@ void NunchuckDriver::handleButtons() {
       Log.notice("Mode: %s", getModeString(mode));
       
       // Blink LED to indicate mode
-      Blinker::getInstance()->blink(mode + 1);
+      static Blinker blinker = Blinker::attach(LED_PIN, false, 200, 200);
+      blinker.blink(mode + 1);
     }
     
     lastButtonTime = now;

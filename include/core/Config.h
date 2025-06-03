@@ -2,9 +2,9 @@
 /**
  * @file Config.h
  * @brief Global configuration settings
- * 
+ *
  * This file contains global configuration settings for the Stewart platform.
- * 
+ *
  * @author Philippe Desrosiers
  * @copyright Copyright (C) 2018 Philippe Desrosiers
  * @license GPL-3.0
@@ -12,8 +12,10 @@
 
 #include <ArduinoLog.h>
 
-namespace stewy {
-namespace core {
+namespace stewy
+{
+  namespace core
+  {
 
 // Feature enable/disable flags
 #define ENABLE_SERIAL_COMMANDS // Comment out, to omit Command shell code
@@ -28,6 +30,9 @@ namespace core {
 */
 // #define ENABLE_SERVOS
 
+// LED configuration
+#define LED_PIN LED_BUILTIN // LED pin for status indication
+
 // Logging configuration
 #define LOG_LEVEL LOG_LEVEL_TRACE
 
@@ -37,21 +42,21 @@ namespace core {
 #define SERVO_MIN_US 755
 #define SERVO_MAX_US 2250
 
-// Which servos are reversed. 1 = reversed, 0 = normal.
-const int SERVO_REVERSE[6] = {0, 1, 0, 1, 0, 1};
+    // Which servos are reversed. 1 = reversed, 0 = normal.
+    const int SERVO_REVERSE[6] = {0, 1, 0, 1, 0, 1};
 
-// Servo trim values, in microseconds, AFTER reversing
-const int SERVO_TRIM[] = {0, 20, 0, 135, 0, 120};
+    // Servo trim values, in microseconds, AFTER reversing
+    const int SERVO_TRIM[] = {0, 20, 0, 135, 0, 120};
 
-// Servo pin assignments
-const int SERVO_PINS[] = {0, 1, 2, 3, 4, 5};
+    // Servo pin assignments
+    const int SERVO_PINS[] = {0, 1, 2, 3, 4, 5};
 
 // Touchscreen configuration
 #ifdef ENABLE_TOUCHSCREEN
-#define XP A7 // YELLOW / XRT. can be a digital pin.
-#define XM A6 // WHITE / XLE. must be an analog pin, use "An" notation!
-#define YP A8 // RED / YLO. must be an analog pin, use "An" notation!
-#define YM A9 // BLACK / YUP. can be a digital pin.
+#define XP A7       // YELLOW / XRT. can be a digital pin.
+#define XM A6       // WHITE / XLE. must be an analog pin, use "An" notation!
+#define YP A8       // RED / YLO. must be an analog pin, use "An" notation!
+#define YM A9       // BLACK / YUP. can be a digital pin.
 #define TS_OHMS 711 // resistance between X+ and X-
 
 // Default Min / max values of X and Y (will be overridden by calibration)
@@ -64,14 +69,14 @@ const int SERVO_PINS[] = {0, 1, 2, 3, 4, 5};
 #define TOUCH_CALIBRATION_ADDR 0
 
 // Touchscreen filtering
-#define TOUCH_FILTER_SAMPLES 5     // Number of samples to use in moving average filter
-#define TOUCH_FILTER_WEIGHT 0.7    // Weight for exponential filter (0-1, higher = more smoothing)
-#define TOUCH_DEADZONE 5           // Deadzone to ignore small movements (in raw ADC units)
+#define TOUCH_FILTER_SAMPLES 5  // Number of samples to use in moving average filter
+#define TOUCH_FILTER_WEIGHT 0.7 // Weight for exponential filter (0-1, higher = more smoothing)
+#define TOUCH_DEADZONE 5        // Deadzone to ignore small movements (in raw ADC units)
 
 // Calibration process
-#define CALIBRATION_POINTS 4       // Number of points to use for calibration
-#define CALIBRATION_DELAY 2000     // Delay between calibration points in ms
-#define CALIBRATION_SAMPLES 10     // Number of samples to average for each calibration point
+#define CALIBRATION_POINTS 4   // Number of points to use for calibration
+#define CALIBRATION_DELAY 2000 // Delay between calibration points in ms
+#define CALIBRATION_SAMPLES 10 // Number of samples to average for each calibration point
 
 // Time (in millis) between the touch sensor "losing" the ball, and the platform
 // getting a signal to go to the "home" position.
@@ -112,17 +117,18 @@ const int SERVO_PINS[] = {0, 1, 2, 3, 4, 5};
 #define MIN_HEAVE -22
 #define MAX_HEAVE 25
 
-/**
- * @struct xy_coordf
- * @brief 2D coordinate with floating point values
- */
-typedef struct xy_coordf {
-  float x; // -1.0 to 1.0
-  float y; // -1.0 to 1.0
-} xy_coordf;
+    /**
+     * @struct xy_coordf
+     * @brief 2D coordinate with floating point values
+     */
+    typedef struct xy_coordf
+    {
+      float x; // -1.0 to 1.0
+      float y; // -1.0 to 1.0
+    } xy_coordf;
 
-// Default setpoint (center of platform)
-const xy_coordf DEFAULT_SETPOINT = {0, 0};
+    // Default setpoint (center of platform)
+    const xy_coordf DEFAULT_SETPOINT = {0, 0};
 
-} // namespace core
+  } // namespace core
 } // namespace stewy
