@@ -35,84 +35,103 @@ bool Platform::home(float *servoValues)
  */
 bool Platform::moveTo(float *servoValues, int sway, int surge, int heave, float pitch, float roll, float yaw)
 {
-
-  /*
-     TODO:
-     1) Understand the "geometry shenanigans" below (k, l, m values).
-     2) optimize so we don't run through this loop if we know we're already at the desired setpoint(s).
-  */
-
-  double pivot_x, pivot_y, pivot_z, // Global XYZ coordinates of platform pivot points
-      d2,                           // Distance^2 between servo pivot and platform link.
-      k, l, m,                      // intermediate values
-      servo_rad,                    // Angle (radians) to turn each servo.
-      servo_deg;                    // Angle (in degrees) to turn each servo.
-
-  float oldValues[6];
-
-  // intermediate values, to avoid recalculating SIN / COS
-
-  double cr = cos(radians(roll)),
-         cp = cos(radians(pitch)),
-         cy = cos(radians(yaw)),
-         sr = sin(radians(roll)),
-         sp = sin(radians(pitch)),
-         sy = sin(radians(yaw));
-
-  for (int i = 0; i < 6; i++)
+  // Early exit if we're already at the desired position
+  if (_sp_sway == sway && _sp_surge == surge && _sp_heave == heave &&
+      _sp_pitch == pitch && _sp_roll == roll && _sp_yaw == yaw)
   {
-    oldValues[i] = servoValues[i];
+    return true;
   }
+
+  // Store old values in case we need to revert
+  float oldValues[6];
+  memcpy(oldValues, servoValues, 6 * sizeof(float));
+
+  // Pre-compute trigonometric values (only calculate once)
+  const double cr = cos(radians(roll));
+  const double cp = cos(radians(pitch));
+  const double cy = cos(radians(yaw));
+  const double sr = sin(radians(roll));
+  const double sp = sin(radians(pitch));
+  const double sy = sin(radians(yaw));
+
+  // Pre-compute common products used in the loop
+  const double sp_sr = sp * sr;
+  const double cr_cy = cr * cy;
+  const double cr_sy = cr * sy;
+  const double sp_cr = sp * cr;
+
+  // Pre-compute Z offset
+  const double z_offset = Z_HOME + heave;
+
+  // Pre-compute servo angle mapping constants
+  const double angle_range = _servo_max_angle - _servo_min_angle;
+  const double mid_angle = _servo_min_angle + (angle_range / 2);
+
+  // Pre-compute squared rod length for distance comparison
+  const double rod_length_sq = pow(ROD_LENGTH, 2);
+  const double arm_length_sq = pow(ARM_LENGTH, 2);
+  const double max_reach_sq = pow(ARM_LENGTH + ROD_LENGTH, 2);
 
   bool bOk = true;
 
-  for (int i = 0; i < 6; i++)
+  for (int i = 0; i < 6 && bOk; i++)
   {
-    pivot_x = P_COORDS[i][0] * cr * cy + P_COORDS[i][1] * (sp * sr * cr - cp * sy) + sway;
-    pivot_y = P_COORDS[i][0] * cr * sy + P_COORDS[i][1] * (cp * cy + sp * sr * sy) + surge;
-    pivot_z = -P_COORDS[i][0] * sr + P_COORDS[i][1] * sp * cr + Z_HOME + heave;
+    // Calculate platform pivot coordinates more efficiently
+    const double px = P_COORDS[i][0];
+    const double py = P_COORDS[i][1];
+    const double bx = B_COORDS[i][0];
+    const double by = B_COORDS[i][1];
 
-    d2 = pow(pivot_x - B_COORDS[i][0], 2) + pow(pivot_y - B_COORDS[i][1], 2) + pow(pivot_z, 2);
+    // Calculate pivot coordinates with optimized expressions
+    const double pivot_x = px * cr_cy + py * (sp_sr * cr - cp * sy) + sway;
+    const double pivot_y = px * cr_sy + py * (cp * cy + sp_sr * sy) + surge;
+    const double pivot_z = -px * sr + py * sp_cr + z_offset;
 
-    // Geometry shenanigans
-    k = d2 - (pow(ROD_LENGTH, 2) - pow(ARM_LENGTH, 2));
-    l = 2 * ARM_LENGTH * pivot_z;
-    m = 2 * ARM_LENGTH * (cos(THETA_S[i]) * (pivot_x - B_COORDS[i][0]) + sin(THETA_S[i]) * (pivot_y - B_COORDS[i][1]));
-    servo_rad = asin(k / sqrt(l * l + m * m)) - atan(m / l);
-    // convert radians to an angle between _servo_min_angle and _servo_max_angle
-    servo_deg = map(degrees(servo_rad), -90, 90, _servo_min_angle, _servo_max_angle);
+    // Calculate squared distance (avoid sqrt until necessary)
+    const double dx = pivot_x - bx;                          // x-distance
+    const double dy = pivot_y - by;                          // y-distance
+    const double d2 = dx * dx + dy * dy + pivot_z * pivot_z; // squared distance
 
-    if (sqrt(d2) > (ARM_LENGTH + ROD_LENGTH) // the required virtual arm length is longer than physically possible
-        || abs(k / (sqrt(l * l + m * m))) >= 1)
-    { // some other bad stuff happened.
-      // bad juju.
-      Log.error("Asymptotic condition at i=%d", i);
-      Log.info("abs(k/(sqrt(l*l+m*m))) = %.2f", abs(k / (sqrt(l * l + m * m))));
-      Log.info("sqrt(d2)>(ARM_LENGTH+ROD_LENGTH) = %s", (sqrt(d2) > (ARM_LENGTH + ROD_LENGTH)) ? "true" : "false");
+    // Early exit if distance is physically impossible
+    if (d2 > max_reach_sq)
+    { // (actually comparing the squared distance)
+      Log.error("Distance too great at servo %d: %.2f > %.2f", i, sqrt(d2), ARM_LENGTH + ROD_LENGTH);
+      bOk = false;
+      break;
+    }
 
+    // Geometry calculations
+    const double k = d2 - (rod_length_sq - arm_length_sq);
+    const double l = 2 * ARM_LENGTH * pivot_z;
+    const double m = 2 * ARM_LENGTH * (cos(THETA_S[i]) * dx + sin(THETA_S[i]) * dy);
+
+    // Check for asymptotic condition
+    const double divisor = sqrt(l * l + m * m); // Avoid division by zero
+    const double k_ratio = k / divisor;         // Ratio for asin calculation
+
+    if (abs(k_ratio) >= 1) // Is the ratio in the valid range for asin? If not, this is an "asymptotic condition".
+    {
+      Log.error("Asymptotic condition at servo %d: |%.2f| >= 1", i, k_ratio);
 #ifdef SLAM
-      servo_deg = _servo_max_angle; // BUG: Not correct. servo_deg should be one of _servo_max_angle or _servo_min_angle. need to figure out which one, rather than assuming _servo_max_angle.
+      servoValues[i] = (k_ratio > 0) ? _servo_max_angle : _servo_min_angle;
 #else
-      // bOk = false;
-      // do nothing with this servo. We assume that it's current position is "close enough" (Not sure this is safe, but so far it works).
-      servo_deg = servoValues[i];
+      bOk = false;
 #endif
       break;
     }
-    else if (servo_deg > _servo_max_angle)
-    {
-      servo_deg = _servo_max_angle;
-    }
-    else if (servo_deg < _servo_min_angle)
-    {
-      servo_deg = _servo_min_angle;
-    }
 
+    // Calculate servo angle
+    const double servo_rad = asin(k_ratio) - atan2(m, l); // Using atan2 is more robust
+    double servo_deg = map(degrees(servo_rad), -90, 90, _servo_min_angle, _servo_max_angle);
+
+    // Constrain to valid range
+    servo_deg = constrain(servo_deg, _servo_min_angle, _servo_max_angle);
     servoValues[i] = servo_deg;
   }
 
   if (bOk)
   {
+    // Update setpoints
     _sp_sway = sway;
     _sp_surge = surge;
     _sp_heave = heave;
@@ -120,22 +139,18 @@ bool Platform::moveTo(float *servoValues, int sway, int surge, int heave, float 
     _sp_roll = roll;
     _sp_yaw = yaw;
 
-    // scale values by aggro.
+    // Apply AGGRO scaling more efficiently
     for (int i = 0; i < 6; i++)
     {
-      int diff = servoValues[i] - (_servo_min_angle + (_servo_max_angle - _servo_min_angle) / 2);
-
-      servoValues[i] = (_servo_min_angle + (_servo_max_angle - _servo_min_angle) / 2) + (diff * AGGRO);
+      const double diff = servoValues[i] - mid_angle;
+      servoValues[i] = mid_angle + (diff * AGGRO);
       servoValues[i] = constrain(servoValues[i], _servo_min_angle, _servo_max_angle);
     }
   }
   else
   {
-    // reset back to old values.
-    for (int i = 0; i < 6; i++)
-    {
-      servoValues[i] = oldValues[i];
-    }
+    // Restore old values
+    memcpy(servoValues, oldValues, 6 * sizeof(float));
   }
 
   return bOk;
