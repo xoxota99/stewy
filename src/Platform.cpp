@@ -31,10 +31,55 @@ bool Platform::home(float *servoValues)
 
 /*
  * Move to a given sway, surge, heave, pitch, roll and yaw values.
- * We expect pitch, roll and yaw in degrees.
+ *
+ * @param servoValues Array of servo values to be modified
+ * @param sway Translation along X axis in mm
+ * @param surge Translation along Y axis in mm
+ * @param heave Translation along Z axis in mm
+ * @param pitch Rotation around X axis in degrees
+ * @param roll Rotation around Y axis in degrees
+ * @param yaw Rotation around Z axis in degrees
+ * @return true if movement is possible, false otherwise
  */
 bool Platform::moveTo(float *servoValues, int sway, int surge, int heave, float pitch, float roll, float yaw)
 {
+  // Check if parameters are within allowed boundaries
+  if (sway < SWAY_MIN || sway > SWAY_MAX)
+  {
+    Log.error("Sway value %d is outside allowed range [%d, %d]", sway, SWAY_MIN, SWAY_MAX);
+    return false;
+  }
+
+  if (surge < SURGE_MIN || surge > SURGE_MAX)
+  {
+    Log.error("Surge value %d is outside allowed range [%d, %d]", surge, SURGE_MIN, SURGE_MAX);
+    return false;
+  }
+
+  if (heave < HEAVE_MIN || heave > HEAVE_MAX)
+  {
+    Log.error("Heave value %d is outside allowed range [%d, %d]", heave, HEAVE_MIN, HEAVE_MAX);
+    return false;
+  }
+
+  if (pitch < PITCH_MIN || pitch > PITCH_MAX)
+  {
+    Log.error("Pitch value %.2f is outside allowed range [%d, %d]", pitch, PITCH_MIN, PITCH_MAX);
+    return false;
+  }
+
+  if (roll < ROLL_MIN || roll > ROLL_MAX)
+  {
+    Log.error("Roll value %.2f is outside allowed range [%d, %d]", roll, ROLL_MIN, ROLL_MAX);
+    return false;
+  }
+
+  if (yaw < YAW_MIN || yaw > YAW_MAX)
+  {
+    Log.error("Yaw value %.2f is outside allowed range [%d, %d]", yaw, YAW_MIN, YAW_MAX);
+    return false;
+  }
+
   // Early exit if we're already at the desired position
   if (_sp_sway == sway && _sp_surge == surge && _sp_heave == heave &&
       _sp_pitch == pitch && _sp_roll == roll && _sp_yaw == yaw)
@@ -157,10 +202,30 @@ bool Platform::moveTo(float *servoValues, int sway, int surge, int heave, float 
 }
 
 /*
- * Move to a given pitch / roll angle (in degrees)
+ * Convenience function: Move to a given pitch / roll angle (in degrees). Since the majority
+ * of the use-case is to roll/pitch to keep the ball on the plate, most of the time we'll be
+ * calling this version of the moveTo function.
+ *
+ * @param servoValues Array of servo values to be modified
+ * @param pitch Pitch angle in degrees
+ * @param roll Roll angle in degrees
+ * @return true if movement is possible, false otherwise
  */
 bool Platform::moveTo(float *servoValues, float pitch, float roll)
 {
+  // Check if parameters are within allowed boundaries
+  if (pitch < PITCH_MIN || pitch > PITCH_MAX)
+  {
+    Log.error("Pitch value %.2f is outside allowed range [%d, %d]", pitch, PITCH_MIN, PITCH_MAX);
+    return false;
+  }
+
+  if (roll < ROLL_MIN || roll > ROLL_MAX)
+  {
+    Log.error("Roll value %.2f is outside allowed range [%d, %d]", roll, ROLL_MIN, ROLL_MAX);
+    return false;
+  }
+
   return moveTo(servoValues, _sp_sway, _sp_surge, _sp_heave, pitch, roll, _sp_yaw);
 }
 

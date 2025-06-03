@@ -117,6 +117,20 @@ const double B_COORDS[6][2] = {
     {-B_RAD * cos(AXIS3 - THETA_B), B_RAD *sin(AXIS3 - THETA_B)},
     {-B_RAD * cos(AXIS3 + THETA_B), B_RAD *sin(AXIS3 + THETA_B)}};
 
+// Movement limits for the platform
+#define SWAY_MIN -50   // Minimum sway (x) in mm
+#define SWAY_MAX 50    // Maximum sway (x) in mm
+#define SURGE_MIN -50  // Minimum surge (y) in mm
+#define SURGE_MAX 50   // Maximum surge (y) in mm
+#define HEAVE_MIN -30  // Minimum heave (z) in mm
+#define HEAVE_MAX 30   // Maximum heave (z) in mm
+#define PITCH_MIN -30  // Minimum pitch in degrees
+#define PITCH_MAX 30   // Maximum pitch in degrees
+#define ROLL_MIN -30   // Minimum roll in degrees
+#define ROLL_MAX 30    // Maximum roll in degrees
+#define YAW_MIN -30    // Minimum yaw in degrees
+#define YAW_MAX 30     // Maximum yaw in degrees
+
 class Platform
 {
 private:
@@ -128,9 +142,9 @@ private:
       _sp_surge = 0, // surge (y) in mm
       _sp_heave = 0; // heave (z) in mm
 
-  float _sp_pitch = 0, // pitch (x) in radians
-      _sp_roll = 0,    // roll (y) in radians
-      _sp_yaw = 0;     // yaw (z) in radians
+  float _sp_pitch = 0, // pitch (x) in degrees (input to moveTo is in degrees, converted to radians internally)
+      _sp_roll = 0,    // roll (y) in degrees (input to moveTo is in degrees, converted to radians internally)
+      _sp_yaw = 0;     // yaw (z) in degrees (input to moveTo is in degrees, converted to radians internally)
 
 public:
   Platform(int servo_min_angle, int servo_max_angle) : _servo_min_angle(servo_min_angle), _servo_max_angle(servo_max_angle) {}
