@@ -161,6 +161,9 @@ void loop()
 // Process nunchuck input
 #ifdef ENABLE_NUNCHUCK
   core::xy_coordf setpoint = nunchuck->process(servoValues);
+
+  // Process the Blinker to handle LED blinking
+  stewy::drivers::modeBlinker.loop();
 #else
   core::xy_coordf setpoint = core::DEFAULT_SETPOINT;
 #endif
