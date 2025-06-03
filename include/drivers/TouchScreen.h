@@ -143,6 +143,14 @@ public:
    */
   void getPID(char axis, double& p, double& i, double& d);
   
+  /**
+   * @brief Reset PID controllers to default values
+   * 
+   * This method resets the PID controllers to their default values,
+   * which can be useful if the system becomes unstable.
+   */
+  void resetPID();
+  
 private:
   bool loadCalibration();
   bool saveCalibration();

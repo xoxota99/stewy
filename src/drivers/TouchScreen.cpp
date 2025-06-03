@@ -83,22 +83,33 @@ namespace stewy
     {
       ts = new TouchScreen(xp, yp, xm, ym, ohms);
 
-      // Initialize PID controllers
+      // Initialize variables to safe defaults
+      inputX = 0.0;
+      inputY = 0.0;
+      outputX = 0.0;
+      outputY = 0.0;
+      setpointX = 0.0;
+      setpointY = 0.0;
+
+      // Initialize PID controllers with pointers to our variables
       rollPID = new PID(&inputX, &outputX, &setpointX, 3, 0, 0, P_ON_E, DIRECT);
       pitchPID = new PID(&inputY, &outputY, &setpointY, 1, 0, 0, P_ON_E, DIRECT);
 
       isCalibrating = false;
       calibrationStep = 0;
       calibrationSampleCount = 0;
+      ballLastSeen = 0;
     }
 
     void TouchScreenDriver::init()
     {
-      // Set up PID controllers
+      // Set up PID controllers with appropriate limits and sample times
       rollPID->SetOutputLimits(ROLL_PID_LIMIT_MIN, ROLL_PID_LIMIT_MAX);
       pitchPID->SetOutputLimits(PITCH_PID_LIMIT_MIN, PITCH_PID_LIMIT_MAX);
       rollPID->SetSampleTime(ROLL_PID_SAMPLE_TIME);
       pitchPID->SetSampleTime(PITCH_PID_SAMPLE_TIME);
+
+      // Start with PID controllers in automatic mode
       rollPID->SetMode(AUTOMATIC);
       pitchPID->SetMode(AUTOMATIC);
 
@@ -119,7 +130,7 @@ namespace stewy
       setpointX = calibration.minX + (calibration.maxX - calibration.minX) / 2;
       setpointY = calibration.minY + (calibration.maxY - calibration.minY) / 2;
 
-      Log.notice("Touchscreen initialized. Calibrated: %s", calibration.isCalibrated ? "Yes" : "No");
+      Log.info("Touchscreen initialized. Calibrated: %s", calibration.isCalibrated ? "Yes" : "No");
     }
 
     bool TouchScreenDriver::loadCalibration()
@@ -132,9 +143,9 @@ namespace stewy
           calibration.minX >= 0 && calibration.minX < calibration.maxX && calibration.maxX <= 1023 &&
           calibration.minY >= 0 && calibration.minY < calibration.maxY && calibration.maxY <= 1023)
       {
-        Log.notice("Loaded touchscreen calibration: X[%d-%d], Y[%d-%d]",
-                   calibration.minX, calibration.maxX,
-                   calibration.minY, calibration.maxY);
+        Log.info("Loaded touchscreen calibration: X[%d-%d], Y[%d-%d]",
+                 calibration.minX, calibration.maxX,
+                 calibration.minY, calibration.maxY);
         return true;
       }
 
@@ -144,15 +155,15 @@ namespace stewy
     bool TouchScreenDriver::saveCalibration()
     {
       EEPROM.put(TOUCH_CALIBRATION_ADDR, calibration);
-      Log.notice("Saved touchscreen calibration: X[%d-%d], Y[%d-%d]",
-                 calibration.minX, calibration.maxX,
-                 calibration.minY, calibration.maxY);
+      Log.info("Saved touchscreen calibration: X[%d-%d], Y[%d-%d]",
+               calibration.minX, calibration.maxX,
+               calibration.minY, calibration.maxY);
       return true;
     }
 
     void TouchScreenDriver::startCalibration()
     {
-      Log.notice("Starting touchscreen calibration...");
+      Log.info("Starting touchscreen calibration...");
       isCalibrating = true;
       calibrationStep = 0;
       calibrationSampleCount = 0;
@@ -165,7 +176,7 @@ namespace stewy
       // Reset the platform to home position
       // Note: This would normally call platform.home(sp_servo), but we're using a different approach
 
-      Log.notice("Place ball in top-left corner and wait...");
+      Log.info("Place ball in top-left corner and wait...");
     }
 
     bool TouchScreenDriver::isCalibrationInProgress()
@@ -195,7 +206,7 @@ namespace stewy
           int avgX = sumX / CALIBRATION_SAMPLES;
           int avgY = sumY / CALIBRATION_SAMPLES;
 
-          Log.notice("Calibration point %d: (%d, %d)", step + 1, avgX, avgY);
+          Log.info("Calibration point %d: (%d, %d)", step + 1, avgX, avgY);
 
           // Move to next step
           calibrationStep++;
@@ -208,13 +219,13 @@ namespace stewy
             switch (calibrationStep)
             {
             case 1:
-              Log.notice("Place ball in top-right corner and wait...");
+              Log.info("Place ball in top-right corner and wait...");
               break;
             case 2:
-              Log.notice("Place ball in bottom-right corner and wait...");
+              Log.info("Place ball in bottom-right corner and wait...");
               break;
             case 3:
-              Log.notice("Place ball in bottom-left corner and wait...");
+              Log.info("Place ball in bottom-left corner and wait...");
               break;
             }
           }
@@ -275,7 +286,7 @@ namespace stewy
       pitchPID->SetMode(AUTOMATIC);
 
       isCalibrating = false;
-      Log.notice("Touchscreen calibration complete!");
+      Log.info("Touchscreen calibration complete!");
     }
 
     void TouchScreenDriver::process(float setpoint_x, float setpoint_y, float *servoValues)
@@ -327,17 +338,27 @@ namespace stewy
           ballLastSeen = millis();
 
           // setpoint may have changed. setpoint is on a scale of -1.0 to +1.0, in both axes.
-          // int width = calibration.maxX - calibration.minX;
-          // int height = calibration.maxY - calibration.minY;
+          int width = calibration.maxX - calibration.minX;
+          int height = calibration.maxY - calibration.minY;
 
-          setpointX = map(setpoint_x, -1.0, 1.0, calibration.minX, calibration.maxX);
-          setpointY = map(setpoint_y, -1.0, 1.0, calibration.minY, calibration.maxY);
+          // Map the normalized setpoint (-1.0 to 1.0) to screen coordinates
+          double newSetpointX = map(setpoint_x, -1.0, 1.0, calibration.minX, calibration.maxX);
+          double newSetpointY = map(setpoint_y, -1.0, 1.0, calibration.minY, calibration.maxY);
+
+          // Only update setpoints if they've changed significantly
+          if (abs(newSetpointX - setpointX) > 0.5 || abs(newSetpointY - setpointY) > 0.5)
+          {
+            setpointX = newSetpointX;
+            setpointY = newSetpointY;
+            Log.trace("Setpoint updated to: %.2f, %.2f", setpointX, setpointY);
+          }
 
           // Compute PID values - the PID library automatically uses the input, output, and setpoint
           // values that were provided during construction
           bool computedX = rollPID->Compute();
           bool computedY = pitchPID->Compute();
 
+          // Only update platform position if PID values have changed
           if (computedX || computedY)
           {
             Log.trace("TOUCH: %d\t%d\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f",
@@ -373,13 +394,27 @@ namespace stewy
 
     void TouchScreenDriver::setPID(char axis, double p, double i, double d)
     {
+      // Validate PID parameters to prevent unstable behavior
+      if (p < 0 || i < 0 || d < 0)
+      {
+        Log.error("Invalid PID parameters: P=%.2f, I=%.2f, D=%.2f. All values must be non-negative.", p, i, d);
+        return;
+      }
+
+      // Apply reasonable upper limits to prevent extreme behavior
+      p = constrain(p, 0.0, 100.0);
+      i = constrain(i, 0.0, 10.0);
+      d = constrain(d, 0.0, 10.0);
+
       if (axis == 'x' || axis == 'X')
       {
         rollPID->SetTunings(p, i, d);
+        Log.info("Roll PID parameters set to: P=%.2f, I=%.2f, D=%.2f", p, i, d);
       }
       else if (axis == 'y' || axis == 'Y')
       {
         pitchPID->SetTunings(p, i, d);
+        Log.info("Pitch PID parameters set to: P=%.2f, I=%.2f, D=%.2f", p, i, d);
       }
     }
 
@@ -409,6 +444,31 @@ namespace stewy
         i = 0.0;
         d = 0.0;
       }
+    }
+
+    void TouchScreenDriver::resetPID()
+    {
+      // Reset to default PID values
+      rollPID->SetTunings(3.0, 0.0, 0.0);
+      pitchPID->SetTunings(1.0, 0.0, 0.0);
+
+      // Reset output limits
+      rollPID->SetOutputLimits(ROLL_PID_LIMIT_MIN, ROLL_PID_LIMIT_MAX);
+      pitchPID->SetOutputLimits(PITCH_PID_LIMIT_MIN, PITCH_PID_LIMIT_MAX);
+
+      // Reset sample times
+      rollPID->SetSampleTime(ROLL_PID_SAMPLE_TIME);
+      pitchPID->SetSampleTime(PITCH_PID_SAMPLE_TIME);
+
+      // Reset to automatic mode
+      rollPID->SetMode(AUTOMATIC);
+      pitchPID->SetMode(AUTOMATIC);
+
+      // Reset internal variables
+      outputX = 0.0;
+      outputY = 0.0;
+
+      Log.info("PID controllers reset to default values");
     }
 
   } // namespace drivers

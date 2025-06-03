@@ -58,9 +58,10 @@ namespace stewy
         shell_register(handlePID, "iy");
         shell_register(handlePID, "dy");
         shell_register(handleCalibrateTouchscreen, "calibrate");
+        shell_register(handleResetPID, "reset-pid");
 #endif
 
-        Log.notice("Command line interface initialized");
+        Log.info("Command line interface initialized");
       }
       else
       {
@@ -97,14 +98,14 @@ namespace stewy
     int CommandLine::handleHelp(int argc, char **argv)
     {
       // Display help message
-      Log.notice("Available commands:");
+      Log.info("Available commands:");
 
       // This would normally list all commands
       // For now, just print a message
-      Log.notice("  help, ?, demo, dump, log, moveto, mset, msetall, reset, set, setall");
+      Log.info("  help, ?, demo, dump, log, moveto, mset, msetall, reset, set, setall");
 
 #ifdef ENABLE_TOUCHSCREEN
-      Log.notice("  px, ix, dx, py, iy, dy, calibrate");
+      Log.info("  px, ix, dx, py, iy, dy, calibrate");
 #endif
 
       return SHELL_RET_SUCCESS;
@@ -135,7 +136,7 @@ namespace stewy
 
       // Set servo angle
       instance->servoValues[servo] = angle;
-      Log.notice("Set servo %d to %d degrees", servo, angle);
+      Log.info("Set servo %d to %d degrees", servo, angle);
 
       return SHELL_RET_SUCCESS;
     }
@@ -166,7 +167,7 @@ namespace stewy
       // Convert microseconds to angle
       float angle = map(micros, SERVO_MIN_US, SERVO_MAX_US, SERVO_MIN_ANGLE, SERVO_MAX_ANGLE);
       instance->servoValues[servo] = angle;
-      Log.notice("Set servo %d to %d microseconds (%.2f degrees)", servo, micros, angle);
+      Log.info("Set servo %d to %d microseconds (%.2f degrees)", servo, micros, angle);
 
       return SHELL_RET_SUCCESS;
     }
@@ -193,7 +194,7 @@ namespace stewy
         instance->servoValues[i] = angle;
       }
 
-      Log.notice("Set all servos to %d degrees", angle);
+      Log.info("Set all servos to %d degrees", angle);
 
       return SHELL_RET_SUCCESS;
     }
@@ -223,7 +224,7 @@ namespace stewy
         instance->servoValues[i] = angle;
       }
 
-      Log.notice("Set all servos to %d microseconds (%.2f degrees)", micros, angle);
+      Log.info("Set all servos to %d microseconds (%.2f degrees)", micros, angle);
 
       return SHELL_RET_SUCCESS;
     }
@@ -231,33 +232,33 @@ namespace stewy
     int CommandLine::handleDump(int argc, char **argv)
     {
       // Display system information
-      Log.notice("System Information:");
-      Log.notice("  Platform: Teensy");
-      Log.notice("  Log Level: %d", Log.getLevel());
+      Log.info("System Information:");
+      Log.info("  Platform: Teensy");
+      Log.info("  Log Level: %d", Log.getLevel());
 
       // Display servo values
-      Log.notice("Servo Values:");
+      Log.info("Servo Values:");
       for (int i = 0; i < 6; i++)
       {
-        Log.notice("  Servo %d: %.2f degrees", i, instance->servoValues[i]);
+        Log.info("  Servo %d: %.2f degrees", i, instance->servoValues[i]);
       }
 
       // Display platform state
       core::Platform platform(SERVO_MIN_ANGLE, SERVO_MAX_ANGLE);
-      Log.notice("Platform State:");
-      Log.notice("  Sway: %d", platform.getSway());
-      Log.notice("  Surge: %d", platform.getSurge());
-      Log.notice("  Heave: %d", platform.getHeave());
-      Log.notice("  Pitch: %.2f", platform.getPitch());
-      Log.notice("  Roll: %.2f", platform.getRoll());
-      Log.notice("  Yaw: %.2f", platform.getYaw());
+      Log.info("Platform State:");
+      Log.info("  Sway: %d", platform.getSway());
+      Log.info("  Surge: %d", platform.getSurge());
+      Log.info("  Heave: %d", platform.getHeave());
+      Log.info("  Pitch: %.2f", platform.getPitch());
+      Log.info("  Roll: %.2f", platform.getRoll());
+      Log.info("  Yaw: %.2f", platform.getYaw());
 
 #ifdef ENABLE_NUNCHUCK
       // Display nunchuck state
-      Log.notice("Nunchuck State:");
-      Log.notice("  Mode: %s", instance->nunchuck->getModeString(instance->nunchuck->getMode()));
-      Log.notice("  SubMode: %s", instance->nunchuck->getSubModeString(instance->nunchuck->getSubMode()));
-      Log.notice("  Direction: %s", instance->nunchuck->getDirectionString(instance->nunchuck->getDirection()));
+      Log.info("Nunchuck State:");
+      Log.info("  Mode: %s", instance->nunchuck->getModeString(instance->nunchuck->getMode()));
+      Log.info("  SubMode: %s", instance->nunchuck->getSubModeString(instance->nunchuck->getSubMode()));
+      Log.info("  Direction: %s", instance->nunchuck->getDirectionString(instance->nunchuck->getDirection()));
 #endif
 
       return SHELL_RET_SUCCESS;
@@ -265,7 +266,7 @@ namespace stewy
 
     int CommandLine::handleReset(int argc, char **argv)
     {
-      Log.notice("Restarting system...");
+      Log.info("Restarting system...");
       delay(100); // Give time for the message to be sent
 
       // Restart the system
@@ -276,7 +277,7 @@ namespace stewy
 
     int CommandLine::handleDemo(int argc, char **argv)
     {
-      Log.notice("Running demo sequence...");
+      Log.info("Running demo sequence...");
 
       core::Platform platform(SERVO_MIN_ANGLE, SERVO_MAX_ANGLE);
 
@@ -285,7 +286,7 @@ namespace stewy
       delay(1000);
 
       // Pitch forward
-      Log.notice("Pitching forward...");
+      Log.info("Pitching forward...");
       platform.moveTo(instance->servoValues, 0, 0, 0, 15, 0, 0);
       delay(1000);
 
@@ -294,7 +295,7 @@ namespace stewy
       delay(500);
 
       // Roll right
-      Log.notice("Rolling right...");
+      Log.info("Rolling right...");
       platform.moveTo(instance->servoValues, 0, 0, 0, 0, 15, 0);
       delay(1000);
 
@@ -303,7 +304,7 @@ namespace stewy
       delay(500);
 
       // Combined pitch and roll
-      Log.notice("Combined pitch and roll...");
+      Log.info("Combined pitch and roll...");
       platform.moveTo(instance->servoValues, 0, 0, 0, 10, 10, 0);
       delay(1000);
 
@@ -312,14 +313,14 @@ namespace stewy
       delay(500);
 
       // Heave up
-      Log.notice("Heaving up...");
+      Log.info("Heaving up...");
       platform.moveTo(instance->servoValues, 0, 0, 20, 0, 0, 0);
       delay(1000);
 
       // Return to home
       platform.home(instance->servoValues);
 
-      Log.notice("Demo complete");
+      Log.info("Demo complete");
 
       return SHELL_RET_SUCCESS;
     }
@@ -360,8 +361,8 @@ namespace stewy
         }
       }
 
-      Log.notice("Platform moved to pitch=%.2f, roll=%.2f, sway=%d, surge=%d, heave=%d, yaw=%.2f",
-                 pitch, roll, sway, surge, heave, yaw);
+      Log.info("Platform moved to pitch=%.2f, roll=%.2f, sway=%d, surge=%d, heave=%d, yaw=%.2f",
+               pitch, roll, sway, surge, heave, yaw);
 
       return SHELL_RET_SUCCESS;
     }
@@ -370,7 +371,7 @@ namespace stewy
     {
       if (argc != 2)
       {
-        Log.notice("Usage: log [SILENT | VERBOSE | TRACE | INFO | WARNING | ERROR | FATAL]");
+        Log.info("Usage: log [SILENT | VERBOSE | TRACE | INFO | WARNING | ERROR | FATAL]");
         return SHELL_RET_FAILURE;
       }
 
@@ -410,7 +411,7 @@ namespace stewy
         return SHELL_RET_FAILURE;
       }
 
-      Log.notice("Log level set to %s", level);
+      Log.info("Log level set to %s", level);
 
       return SHELL_RET_SUCCESS;
     }
@@ -459,7 +460,7 @@ namespace stewy
       // Set the new PID values
       instance->touchscreen->setPID(axis, p, i, d);
 
-      Log.notice("%c-axis PID values: P=%.2f, I=%.2f, D=%.2f", toupper(axis), p, i, d);
+      Log.info("%c-axis PID values: P=%.2f, I=%.2f, D=%.2f", toupper(axis), p, i, d);
 
       return SHELL_RET_SUCCESS;
 #else
@@ -471,8 +472,20 @@ namespace stewy
     int CommandLine::handleCalibrateTouchscreen(int argc, char **argv)
     {
 #ifdef ENABLE_TOUCHSCREEN
-      Log.notice("Starting touchscreen calibration...");
+      Log.info("Starting touchscreen calibration...");
       instance->touchscreen->startCalibration();
+      return SHELL_RET_SUCCESS;
+#else
+      Log.error("Touchscreen support is not enabled");
+      return SHELL_RET_FAILURE;
+#endif
+    }
+
+    int CommandLine::handleResetPID(int argc, char **argv)
+    {
+#ifdef ENABLE_TOUCHSCREEN
+      Log.info("Resetting PID controllers to default values...");
+      instance->touchscreen->resetPID();
       return SHELL_RET_SUCCESS;
 #else
       Log.error("Touchscreen support is not enabled");

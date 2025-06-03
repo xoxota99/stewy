@@ -67,7 +67,7 @@ namespace stewy
       }
       else
       {
-        Log.notice("Nunchuck initialized");
+        Log.info("Nunchuck initialized");
       }
     }
 
@@ -163,8 +163,8 @@ namespace stewy
         case CONTROL:
           // In CONTROL mode, Z button cycles through submodes
           subMode = static_cast<ControlSubMode>((subMode + 1) % 3);
-          Log.notice("Control submode: %s", getSubModeString(subMode));
-          
+          Log.info("Control submode: %s", getSubModeString(subMode));
+
           // Blink LED to indicate submode
           modeBlinker.blink(subMode + 1);
           break;
@@ -200,7 +200,7 @@ namespace stewy
           case SQUARE:
             // In CIRCLE/EIGHT/SQUARE mode, double-click reverses direction
             direction = (direction == CW) ? CCW : CW;
-            Log.notice("Direction: %s", getDirectionString(direction));
+            Log.info("Direction: %s", getDirectionString(direction));
             break;
 
           default:
@@ -212,7 +212,7 @@ namespace stewy
         {
           // Single-click handling - cycle through modes
           mode = static_cast<ControlMode>((mode + 1) % 5);
-          Log.notice("Mode: %s", getModeString(mode));
+          Log.info("Mode: %s", getModeString(mode));
 
           // Blink LED to indicate mode
           modeBlinker.blink(mode + 1);

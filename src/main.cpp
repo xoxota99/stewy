@@ -87,52 +87,52 @@ void setup()
   delay(100);
 
   Log.begin(LOG_LEVEL, &Serial);
-  Log.notice("Stewy Platform Starting...");
-  Log.notice("Built %s, %s", __DATE__, __TIME__);
+  Log.info("Stewy Platform Starting...");
+  Log.info("Built %s, %s", __DATE__, __TIME__);
 
   // Initialize platform
   platform = new core::Platform(SERVO_MIN_ANGLE, SERVO_MAX_ANGLE);
 
 // Initialize servos
 #ifdef ENABLE_SERVOS
-  Log.notice("Initializing servos...");
+  Log.info("Initializing servos...");
   for (int i = 0; i < 6; i++)
   {
     servos[i].attach(core::SERVO_PINS[i]);
   }
 #else
-  Log.notice("Servo control is DISABLED");
+  Log.info("Servo control is DISABLED");
 #endif
 
 // Initialize touchscreen
 #ifdef ENABLE_TOUCHSCREEN
-  Log.notice("Initializing touchscreen...");
+  Log.info("Initializing touchscreen...");
   touchscreen = new drivers::TouchScreenDriver(XP, YP, XM, YM, TS_OHMS);
   touchscreen->init();
 #else
-  Log.notice("Touchscreen support is DISABLED");
+  Log.info("Touchscreen support is DISABLED");
 #endif
 
 // Initialize nunchuck
 #ifdef ENABLE_NUNCHUCK
-  Log.notice("Initializing nunchuck...");
+  Log.info("Initializing nunchuck...");
   nunchuck = new drivers::NunchuckDriver();
   nunchuck->init();
 #else
-  Log.notice("Nunchuck support is DISABLED");
+  Log.info("Nunchuck support is DISABLED");
 #endif
 
 // Initialize command line
 #ifdef ENABLE_SERIAL_COMMANDS
-  Log.notice("Initializing command line interface...");
+  Log.info("Initializing command line interface...");
   commandLine = new ui::CommandLine(touchscreen, nunchuck, servoValues);
   commandLine->init();
 #else
-  Log.notice("Command line interface is DISABLED");
+  Log.info("Command line interface is DISABLED");
 #endif
 
   // Do a litlle initialization sequence
-  Log.notice("Sweeping servos to ensure they are working...");
+  Log.info("Sweeping servos to ensure they are working...");
   for (int pos = SERVO_MIN_ANGLE; pos < core::SERVO_MID_ANGLE; pos += 4)
   {
     for (int i = 0; i < 6; i++)
@@ -148,7 +148,7 @@ void setup()
   platform->home(servoValues);
   updateServos();
 
-  Log.notice("Initialization complete");
+  Log.info("Initialization complete");
 }
 
 void loop()

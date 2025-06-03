@@ -76,6 +76,7 @@ namespace stewy
       static int handleLog(int argc, char **argv);
       static int handlePID(int argc, char **argv);
       static int handleCalibrateTouchscreen(int argc, char **argv);
+      static int handleResetPID(int argc, char **argv);
 
       // Shell I/O functions
       static int shellReader(char *data);
