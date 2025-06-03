@@ -7,6 +7,7 @@
  * @license GPL-3.0
  */
 
+#include <Shell.h> // Include the Shell.h header in the implementation file
 #include "ui/CommandLine.h"
 #include "core/Platform.h"
 #include "platform/TeensyHardware.h"

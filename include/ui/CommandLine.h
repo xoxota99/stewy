@@ -11,7 +11,13 @@
  * @license GPL-3.0
  */
 
-#include <Shell.h> // https://github.com/geekfactory/Shell.git
+// Forward declare the Shell type from the GeekFactory Shell Library
+// to avoid C/C++ compatibility issues
+extern "C" {
+  typedef struct shell_struct shell_t;
+  typedef shell_t Shell;
+}
+
 #include "core/Config.h"
 #include "drivers/TouchScreen.h"
 #include "drivers/Nunchuck.h"
