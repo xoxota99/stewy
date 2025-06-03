@@ -28,7 +28,7 @@ namespace stewy
   are not servo-related, without killing the battery, browning out the USB,
   or overheating the servos.
 */
-// #define ENABLE_SERVOS
+#define ENABLE_SERVOS
 
 // LED configuration
 #define LED_PIN LED_BUILTIN // LED pin for status indication
@@ -39,8 +39,12 @@ namespace stewy
 // Servo configuration
 #define SERVO_MIN_ANGLE 0
 #define SERVO_MAX_ANGLE 360
+    const int SERVO_MID_ANGLE = SERVO_MIN_ANGLE + (SERVO_MAX_ANGLE - SERVO_MIN_ANGLE) / 2;
+
 #define SERVO_MIN_US 755
 #define SERVO_MAX_US 2250
+
+    const int SERVO_MID_US = SERVO_MIN_US + (SERVO_MAX_US - SERVO_MIN_US) / 2;
 
     // Which servos are reversed. 1 = reversed, 0 = normal.
     const int SERVO_REVERSE[6] = {0, 1, 0, 1, 0, 1};
