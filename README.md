@@ -78,3 +78,47 @@ Some things I'd like to try:
   * Add doxygen-style documentation
   * Add unit tests
   * Refactor code to be more portable across Arduino IDEs and board targets. (e.g. Serial.printf);
+# Project Structure
+
+The project is organized into the following directory structure:
+
+- `include/`: Header files
+  - `core/`: Core functionality and common definitions
+  - `drivers/`: Hardware driver interfaces
+  - `ui/`: User interface related headers
+  - `platform/`: Platform-specific code
+
+- `src/`: Source files
+  - `core/`: Core functionality implementation
+  - `drivers/`: Hardware driver implementations
+  - `ui/`: User interface implementations
+  - `platform/`: Platform-specific implementations
+
+- `examples/`: Example applications
+  - `BasicMovement/`: Basic platform movement example
+  - `TouchscreenCalibration/`: Touchscreen calibration example
+
+- `doc/`: Documentation
+  - `TODO.md`: Project tasks and improvements
+  - `CAD files/`: CAD designs for the platform
+
+- `lib/`: External libraries
+  - `Blinker/`: LED blinking utility
+  - `WiiChuck/`: Wii Nunchuck interface
+# Building the Project
+
+To build the project, you can use the provided build script:
+
+```bash
+./build.sh
+```
+
+Or run PlatformIO directly:
+
+```bash
+platformio run
+```
+
+## Migrating from the Old Structure
+
+If you're working with code that still uses the old flat structure, please refer to the [Migration Guide](MIGRATION.md) for instructions on updating your code to use the new structure.
