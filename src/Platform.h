@@ -37,6 +37,11 @@
 #define ROD_LENGTH 155                   // Push rod length (mm). Distance between pushrod ball joints (servo to platform).
 #define Z_HOME 148                       // Default Z height of the platform (above the base), with servo arms horizontal. Formally, the distance from the plane described by the collection of servo pinion gear centers, to the plane described by the collection of platform / pushrod joints.
 
+// Enhanced IK algorithm options
+#define USE_ENHANCED_IK         // Use the enhanced IK algorithm for better range of movement
+#define ROTATION_POINT_OFFSET 0 // Height offset for rotation point in mm (0 = rotate around home position)
+#define TRANSLATION_FIRST true  // Apply translation before rotation for better range
+
 /*
   If defined, the IK algorithm will "slam" values to min or max when it encounters
   an asymptotic condition. That is, if the solution requires that the servo (e.g.) extend
@@ -118,18 +123,18 @@ const double B_COORDS[6][2] = {
     {-B_RAD * cos(AXIS3 + THETA_B), B_RAD *sin(AXIS3 + THETA_B)}};
 
 // Movement limits for the platform
-#define SWAY_MIN -50   // Minimum sway (x) in mm
-#define SWAY_MAX 50    // Maximum sway (x) in mm
-#define SURGE_MIN -50  // Minimum surge (y) in mm
-#define SURGE_MAX 50   // Maximum surge (y) in mm
-#define HEAVE_MIN -30  // Minimum heave (z) in mm
-#define HEAVE_MAX 30   // Maximum heave (z) in mm
-#define PITCH_MIN -30  // Minimum pitch in degrees
-#define PITCH_MAX 30   // Maximum pitch in degrees
-#define ROLL_MIN -30   // Minimum roll in degrees
-#define ROLL_MAX 30    // Maximum roll in degrees
-#define YAW_MIN -30    // Minimum yaw in degrees
-#define YAW_MAX 30     // Maximum yaw in degrees
+#define SWAY_MIN -50  // Minimum sway (x) in mm
+#define SWAY_MAX 50   // Maximum sway (x) in mm
+#define SURGE_MIN -50 // Minimum surge (y) in mm
+#define SURGE_MAX 50  // Maximum surge (y) in mm
+#define HEAVE_MIN -30 // Minimum heave (z) in mm
+#define HEAVE_MAX 30  // Maximum heave (z) in mm
+#define PITCH_MIN -30 // Minimum pitch in degrees
+#define PITCH_MAX 30  // Maximum pitch in degrees
+#define ROLL_MIN -30  // Minimum roll in degrees
+#define ROLL_MAX 30   // Maximum roll in degrees
+#define YAW_MIN -30   // Minimum yaw in degrees
+#define YAW_MAX 30    // Maximum yaw in degrees
 
 class Platform
 {
@@ -160,3 +165,12 @@ public:
   float getRoll();
   float getYaw();
 };
+/*
+  If defined, the IK algorithm will "slam" values to min or max when it encounters
+  an asymptotic condition. That is, if the solution requires that the servo (e.g.) extend
+  beyond its physical limits, it will set the servo angle to MAX.
+
+  If NOT defined, the IK algorithm will simply refuse to modify ANY servo endpoints
+  when it encounters an asymptotic condition.
+*/
+// #define SLAM

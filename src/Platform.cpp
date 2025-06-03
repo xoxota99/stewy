@@ -105,7 +105,7 @@ bool Platform::moveTo(float *servoValues, int sway, int surge, int heave, float 
   const double cr_sy = cr * sy;
   const double sp_cr = sp * cr;
 
-  // Pre-compute Z offset
+  // Pre-compute Z offset with rotation point adjustment
   const double z_offset = Z_HOME + heave;
 
   // Pre-compute servo angle mapping constants
@@ -119,6 +119,92 @@ bool Platform::moveTo(float *servoValues, int sway, int surge, int heave, float 
 
   bool bOk = true;
 
+#ifdef USE_ENHANCED_IK
+  // Enhanced IK algorithm with adjustable rotation point and translation/rotation order
+  for (int i = 0; i < 6 && bOk; i++)
+  {
+    double pivot_x, pivot_y, pivot_z;
+
+    // Get platform and base coordinates
+    const double px = P_COORDS[i][0];
+    const double py = P_COORDS[i][1];
+    const double bx = B_COORDS[i][0];
+    const double by = B_COORDS[i][1];
+
+    // Apply rotation around adjustable point
+    if (TRANSLATION_FIRST)
+    {
+      // Apply translation first, then rotation
+      pivot_x = px;
+      pivot_y = py;
+      pivot_z = ROTATION_POINT_OFFSET;
+
+      // Apply rotation
+      double rotated_x = pivot_x * cr_cy + pivot_y * (sp_sr * cr - cp * sy) - pivot_z * (cp * sr + sp * sy * cr);
+      double rotated_y = pivot_x * cr_sy + pivot_y * (cp * cy + sp_sr * sy) - pivot_z * (sp * cy - cp * sr * sy);
+      double rotated_z = -pivot_x * sr + pivot_y * sp_cr + pivot_z * cp * cr;
+
+      // Apply translation
+      pivot_x = rotated_x + sway;
+      pivot_y = rotated_y + surge;
+      pivot_z = rotated_z + z_offset;
+    }
+    else
+    {
+      // Apply rotation first, then translation
+      pivot_x = px * cr_cy + py * (sp_sr * cr - cp * sy);
+      pivot_y = px * cr_sy + py * (cp * cy + sp_sr * sy);
+      pivot_z = -px * sr + py * sp_cr + z_offset + ROTATION_POINT_OFFSET;
+
+      // Apply translation
+      pivot_x += sway;
+      pivot_y += surge;
+      pivot_z += heave - ROTATION_POINT_OFFSET; // Adjust for rotation point offset
+    }
+
+    // Calculate squared distance (avoid sqrt until necessary)
+    const double dx = pivot_x - bx;
+    const double dy = pivot_y - by;
+    const double d2 = dx * dx + dy * dy + pivot_z * pivot_z;
+
+    // Early exit if distance is physically impossible
+    if (d2 > max_reach_sq)
+    {
+      Log.error("Distance too great at servo %d: %.2f > %.2f", i, sqrt(d2), ARM_LENGTH + ROD_LENGTH);
+      bOk = false;
+      break;
+    }
+
+    // Geometry calculations
+    const double k = d2 - (rod_length_sq - arm_length_sq);
+    const double l = 2 * ARM_LENGTH * pivot_z;
+    const double m = 2 * ARM_LENGTH * (cos(THETA_S[i]) * dx + sin(THETA_S[i]) * dy);
+
+    // Check for asymptotic condition
+    const double divisor = sqrt(l * l + m * m);
+    const double k_ratio = k / divisor;
+
+    if (abs(k_ratio) >= 1)
+    {
+      Log.error("Asymptotic condition at servo %d: |%.2f| >= 1", i, k_ratio);
+#ifdef SLAM
+      servoValues[i] = (k_ratio > 0) ? _servo_max_angle : _servo_min_angle;
+#else
+      bOk = false;
+#endif
+      break;
+    }
+
+    // Calculate servo angle
+    const double servo_rad = asin(k_ratio) - atan2(m, l); // Using atan2 is more robust
+    double servo_deg = map(degrees(servo_rad), -90, 90, _servo_min_angle, _servo_max_angle);
+
+    // Constrain to valid range
+    servo_deg = constrain(servo_deg, _servo_min_angle, _servo_max_angle);
+    servoValues[i] = servo_deg;
+  }
+#else
+  // Original IK algorithm
   for (int i = 0; i < 6 && bOk; i++)
   {
     // Calculate platform pivot coordinates more efficiently
@@ -173,6 +259,7 @@ bool Platform::moveTo(float *servoValues, int sway, int surge, int heave, float 
     servo_deg = constrain(servo_deg, _servo_min_angle, _servo_max_angle);
     servoValues[i] = servo_deg;
   }
+#endif
 
   if (bOk)
   {
