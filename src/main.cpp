@@ -45,6 +45,12 @@ Servo servos[6];
 // Servo setpoints in degrees
 float servoValues[6];
 
+// Current actual servo positions (for acceleration/deceleration)
+float currentServoPositions[6];
+
+// Current servo velocities (for acceleration/deceleration)
+float servoVelocities[6];
+
 // Create driver objects
 drivers::TouchScreenDriver *touchscreen;
 drivers::NunchuckDriver *nunchuck;
@@ -63,8 +69,62 @@ void updateServos()
 {
   for (int i = 0; i < 6; i++)
   {
+    float targetPosition = servoValues[i];
+    float currentPosition = currentServoPositions[i];
+
+#ifdef SERVO_ACCELERATION_ENABLED
+
+    // Calculate the distance to the target
+    float distance = targetPosition - currentPosition;
+
+    if (abs(distance) > 0.01f) // Small threshold to avoid tiny movements
+    {
+      // Determine the direction of movement
+      float direction = (distance > 0) ? 1.0f : -1.0f;
+
+      // Calculate the desired velocity based on distance
+      float desiredVelocity = direction * min(abs(distance), SERVO_MAX_SPEED);
+
+      // Apply acceleration/deceleration
+      if (servoVelocities[i] < desiredVelocity)
+      {
+        // Accelerate
+        servoVelocities[i] = min(servoVelocities[i] + SERVO_ACCELERATION, desiredVelocity);
+      }
+      else if (servoVelocities[i] > desiredVelocity)
+      {
+        // Decelerate
+        servoVelocities[i] = max(servoVelocities[i] - SERVO_ACCELERATION, desiredVelocity);
+      }
+
+      // Apply velocity to position
+      currentPosition += servoVelocities[i];
+
+      // Check if we've reached or overshot the target
+      if ((direction > 0 && currentPosition >= targetPosition) ||
+          (direction < 0 && currentPosition <= targetPosition))
+      {
+        currentPosition = targetPosition;
+        servoVelocities[i] = 0;
+      }
+    }
+    else
+    {
+      // We're at the target, ensure velocity is zero
+      servoVelocities[i] = 0;
+    }
+
+    // Update the current position
+    currentServoPositions[i] = currentPosition;
+#else
+
+    // No acceleration/deceleration, just use the target position
+    currentPosition = targetPosition;
+    currentServoPositions[i] = currentPosition;
+#endif // SERVO_ACCELERATION_ENABLED
+
     // Apply reverse if needed
-    float val = servoValues[i];
+    float val = currentPosition;
     if (core::SERVO_REVERSE[i])
     {
       val = SERVO_MIN_ANGLE + (SERVO_MAX_ANGLE - val);
@@ -92,6 +152,13 @@ void setup()
 
   // Initialize platform
   platform = new core::Platform(SERVO_MIN_ANGLE, SERVO_MAX_ANGLE);
+
+  // Initialize servo position and velocity arrays
+  for (int i = 0; i < 6; i++)
+  {
+    currentServoPositions[i] = core::SERVO_MID_ANGLE;
+    servoVelocities[i] = 0.0f;
+  }
 
 // Initialize servos
 #ifdef ENABLE_SERVOS
@@ -181,11 +248,14 @@ void loop()
 
   // Calculate how long this iteration took
   unsigned long loopDuration = millis() - loopStartTime;
-  
+
   // If we completed faster than our target interval, delay the remaining time
-  if (loopDuration < MAIN_LOOP_INTERVAL_MS) {
+  if (loopDuration < MAIN_LOOP_INTERVAL_MS)
+  {
     delay(MAIN_LOOP_INTERVAL_MS - loopDuration);
-  } else if (loopDuration > MAIN_LOOP_INTERVAL_MS) {
+  }
+  else if (loopDuration > MAIN_LOOP_INTERVAL_MS)
+  {
     // Log a warning if we're exceeding our target loop time
     Log.trace("Loop time exceeded target: %lu ms (target: %d ms)", loopDuration, MAIN_LOOP_INTERVAL_MS);
   }
@@ -193,29 +263,34 @@ void loop()
 
 // Clean up function to be called when the program exits
 // This is not normally called in Arduino/Teensy, but we include it for completeness
-void cleanup() {
+void cleanup()
+{
   // Clean up dynamically allocated objects
-  if (platform != nullptr) {
+  if (platform != nullptr)
+  {
     delete platform;
     platform = nullptr;
   }
-  
+
 #ifdef ENABLE_TOUCHSCREEN
-  if (touchscreen != nullptr) {
+  if (touchscreen != nullptr)
+  {
     delete touchscreen;
     touchscreen = nullptr;
   }
 #endif
 
 #ifdef ENABLE_NUNCHUCK
-  if (nunchuck != nullptr) {
+  if (nunchuck != nullptr)
+  {
     delete nunchuck;
     nunchuck = nullptr;
   }
 #endif
 
 #ifdef ENABLE_SERIAL_COMMANDS
-  if (commandLine != nullptr) {
+  if (commandLine != nullptr)
+  {
     delete commandLine;
     commandLine = nullptr;
   }

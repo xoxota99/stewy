@@ -39,6 +39,11 @@ namespace stewy
 // Main loop timing configuration
 #define MAIN_LOOP_INTERVAL_MS 20 // Target time in milliseconds for each main loop iteration
 
+// Servo movement configuration
+#define SERVO_ACCELERATION_ENABLED // Enable/disable servo acceleration/deceleration
+#define SERVO_MAX_SPEED 10.0f      // Maximum speed in degrees per loop iteration
+#define SERVO_ACCELERATION 0.3f    // Acceleration/deceleration rate in degrees per loop iteration squared
+
 // Servo configuration
 #define SERVO_MIN_ANGLE 0
 #define SERVO_MAX_ANGLE 360

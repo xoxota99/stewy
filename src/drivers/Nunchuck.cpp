@@ -55,15 +55,16 @@ namespace stewy
       setpoint.x = 0;
       setpoint.y = 0;
     }
-    
+
     NunchuckDriver::~NunchuckDriver()
     {
       // Clean up dynamically allocated objects
-      if (nunchuck != nullptr) {
+      if (nunchuck != nullptr)
+      {
         delete nunchuck;
         nunchuck = nullptr;
       }
-      
+
       Log.trace("NunchuckDriver destroyed");
     }
 
@@ -72,7 +73,7 @@ namespace stewy
       // Initialize nunchuck
       nunchuck->begin();
 
-      if (nunchuck->type == Unknown)
+      if (nunchuck->type == UnknownChuck)
       {
         Log.error("Nunchuck not detected!");
       }

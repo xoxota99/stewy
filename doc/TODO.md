@@ -99,7 +99,7 @@ This document tracks improvements and tasks for the Stewy project. Check off ite
   - [x] Implement deadzone filter to avoid jitter
 
 - [ ] Servo Control:
-  - [ ] Add acceleration/deceleration to servo movements for smoother operation
+  - [x] Add acceleration/deceleration to servo movements for smoother operation
   - [ ] Implement a safety system to prevent servo overheating
 
 - [x] Nunchuck Interface:
