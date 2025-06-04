@@ -53,6 +53,14 @@ namespace stewy
       CommandLine(drivers::TouchScreenDriver *touchscreen, drivers::NunchuckDriver *nunchuck, float *servoValues);
 
       /**
+       * @brief Destructor for CommandLine object
+       * 
+       * Note: This class doesn't own the objects passed to it, so it doesn't delete them.
+       * The pointers are managed by the main application.
+       */
+      ~CommandLine() = default;
+
+      /**
        * @brief Initialize the command line interface
        */
       void init();

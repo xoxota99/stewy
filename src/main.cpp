@@ -176,3 +176,36 @@ void loop()
   // Update servos
   updateServos();
 }
+
+// Clean up function to be called when the program exits
+// This is not normally called in Arduino/Teensy, but we include it for completeness
+void cleanup() {
+  // Clean up dynamically allocated objects
+  if (platform != nullptr) {
+    delete platform;
+    platform = nullptr;
+  }
+  
+#ifdef ENABLE_TOUCHSCREEN
+  if (touchscreen != nullptr) {
+    delete touchscreen;
+    touchscreen = nullptr;
+  }
+#endif
+
+#ifdef ENABLE_NUNCHUCK
+  if (nunchuck != nullptr) {
+    delete nunchuck;
+    nunchuck = nullptr;
+  }
+#endif
+
+#ifdef ENABLE_SERIAL_COMMANDS
+  if (commandLine != nullptr) {
+    delete commandLine;
+    commandLine = nullptr;
+  }
+#endif
+
+  Log.info("Cleanup complete");
+}

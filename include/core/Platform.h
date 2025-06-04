@@ -49,6 +49,13 @@ public:
   Platform(int servo_min_angle, int servo_max_angle);
   
   /**
+   * @brief Destructor for Platform object
+   * 
+   * No dynamic memory to clean up in this class
+   */
+  ~Platform() = default;
+  
+  /**
    * @brief Move platform to home position
    * 
    * @param servoValues Array to store calculated servo values

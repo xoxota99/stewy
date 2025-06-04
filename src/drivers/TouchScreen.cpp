@@ -100,6 +100,27 @@ namespace stewy
       calibrationSampleCount = 0;
       ballLastSeen = 0;
     }
+    
+    TouchScreenDriver::~TouchScreenDriver()
+    {
+      // Clean up dynamically allocated objects
+      if (ts != nullptr) {
+        delete ts;
+        ts = nullptr;
+      }
+      
+      if (rollPID != nullptr) {
+        delete rollPID;
+        rollPID = nullptr;
+      }
+      
+      if (pitchPID != nullptr) {
+        delete pitchPID;
+        pitchPID = nullptr;
+      }
+      
+      Log.trace("TouchScreenDriver destroyed");
+    }
 
     void TouchScreenDriver::init()
     {

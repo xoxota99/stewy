@@ -89,6 +89,13 @@ namespace stewy
       NunchuckDriver();
 
       /**
+       * @brief Destructor for NunchuckDriver
+       * 
+       * Properly cleans up dynamically allocated objects
+       */
+      ~NunchuckDriver();
+
+      /**
        * @brief Initialize the Nunchuck
        */
       void init();

@@ -97,6 +97,13 @@ public:
   TouchScreenDriver(uint8_t xp, uint8_t yp, uint8_t xm, uint8_t ym, uint16_t ohms);
   
   /**
+   * @brief Destructor for TouchScreenDriver
+   * 
+   * Properly cleans up dynamically allocated objects
+   */
+  ~TouchScreenDriver();
+  
+  /**
    * @brief Initialize the touchscreen
    */
   void init();
