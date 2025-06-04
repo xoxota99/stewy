@@ -153,6 +153,9 @@ void setup()
 
 void loop()
 {
+  // Record the start time of this loop iteration
+  unsigned long loopStartTime = millis();
+
 // Process command line
 #ifdef ENABLE_SERIAL_COMMANDS
   commandLine->process();
@@ -175,6 +178,17 @@ void loop()
 
   // Update servos
   updateServos();
+
+  // Calculate how long this iteration took
+  unsigned long loopDuration = millis() - loopStartTime;
+  
+  // If we completed faster than our target interval, delay the remaining time
+  if (loopDuration < MAIN_LOOP_INTERVAL_MS) {
+    delay(MAIN_LOOP_INTERVAL_MS - loopDuration);
+  } else if (loopDuration > MAIN_LOOP_INTERVAL_MS) {
+    // Log a warning if we're exceeding our target loop time
+    Log.trace("Loop time exceeded target: %lu ms (target: %d ms)", loopDuration, MAIN_LOOP_INTERVAL_MS);
+  }
 }
 
 // Clean up function to be called when the program exits

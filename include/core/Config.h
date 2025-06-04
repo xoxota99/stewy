@@ -36,6 +36,9 @@ namespace stewy
 // Logging configuration
 #define LOG_LEVEL LOG_LEVEL_TRACE
 
+// Main loop timing configuration
+#define MAIN_LOOP_INTERVAL_MS 20 // Target time in milliseconds for each main loop iteration
+
 // Servo configuration
 #define SERVO_MIN_ANGLE 0
 #define SERVO_MAX_ANGLE 360
