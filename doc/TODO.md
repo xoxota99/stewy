@@ -4,9 +4,9 @@ This document tracks improvements and tasks for the Stewy project. Check off ite
 
 ## 1. Code Quality Improvements
 
-- [ ] Add Documentation:
-  - [ ] Implement Doxygen-style documentation as mentioned in the README's "Improvements" section
-  - [ ] Add function header comments to explain parameters, return values, and behavior
+- [x] Add Documentation:
+  - [x] Add basic Doxygen-style documentation to class and function headers
+  - [x] Complete documentation for all functions with parameters, return values, and behavior
 
 - [ ] Implement Unit Tests:
   - [ ] Create a testing framework for the platform's inverse kinematics
@@ -14,16 +14,17 @@ This document tracks improvements and tasks for the Stewy project. Check off ite
   - [ ] Test edge cases for servo movement limits
 
 - [ ] Code Organization:
-  - [ ] Refactor the main.cpp file which is quite large (7098 lines) into smaller, more focused modules
-  - [ ] Create separate classes for different functionalities (e.g., ServoController, PlatformController)
+  - [x] Organize code into proper directory structure with include/ and src/ folders
+  - [ ] Further refactor main.cpp into smaller, more focused modules
+  - [ ] Create separate classes for different functionalities (e.g., ServoController)
 
 - [ ] Error Handling:
   - [ ] Add more robust error handling throughout the codebase
   - [ ] Implement a proper error reporting system instead of just logging
 
 - [ ] Configuration Management:
-  - [ ] Move hardcoded values from config.h to a configuration file that can be loaded at runtime
-  - [ ] Consider using EEPROM to store calibration values
+  - [x] Use EEPROM to store calibration values
+  - [ ] Move more hardcoded values from config.h to a configuration file that can be loaded at runtime
 
 ## 2. Feature Implementations
 
@@ -34,11 +35,12 @@ This document tracks improvements and tasks for the Stewy project. Check off ite
     - [ ] SQUARE mode
   - [ ] Add the ability to save and load different configurations
 
-- [ ] Calibration Improvements:
-  - [ ] Create an automated calibration routine for the touchscreen
+- [x] Calibration Improvements:
+  - [x] Create an automated calibration routine for the touchscreen
   - [ ] Implement a servo calibration procedure to fine-tune the SERVO_TRIM values
 
 - [ ] User Interface:
+  - [x] Implement basic command line interface
   - [ ] Develop a more user-friendly serial command interface
   - [ ] Add a web interface using ESP8266/ESP32 for remote control and monitoring
 
@@ -57,12 +59,14 @@ This document tracks improvements and tasks for the Stewy project. Check off ite
 ## 4. Performance Optimizations
 
 - [ ] PID Controller Tuning:
+  - [x] Implement configurable PID parameters
   - [ ] Implement auto-tuning for the PID controllers
   - [ ] Add more sophisticated filtering for the touchscreen input
 
-- [ ] Inverse Kinematics:
-  - [ ] Optimize the IK algorithm as mentioned in the README
-  - [ ] Implement the mathematical improvements for better range of movement
+- [x] Inverse Kinematics:
+  - [x] Optimize the IK algorithm as mentioned in the README
+  - [x] Implement the mathematical improvements for better range of movement
+  - [x] Add boundary checking for all movement parameters
 
 - [ ] Memory Usage:
   - [ ] Optimize memory usage, especially for the Teensy platform
@@ -75,8 +79,8 @@ This document tracks improvements and tasks for the Stewy project. Check off ite
   - [ ] Replace Teensy-specific code (like Serial.printf) with more portable alternatives
 
 - [ ] Continuous Integration:
-  - [ ] Set up a proper CI/CD pipeline using the existing .travis.yml file
-  - [ ] Add automated testing as part of the build process
+  - [x] Add basic Travis CI configuration
+  - [ ] Set up a proper CI/CD pipeline with automated testing
 
 - [ ] Documentation:
   - [ ] Create better user documentation with setup instructions
@@ -84,18 +88,75 @@ This document tracks improvements and tasks for the Stewy project. Check off ite
 
 ## 6. Specific Technical Improvements
 
-- [ ] Platform.cpp:
-  - [ ] Optimize the inverse kinematics calculations
-  - [ ] Add boundary checking for all movement parameters
+- [x] Platform.cpp:
+  - [x] Optimize the inverse kinematics calculations
+  - [x] Add boundary checking for all movement parameters
+  - [x] Implement enhanced IK algorithm with adjustable rotation point
 
-- [ ] Touchscreen Handling:
-  - [ ] Implement better filtering for the touchscreen input
-  - [ ] Add calibration routines for the touchscreen
+- [x] Touchscreen Handling:
+  - [x] Implement filtering for the touchscreen input
+  - [x] Add calibration routines for the touchscreen
+  - [x] Implement deadzone filter to avoid jitter
 
 - [ ] Servo Control:
   - [ ] Add acceleration/deceleration to servo movements for smoother operation
   - [ ] Implement a safety system to prevent servo overheating
 
-- [ ] Nunchuck Interface:
+- [x] Nunchuck Interface:
+  - [x] Implement basic mode switching and control
   - [ ] Improve the responsiveness of the nunchuck controls
-  - [ ] Add more intuitive control mappings
+  - [ ] Complete implementation of all planned modes
+
+## 7. Logical Errors to Fix
+
+- [x] **PID Controller Input/Output Handling**
+  - [x] Review how PID values are updated and ensure proper input/output flow
+  - [x] Add validation for PID parameters to prevent unstable behavior
+
+- [x] **Touchscreen Calibration Persistence**
+  - [x] Store calibration data in EEPROM
+  - [x] Add validation for EEPROM calibration data
+  - [x] Implement fallback defaults if calibration data is corrupted
+
+- [ ] **Error Handling for Missing Hardware**
+  - [x] Add detection for nunchuck connection
+  - [ ] Implement more graceful handling for connected but non-responsive hardware
+  - [ ] Implement timeout mechanisms for hardware communication
+
+- [x] **Resource Management**
+  - [x] Add proper cleanup for objects created with `new`
+  - [ ] Consider using smart pointers or RAII patterns for better resource management
+
+- [ ] **Concurrent Access to Servo Values**
+  - [ ] Implement a synchronization mechanism for the servoValues array
+  - [ ] Create a priority system for different components updating servo positions
+
+- [ ] **Timing Issues**
+  - [ ] Add timing control to the main loop for consistent execution
+  - [x] Ensure PID loops run at consistent intervals for proper control
+
+- [ ] **Initialization Order Dependencies**
+  - [x] Implement proper initialization sequence
+  - [ ] Add more explicit checks to ensure components are initialized before use
+
+- [ ] **Lack of Bounds Checking**
+  - [x] Add bounds checking for platform movement parameters
+  - [ ] Add explicit bounds checking for all array accesses
+  - [ ] Implement safe accessor methods for critical data structures
+
+- [ ] **Incomplete Implementation of Planned Features**
+  - [ ] Complete or disable advertised features that aren't fully implemented
+  - [ ] Add clear status indicators for features in development
+
+- [ ] **Potential Floating Point Precision Issues**
+  - [x] Optimize floating point calculations in inverse kinematics
+  - [ ] Consider fixed-point alternatives for critical calculations
+
+- [ ] **Inconsistent Error Handling**
+  - [ ] Standardize error handling approach across the codebase
+  - [ ] Ensure all return values are properly checked
+
+- [ ] **Potential for Servo Binding**
+  - [ ] Implement protection against servo binding conditions
+  - [ ] Add current monitoring if hardware supports it
+  - [ ] Create safe recovery procedures for high-current states
