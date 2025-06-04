@@ -48,7 +48,7 @@ namespace stewy
 // Enhanced IK algorithm options
 #define USE_ENHANCED_IK         // Use the enhanced IK algorithm for better range of movement
 #define ROTATION_POINT_OFFSET 0 // Height offset for rotation point in mm (0 = rotate around home position)
-#define TRANSLATION_FIRST true  // Apply translation before rotation for better range
+#define TRANSLATION_FIRST       // Apply translation before rotation for better range
 
 /*
   If defined, the IK algorithm will "slam" values to min or max when it encounters

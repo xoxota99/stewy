@@ -128,36 +128,34 @@ namespace stewy
         const double bx = B_COORDS[i][0];
         const double by = B_COORDS[i][1];
 
-        // Apply rotation around adjustable point
-        if (TRANSLATION_FIRST)
-        {
-          // Apply translation first, then rotation
-          pivot_x = px;
-          pivot_y = py;
-          pivot_z = ROTATION_POINT_OFFSET;
+// Apply rotation around adjustable point
+#ifdef TRANSLATION_FIRST
+        // Apply translation first, then rotation
+        pivot_x = px;
+        pivot_y = py;
+        pivot_z = ROTATION_POINT_OFFSET;
 
-          // Apply rotation
-          double rotated_x = pivot_x * cr_cy + pivot_y * (sp_sr * cr - cp * sy) - pivot_z * (cp * sr + sp * sy * cr);
-          double rotated_y = pivot_x * cr_sy + pivot_y * (cp * cy + sp_sr * sy) - pivot_z * (sp * cy - cp * sr * sy);
-          double rotated_z = -pivot_x * sr + pivot_y * sp_cr + pivot_z * cp * cr;
+        // Apply rotation
+        double rotated_x = pivot_x * cr_cy + pivot_y * (sp_sr * cr - cp * sy) - pivot_z * (cp * sr + sp * sy * cr);
+        double rotated_y = pivot_x * cr_sy + pivot_y * (cp * cy + sp_sr * sy) - pivot_z * (sp * cy - cp * sr * sy);
+        double rotated_z = -pivot_x * sr + pivot_y * sp_cr + pivot_z * cp * cr;
 
-          // Apply translation
-          pivot_x = rotated_x + sway;
-          pivot_y = rotated_y + surge;
-          pivot_z = rotated_z + z_offset;
-        }
-        else
-        {
-          // Apply rotation first, then translation
-          pivot_x = px * cr_cy + py * (sp_sr * cr - cp * sy);
-          pivot_y = px * cr_sy + py * (cp * cy + sp_sr * sy);
-          pivot_z = -px * sr + py * sp_cr + z_offset + ROTATION_POINT_OFFSET;
+        // Apply translation
+        pivot_x = rotated_x + sway;
+        pivot_y = rotated_y + surge;
+        pivot_z = rotated_z + z_offset;
+#else
 
-          // Apply translation
-          pivot_x += sway;
-          pivot_y += surge;
-          pivot_z += heave - ROTATION_POINT_OFFSET; // Adjust for rotation point offset
-        }
+        // Apply rotation first, then translation
+        pivot_x = px * cr_cy + py * (sp_sr * cr - cp * sy);
+        pivot_y = px * cr_sy + py * (cp * cy + sp_sr * sy);
+        pivot_z = -px * sr + py * sp_cr + z_offset + ROTATION_POINT_OFFSET;
+
+        // Apply translation
+        pivot_x += sway;
+        pivot_y += surge;
+        pivot_z += heave - ROTATION_POINT_OFFSET; // Adjust for rotation point offset
+#endif
 
         // Calculate squared distance (avoid sqrt until necessary)
         const double dx = pivot_x - bx;
