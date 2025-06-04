@@ -5,6 +5,19 @@
  * @author Philippe Desrosiers
  * @copyright Copyright (C) 2018 Philippe Desrosiers
  * @license GPL-3.0
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "drivers/TouchScreen.h"
@@ -100,25 +113,28 @@ namespace stewy
       calibrationSampleCount = 0;
       ballLastSeen = 0;
     }
-    
+
     TouchScreenDriver::~TouchScreenDriver()
     {
       // Clean up dynamically allocated objects
-      if (ts != nullptr) {
+      if (ts != nullptr)
+      {
         delete ts;
         ts = nullptr;
       }
-      
-      if (rollPID != nullptr) {
+
+      if (rollPID != nullptr)
+      {
         delete rollPID;
         rollPID = nullptr;
       }
-      
-      if (pitchPID != nullptr) {
+
+      if (pitchPID != nullptr)
+      {
         delete pitchPID;
         pitchPID = nullptr;
       }
-      
+
       Log.trace("TouchScreenDriver destroyed");
     }
 
