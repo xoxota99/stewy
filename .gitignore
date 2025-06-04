@@ -66,5 +66,8 @@
 ehthumbs.db
 Thumbs.db
 
+
 # Project specific
-# Add any project-specific files that shouldn't be committed
+.pio/**
+.vscode/**
+doc/notes.txt
