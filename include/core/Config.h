@@ -67,17 +67,22 @@ namespace stewy
 
     const int SERVO_MID_US = SERVO_MIN_US + (SERVO_MAX_US - SERVO_MIN_US) / 2;
 
+// Number of servos in the system
+#define NUM_SERVOS 6
+
     // Which servos are reversed. 1 = reversed, 0 = normal.
-    const int SERVO_REVERSE[6] = {0, 1, 0, 1, 0, 1};
+    const int SERVO_REVERSE[NUM_SERVOS] = {0, 1, 0, 1, 0, 1};
 
     // Servo trim values, in microseconds, AFTER reversing
-    const int SERVO_TRIM[] = {0, 20, 0, 135, 0, 120};
+    const int SERVO_TRIM[NUM_SERVOS] = {0, 20, 0, 135, 0, 120};
 
     // Servo pin assignments
-    const int SERVO_PINS[] = {0, 1, 2, 3, 4, 5};
+    const int SERVO_PINS[NUM_SERVOS] = {0, 1, 2, 3, 4, 5};
 
 // Touchscreen configuration
 #ifdef ENABLE_TOUCHSCREEN
+
+// Touchscreen hardware pins
 #define XP A7       // YELLOW / XRT. can be a digital pin.
 #define XM A6       // WHITE / XLE. must be an analog pin, use "An" notation!
 #define YP A8       // RED / YLO. must be an analog pin, use "An" notation!

@@ -21,6 +21,7 @@
  */
 
 #include "core/Platform.h"
+#include "core/Config.h"
 #include "Arduino.h"
 
 namespace stewy
@@ -118,7 +119,7 @@ namespace stewy
 
 #ifdef USE_ENHANCED_IK
       // Enhanced IK algorithm with adjustable rotation point and translation/rotation order
-      for (int i = 0; i < 6 && bOk; i++)
+      for (int i = 0; i < NUM_SERVOS && bOk; i++)
       {
         double pivot_x, pivot_y, pivot_z;
 

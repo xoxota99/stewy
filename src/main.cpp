@@ -52,17 +52,17 @@ core::Platform *platform;
 
 #ifdef ENABLE_SERVOS
 // Create servo objects
-Servo servos[6];
+Servo servos[NUM_SERVOS];
 #endif
 
 // Servo setpoints in degrees
-float servoValues[6];
+float servoValues[NUM_SERVOS];
 
 // Current actual servo positions (for acceleration/deceleration)
-float currentServoPositions[6];
+float currentServoPositions[NUM_SERVOS];
 
 // Current servo velocities (for acceleration/deceleration)
-float servoVelocities[6];
+float servoVelocities[NUM_SERVOS];
 
 // Create driver objects
 drivers::TouchScreenDriver *touchscreen;
@@ -80,7 +80,7 @@ float toMicroseconds(int angle)
 // Update servo positions
 void updateServos()
 {
-  for (int i = 0; i < 6; i++)
+  for (int i = 0; i < NUM_SERVOS; i++)
   {
     float targetPosition = servoValues[i];
     float currentPosition = currentServoPositions[i];
@@ -167,7 +167,7 @@ void setup()
   platform = new core::Platform(SERVO_MIN_ANGLE, SERVO_MAX_ANGLE);
 
   // Initialize servo position and velocity arrays
-  for (int i = 0; i < 6; i++)
+  for (int i = 0; i < NUM_SERVOS; i++)
   {
     currentServoPositions[i] = core::SERVO_MID_ANGLE;
     servoVelocities[i] = 0.0f;
@@ -176,7 +176,7 @@ void setup()
 // Initialize servos
 #ifdef ENABLE_SERVOS
   Log.info("Initializing servos...");
-  for (int i = 0; i < 6; i++)
+  for (int i = 0; i < NUM_SERVOS; i++)
   {
     servos[i].attach(core::SERVO_PINS[i]);
   }
@@ -215,7 +215,7 @@ void setup()
   Log.info("Sweeping servos to ensure they are working...");
   for (int pos = SERVO_MIN_ANGLE; pos < core::SERVO_MID_ANGLE; pos += 4)
   {
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < NUM_SERVOS; i++)
     {
       servoValues[i] = pos;
     }

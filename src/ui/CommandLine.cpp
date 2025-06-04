@@ -135,9 +135,9 @@ namespace stewy
       int servo = atoi(argv[1]);
       int angle = atoi(argv[2]);
 
-      if (servo < 0 || servo > 5)
+      if (servo < 0 || servo >= NUM_SERVOS)
       {
-        Log.error("Invalid servo number. Must be 0-5.");
+        Log.error("Invalid servo number. Must be 0-%d.", NUM_SERVOS-1);
         return SHELL_RET_FAILURE;
       }
 
@@ -165,9 +165,9 @@ namespace stewy
       int servo = atoi(argv[1]);
       int micros = atoi(argv[2]);
 
-      if (servo < 0 || servo > 5)
+      if (servo < 0 || servo >= NUM_SERVOS)
       {
-        Log.error("Invalid servo number. Must be 0-5.");
+        Log.error("Invalid servo number. Must be 0-%d.", NUM_SERVOS-1);
         return SHELL_RET_FAILURE;
       }
 
@@ -202,7 +202,7 @@ namespace stewy
       }
 
       // Set all servos to the same angle
-      for (int i = 0; i < 6; i++)
+      for (int i = 0; i < NUM_SERVOS; i++)
       {
         instance->servoValues[i] = angle;
       }
@@ -232,7 +232,7 @@ namespace stewy
       float angle = map(micros, SERVO_MIN_US, SERVO_MAX_US, SERVO_MIN_ANGLE, SERVO_MAX_ANGLE);
 
       // Set all servos to the same angle
-      for (int i = 0; i < 6; i++)
+      for (int i = 0; i < NUM_SERVOS; i++)
       {
         instance->servoValues[i] = angle;
       }
@@ -251,7 +251,7 @@ namespace stewy
 
       // Display servo values
       Log.info("Servo Values:");
-      for (int i = 0; i < 6; i++)
+      for (int i = 0; i < NUM_SERVOS; i++)
       {
         Log.info("  Servo %d: %.2f degrees", i, instance->servoValues[i]);
       }
